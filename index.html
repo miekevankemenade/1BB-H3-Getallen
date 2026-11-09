@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wiskunde 1 Basis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stijl.css">
+<style>
+  .tegels{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:16px}
+  .tegel{background:#fff;border:2px solid var(--lijn);border-radius:14px;padding:16px;text-decoration:none;color:var(--tekst);display:block}
+  .tegel:hover{border-color:var(--roze)}
+  .tegel b{display:block;font-size:18px;color:var(--paars)}
+  .tegel span{font-size:13px;color:var(--grijs)}
+</style>
+</head>
+<body>
+<header class="kop"><h1>Wiskunde oefenen<small>1 Basis</small></h1><a class="kopknop" href="docent.html" style="text-decoration:none">👩‍🏫 Docent</a></header>
+<main class="pagina">
+  <p class="regel">Kies de paragraaf waar je mee aan de slag gaat.</p>
+  <div class="tegels" id="tegels"></div>
+</main>
+<script src="paragrafen/lijst.js"></script>
+<script>
+  document.getElementById('tegels').innerHTML = window.PARAGRAFEN.map(function (p) {
+    return '<a class="tegel" href="oefen.html?p=' + p.code + '"><span>' + p.klas + ' · ' + p.hoofdstuk + '</span><b>' + p.titel + '</b><span>Uitleg, opdrachten en mini-toets</span></a>';
+  }).join('');
+</script>
+</body>
+</html>

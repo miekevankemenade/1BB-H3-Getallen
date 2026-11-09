@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wiskunde oefenen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stijl.css">
+</head>
+<body>
+<header class="kop">
+  <h1 id="titel">Wiskunde</h1>
+  <span id="wie" class="pil"></span>
+  <div class="score">
+    <span class="pil g" id="scoregoed">✓ 0</span>
+    <span class="pil f" id="scorefout">✗ 0</span>
+    <span class="pil" id="scorepunt">0 punten</span>
+  </div>
+  <label class="pil" title="Snelheid van de voorleesstem">🔊
+    <select id="tempo" aria-label="voorleessnelheid">
+      <option value="0.7">langzaam</option>
+      <option value="0.9">normaal</option>
+      <option value="1.1">snel</option>
+    </select></label>
+  <button class="kopknop" id="rmknop">🧮 Rekenmachine</button>
+  <span id="opslagstatus" style="font-size:12px"></span>
+</header>
+<nav class="nav" id="nav" aria-label="Opdrachten"></nav>
+<main class="pagina" id="pagina"></main>
+
+<script src="config.js"></script>
+<script src="figuren.js"></script>
+<script>
+  // Welke paragraaf? oefen.html?p=3-3
+  (function () {
+    var p = (new URLSearchParams(location.search).get('p') || '3-3').replace(/[^0-9a-z-]/gi, '');
+    document.write('<script src="paragrafen/' + p + '.js"><\/script>');
+  })();
+</script>
+<script src="engine.js"></script>
+</body>
+</html>

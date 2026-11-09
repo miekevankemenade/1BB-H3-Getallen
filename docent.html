@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docentenoverzicht</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stijl.css">
+<style>
+  .balk{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;background:#fff;border:1px solid var(--lijn);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+  .balk label{font-size:12px;font-weight:700;color:var(--paars);display:block;margin-bottom:3px}
+  .balk select,.balk input{font-family:inherit;font-size:14px;padding:7px 9px;border:1px solid var(--lijn);border-radius:8px;min-width:200px}
+  .code{font-size:20px;font-weight:800;letter-spacing:2px;color:var(--roze);background:var(--roze-zacht);padding:4px 12px;border-radius:8px}
+  .tabelwrap{overflow:auto;background:#fff;border:1px solid var(--lijn);border-radius:12px;max-height:72vh}
+  table.mat{border-collapse:separate;border-spacing:0;font-size:13px;min-width:100%}
+  .mat th,.mat td{padding:6px 6px;border-bottom:1px solid #eee;text-align:center;white-space:nowrap}
+  .mat thead th{position:sticky;top:0;background:#fff;z-index:2;font-size:12px;color:var(--grijs);cursor:pointer;border-bottom:2px solid var(--lijn)}
+  .mat thead th:hover{color:var(--roze)}
+  .mat th.naam,.mat td.naam{text-align:left;position:sticky;left:0;background:#fff;z-index:1;font-weight:500}
+  .mat thead th.naam{z-index:3}
+  .mat td.naam2{text-align:left}
+  .cel{display:inline-block;min-width:46px;padding:4px 6px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer;position:relative}
+  .c-groen{background:#bdf0cd;color:#11633a}.c-blauw{background:#cfe5ff;color:#184b8a}.c-oranje{background:#ffe1cc;color:#8a3d0c}.c-rood{background:#fdd3d8;color:#8a1424}.c-leeg{background:#f1f1f3;color:#999}
+  .cel .zand{position:absolute;top:-6px;right:-6px;background:#f5a623;color:#fff;border-radius:50%;width:15px;height:15px;font-size:9px;line-height:15px}
+  .mat tr.klasrij td{background:var(--paars-zacht);font-weight:700;position:sticky;bottom:0}
+  .mat tr.klasrij td.naam{background:var(--paars-zacht)}
+  .legenda{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;margin:10px 0}
+  .paneel{background:#fff;border:1px solid var(--lijn);border-radius:12px;padding:14px;margin-top:14px}
+  .paneel h3{margin:0 0 10px;color:var(--paars)}
+  .foutrij{display:grid;grid-template-columns:90px 1fr 120px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:13px}
+  .foutbalk{height:12px;border-radius:6px;background:#eee;overflow:hidden}
+  .foutbalk div{height:100%;background:linear-gradient(90deg,var(--roze),var(--paars))}
+  .foutantw{grid-column:2/4;font-size:12px;color:var(--grijs)}
+  .modal{position:fixed;inset:0;background:rgba(30,10,50,.45);display:flex;align-items:center;justify-content:center;z-index:90;padding:16px}
+  .modal .doos{background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow:auto;padding:18px}
+  .modal table{width:100%;border-collapse:collapse;font-size:13px}
+  .modal td,.modal th{border-bottom:1px solid #eee;padding:5px;text-align:left}
+  .klein{font-size:12px;color:var(--grijs)}
+</style>
+</head>
+<body>
+<header class="kop"><h1>Docentenoverzicht<small>Wiskunde oefenapps</small></h1><span id="wieDocent" class="pil verborgen"></span><button class="kopknop verborgen" id="uitlog">Uitloggen</button></header>
+
+<div class="scherm" id="loginScherm">
+  <form class="aanmeldkaart" id="loginForm">
+    <h2>Inloggen docent</h2>
+    <label for="em">E-mailadres</label><input id="em" type="email" required autocomplete="username">
+    <label for="pw">Wachtwoord</label><input id="pw" type="password" required minlength="6" autocomplete="current-password">
+    <button class="knop hoofd" type="submit">Inloggen</button>
+    <button class="knop licht" type="button" id="maakAccount" style="width:100%;margin-top:8px">Nieuw account maken</button>
+    <div class="melding" id="lm"></div>
+  </form>
+</div>
+
+<main class="pagina" id="main" style="max-width:1500px">
+  <div class="balk">
+    <div><label for="selKlas">Klas</label><select id="selKlas"></select></div>
+    <div><label for="selPar">Paragraaf</label><select id="selPar"></select></div>
+    <div><label>Klascode voor leerlingen</label><span class="code" id="klascode">–</span></div>
+    <div style="flex:1"></div>
+    <button class="knop licht" id="nieuweKlas">＋ Nieuwe klas</button>
+    <button class="knop hoofd" id="vernieuw">↻ Vernieuwen</button>
+  </div>
+
+  <div class="legenda">
+    <span class="cel c-groen">80–100%</span><span class="cel c-blauw">55–79%</span><span class="cel c-oranje">1–54%</span><span class="cel c-rood">0%</span><span class="cel c-leeg">–</span> nog niet gemaakt
+    <span class="cel c-leeg">⧗</span> nog bezig · Klik op een kolomkop voor de foutenanalyse van die opdracht. Klik op een vakje voor de antwoorden van de leerling.
+  </div>
+
+  <div class="tabelwrap"><table class="mat" id="mat"></table></div>
+
+  <div class="paneel" id="foutPaneel"></div>
+</main>
+
+<div id="modal"></div>
+
+<script src="config.js"></script>
+<script src="figuren.js"></script>
+<script src="paragrafen/lijst.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(async function () {
+  'use strict';
+  const $ = s => document.querySelector(s);
+  const esc = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const CFG = window.APP_CONFIG || {};
+  if (!CFG.SUPABASE_URL || /JOUW/.test(CFG.SUPABASE_URL)) {
+    $('#lm').textContent = 'Vul eerst de Supabase-gegevens in config.js in.';
+    return;
+  }
+  const sb = supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_KEY);
+
+  // paragrafen laden (voor de namen van de opdrachten)
+  async function laadScript(src) { return new Promise((r, f) => { const s = document.createElement('script'); s.src = src; s.onload = r; s.onerror = f; document.head.appendChild(s); }); }
+  for (const p of window.PARAGRAFEN) { try { await laadScript('paragrafen/' + p.code + '.js'); } catch (e) { } }
+  const DEF = window.PARAGRAFEN_DEF || {};
+
+  let klassen = [], rijen = [], gekozenOpdr = null;
+
+  /* ---------- inloggen ---------- */
+  async function naLogin(user) {
+    $('#loginScherm').classList.add('verborgen');
+    $('#wieDocent').textContent = user.email; $('#wieDocent').classList.remove('verborgen'); $('#uitlog').classList.remove('verborgen');
+    $('#selPar').innerHTML = window.PARAGRAFEN.map(p => `<option value="${p.id}">${esc(p.klas + ' · ' + p.titel)}</option>`).join('');
+    await laadKlassen();
+  }
+  $('#loginForm').onsubmit = async e => {
+    e.preventDefault(); $('#lm').textContent = 'Even geduld...';
+    const { data, error } = await sb.auth.signInWithPassword({ email: $('#em').value.trim(), password: $('#pw').value });
+    if (error) { $('#lm').textContent = 'Inloggen lukt niet. Controleer je e-mail en wachtwoord.'; return; }
+    naLogin(data.user);
+  };
+  $('#maakAccount').onclick = async () => {
+    const email = $('#em').value.trim(), pw = $('#pw').value;
+    if (!email || pw.length < 6) { $('#lm').textContent = 'Vul een e-mailadres en een wachtwoord (minstens 6 tekens) in.'; return; }
+    const { data, error } = await sb.auth.signUp({ email, password: pw });
+    if (error) { $('#lm').textContent = 'Account maken lukt niet: ' + error.message; return; }
+    if (data.session) naLogin(data.user); else $('#lm').textContent = 'Kijk in je mail en klik op de bevestigingslink. Log daarna in.';
+  };
+  $('#uitlog').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+  const sess = await sb.auth.getSession();
+  if (sess.data.session) naLogin(sess.data.session.user);
+
+  /* ---------- klassen ---------- */
+  async function laadKlassen() {
+    const { data, error } = await sb.from('klassen').select('*').order('klas');
+    klassen = data || [];
+    $('#selKlas').innerHTML = klassen.length ? klassen.map(k => `<option value="${k.klascode}">${esc(k.klas)}</option>`).join('') : '<option value="">(nog geen klas)</option>';
+    const vorige = localStorage.getItem('docent_klas'); if (vorige && klassen.some(k => k.klascode === vorige)) $('#selKlas').value = vorige;
+    await laadData();
+  }
+  $('#nieuweKlas').onclick = async () => {
+    const naam = prompt('Naam van de klas (bijvoorbeeld 1AB Basis):'); if (!naam) return;
+    const code = Array.from({ length: 6 }, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random() * 32)]).join('');
+    const { error } = await sb.from('klassen').insert({ klascode: code, klas: naam.trim().slice(0, 40) });
+    if (error) { alert('Dat lukte niet: ' + error.message); return; }
+    localStorage.setItem('docent_klas', code); await laadKlassen();
+  };
+  $('#selKlas').onchange = () => { localStorage.setItem('docent_klas', $('#selKlas').value); laadData(); };
+  $('#selPar').onchange = () => { gekozenOpdr = null; laadData(); };
+  $('#vernieuw').onclick = () => laadData();
+
+  /* ---------- data ---------- */
+  async function laadData() {
+    const code = $('#selKlas').value; $('#klascode').textContent = code || '–';
+    if (!code) { $('#mat').innerHTML = '<tr><td style="padding:20px">Maak eerst een klas met de knop "Nieuwe klas".</td></tr>'; $('#foutPaneel').innerHTML = ''; return; }
+    const { data } = await sb.from('voortgang').select('id,naam,samenvatting,punten,max_punten,bijgewerkt').eq('klascode', code).eq('app', $('#selPar').value);
+    rijen = (data || []).sort((a, b) => a.naam.localeCompare(b.naam, 'nl'));
+    tekenMatrix(); tekenFouten();
+  }
+
+  function par() { return DEF[$('#selPar').value]; }
+  function kolommen() {
+    const p = par(); if (!p) return [];
+    return p.onderdelen.map(o => ({ id: o.id, kort: o.type === 'uitleg' ? o.kort : (o.type === 'toets' ? 'Toets' : o.id), type: o.type, titel: o.titel, delen: o.delen || [] }));
+  }
+  function kleur(pct) { return pct >= 80 ? 'c-groen' : pct >= 55 ? 'c-blauw' : pct > 0 ? 'c-oranje' : 'c-rood'; }
+  function splits(naam) { const i = naam.indexOf(' '); return i < 0 ? [naam, ''] : [naam.slice(0, i), naam.slice(i + 1)]; }
+
+  function tekenMatrix() {
+    const kol = kolommen();
+    let h = '<thead><tr><th class="naam">Voornaam</th><th style="text-align:left">Achternaam</th>' + kol.map(k => `<th data-k="${k.id}" title="${esc(k.titel)}">${esc(k.kort)}</th>`).join('') + '<th>Totaal</th><th>Cijfer</th><th></th></tr></thead><tbody>';
+    if (!rijen.length) h += `<tr><td colspan="${kol.length + 5}" style="padding:20px;text-align:left">Nog geen leerlingen. Geef de leerlingen de klascode <b>${esc($('#selKlas').value)}</b>.</td></tr>`;
+    const som = {}, aantal = {};
+    rijen.forEach(r => {
+      const s = r.samenvatting || {}, [vn, an] = splits(r.naam);
+      h += `<tr><td class="naam">${esc(vn)}</td><td class="naam2">${esc(an)}</td>`;
+      kol.forEach(k => {
+        if (k.type === 'uitleg') { const g = s.uitleg && s.uitleg[k.id]; h += `<td><span class="cel ${g ? 'c-groen' : 'c-leeg'}">${g ? '✓' : '⧗'}</span></td>`; return; }
+        const o = (s.opdr || {})[k.id];
+        if (!o || !o.begonnen) { h += `<td><span class="cel c-leeg" data-r="${r.id}" data-k="${k.id}">–</span></td>`; return; }
+        const pct = o.max ? Math.round(o.p / o.max * 100) : 0;
+        som[k.id] = (som[k.id] || 0) + pct; aantal[k.id] = (aantal[k.id] || 0) + 1;
+        h += `<td><span class="cel ${kleur(pct)}" data-r="${r.id}" data-k="${k.id}">${pct}%${o.klaar ? '' : '<span class="zand">⧗</span>'}</span></td>`;
+      });
+      const tp = r.max_punten ? Math.round(r.punten / r.max_punten * 100) : 0;
+      h += `<td><b>${tp}%</b></td><td><b>${esc(String(s.cijfer ?? '–').replace('.', ','))}</b></td>
+        <td><button class="knop licht" style="padding:2px 8px;font-size:12px" data-pin="${r.id}" title="Pincode wissen">🔑</button>
+        <button class="knop licht" style="padding:2px 8px;font-size:12px" data-weg="${r.id}" title="Verwijderen">🗑</button></td></tr>`;
+    });
+    if (rijen.length) {
+      h += '<tr class="klasrij"><td class="naam">Klas</td><td class="naam2">gemiddeld</td>' + kol.map(k => {
+        if (k.type === 'uitleg') { const n = rijen.filter(r => (r.samenvatting?.uitleg || {})[k.id]).length; return `<td>${n}/${rijen.length}</td>`; }
+        if (!aantal[k.id]) return '<td>–</td>';
+        const g = Math.round(som[k.id] / aantal[k.id]); return `<td><span class="cel ${kleur(g)}" data-k="${k.id}">${g}%</span></td>`;
+      }).join('') + '<td></td><td></td><td></td></tr>';
+    }
+    $('#mat').innerHTML = h + '</tbody>';
+  }
+
+  /* ---------- foutenanalyse ---------- */
+  function tekenFouten() {
+    const p = par(); if (!p) return;
+    const kol = kolommen().filter(k => k.type !== 'uitleg' && (!gekozenOpdr || k.id === gekozenOpdr));
+    const lijst = [];
+    kol.forEach(k => k.delen.forEach(d => {
+      const key = k.id + d.id; let gemaakt = 0, metFout = 0, fout4 = 0, fouten = 0; const antw = {};
+      rijen.forEach(r => {
+        const x = (r.samenvatting?.delen || {})[key]; if (!x) return;
+        if (x.s === 'open' && !x.f) return;
+        gemaakt++; if (x.f > 0) metFout++; if (x.s === 'fout4') fout4++; fouten += x.f;
+        (x.fa || []).forEach(a => antw[a] = (antw[a] || 0) + 1);
+      });
+      if (!gemaakt) return;
+      const vaak = Object.entries(antw).sort((a, b) => b[1] - a[1]).slice(0, 4);
+      const tekst = (d.regels || []).join(' ').replace(/\[(\d+)\/(\d+)\]/g, '$1/$2').replace(/\{f(:\d*\/\d*)?\}|\{n\}/g, '…').replace(/\*\*/g, '');
+      lijst.push({ key, opdr: k.kort, deel: d.id.toUpperCase(), tekst, gemaakt, metFout, fout4, fouten, pct: Math.round(metFout / gemaakt * 100), vaak });
+    }));
+    lijst.sort((a, b) => b.pct - a.pct || b.fouten - a.fouten);
+    const titel = gekozenOpdr ? `Foutenanalyse opdracht ${esc(kol[0]?.kort || gekozenOpdr)} <button class="knop licht" id="alleOpdr" style="padding:2px 10px;font-size:12px">alle opdrachten</button>` : 'Waar gaat het mis? (alle opdrachten)';
+    $('#foutPaneel').innerHTML = `<h3>${titel}</h3>` + (lijst.length ? lijst.slice(0, gekozenOpdr ? 50 : 12).map(x => `
+      <div class="foutrij"><b>Opdr. ${esc(x.opdr)} ${esc(x.deel)}</b>
+        <div><div class="klein">${esc(x.tekst).slice(0, 110)}</div><div class="foutbalk"><div style="width:${x.pct}%"></div></div></div>
+        <div class="klein"><b>${x.pct}%</b> fout (${x.metFout}/${x.gemaakt})<br>${x.fout4} × 4 fouten</div>
+        ${x.vaak.length ? `<div class="foutantw">Vaak gegeven foute antwoorden: ${x.vaak.map(v => `<b>${esc(v[0])}</b> (${v[1]}×)`).join(' · ')}</div>` : ''}
+      </div>`).join('') : '<p class="klein">Nog geen antwoorden.</p>');
+    const a = $('#alleOpdr'); if (a) a.onclick = () => { gekozenOpdr = null; tekenFouten(); };
+  }
+
+  /* ---------- klikken in de tabel ---------- */
+  document.addEventListener('click', async e => {
+    const th = e.target.closest('.mat thead th[data-k]');
+    if (th) { gekozenOpdr = th.dataset.k; tekenFouten(); $('#foutPaneel').scrollIntoView({ behavior: 'smooth' }); return; }
+    const cel = e.target.closest('.cel[data-r]');
+    if (cel) return toonLeerling(+cel.dataset.r, cel.dataset.k);
+    const pin = e.target.closest('[data-pin]');
+    if (pin) {
+      const r = rijen.find(x => x.id === +pin.dataset.pin);
+      if (!confirm(`Pincode van ${r.naam} wissen?\nDe leerling kiest bij de volgende keer inloggen een nieuwe pincode.`)) return;
+      const { error } = await sb.from('voortgang').update({ pin_hash: null }).eq('id', r.id);
+      alert(error ? 'Dat lukte niet.' : 'De pincode is gewist.'); return;
+    }
+    const weg = e.target.closest('[data-weg]');
+    if (weg) {
+      const r = rijen.find(x => x.id === +weg.dataset.weg);
+      if (!confirm(`Al het werk van ${r.naam} bij deze paragraaf verwijderen?`)) return;
+      await sb.from('voortgang').delete().eq('id', r.id); laadData(); return;
+    }
+    if (e.target.classList.contains('modal') || e.target.closest('[data-sluit]')) $('#modal').innerHTML = '';
+  });
+
+  function toonLeerling(id, kid) {
+    const r = rijen.find(x => x.id === id), k = kolommen().find(x => x.id === kid); if (!r || !k) return;
+    const s = r.samenvatting || {};
+    const st = { goed: '✅ goed', fout4: '❌ 4× fout', open: '○ open' };
+    const rows = k.delen.map(d => {
+      const x = (s.delen || {})[k.id + d.id] || { s: 'open', f: 0, h: 0, p: 0, fa: [] };
+      return `<tr><td><b>${d.id.toUpperCase()}</b></td><td>${st[x.s] || x.s}</td><td>${x.p}</td><td>${x.f}</td><td>${x.h}</td><td>${(x.fa || []).map(esc).join('<br>') || '–'}</td></tr>`;
+    }).join('');
+    $('#modal').innerHTML = `<div class="modal"><div class="doos">
+      <h3 style="margin-top:0;color:var(--paars)">${esc(r.naam)} – ${esc(k.titel)}</h3>
+      <table><tr><th>Vraag</th><th>Status</th><th>Punten</th><th>Fouten</th><th>Hints</th><th>Foute antwoorden</th></tr>${rows}</table>
+      <p class="klein">Laatst bijgewerkt: ${new Date(r.bijgewerkt).toLocaleString('nl-NL')}</p>
+      <button class="knop hoofd" data-sluit>Sluiten</button></div></div>`;
+  }
+})();
+</script>
+</body>
+</html>
