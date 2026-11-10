@@ -119,8 +119,8 @@ $('#inlog').onclick = async () => {
   const m = $('#lmelding'); const email = $('#mail').value.trim();
   if (!email){ m.style.color = 'var(--fout)'; m.textContent = 'Vul eerst je e-mailadres in.'; return; }
   m.style.color = ''; m.textContent = 'Bezig…';
-  const {error} = await db.auth.signInWithOtp({email, options: {emailRedirectTo: terugUrl, shouldCreateUser: false}});
-  if (error){ m.style.color = 'var(--fout)'; m.textContent = 'Dat lukte niet. Staat dit adres in de lijst met docenten? Probeer het anders over een minuut nog eens.'; return; }
+  const {error} = await db.auth.signInWithOtp({email, options: {emailRedirectTo: terugUrl, shouldCreateUser: true}});
+  if (error){ m.style.color = 'var(--fout)'; m.textContent = 'Dat lukte niet. Probeer het over een minuut nog eens.'; return; }
   m.style.color = 'var(--goed)'; m.textContent = '✉️ Kijk in je mail en klik op de inloglink.';
 };
 $('#mail').addEventListener('keydown', e => { if (e.key === 'Enter') $('#inlog').click(); });
