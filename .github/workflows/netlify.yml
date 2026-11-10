@@ -1,0 +1,27 @@
+# Zet de app automatisch online op Netlify bij elke wijziging in GitHub.
+# Nodig (één keer): een geheime sleutel NETLIFY_AUTH_TOKEN in
+# GitHub → Settings → Secrets and variables → Actions.
+name: Online zetten op Netlify
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  online:
+    runs-on: ubuntu-latest
+    env:
+      NETLIFY_SITE_ID: cab833ee-62a2-43d1-be5a-8a49a15b10ed   # famous-moxie-2af578.netlify.app
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Klaarzetten (zonder de GitHub-map)
+        run: |
+          mkdir site
+          rsync -a --exclude '.git' --exclude '.github' --exclude 'site' ./ site/
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Naar Netlify
+        run: npx --yes netlify-cli@17 deploy --dir=site --prod --message "GitHub ${GITHUB_SHA::7}"
