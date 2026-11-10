@@ -44,12 +44,11 @@
 
 <div class="scherm" id="loginScherm">
   <form class="aanmeldkaart" id="loginForm">
-    <h2>Inloggen docent</h2>
-    <label for="em">E-mailadres</label><input id="em" type="email" required autocomplete="username">
-    <label for="pw">Wachtwoord</label><input id="pw" type="password" required minlength="6" autocomplete="current-password">
-    <button class="knop hoofd" type="submit">Inloggen</button>
-    <button class="knop licht" type="button" id="maakAccount" style="width:100%;margin-top:8px">Nieuw account maken</button>
-    <div class="melding" id="lm"></div>
+    <h2>Docentenoverzicht</h2>
+    <p style="margin:0;font-size:13px;color:var(--grijs)">Resultaten van de oefenapp wiskunde 1 Basis.<br>Je krijgt een link in je mail. Daarmee open je het overzicht.</p>
+    <label for="em">E-mailadres van de docent</label><input id="em" type="email" required autocomplete="email">
+    <button class="knop hoofd" type="submit">Stuur mij een link</button>
+    <div class="melding" id="lm" style="color:var(--paars)"></div>
   </form>
 </div>
 
@@ -105,22 +104,22 @@
     $('#selPar').innerHTML = window.PARAGRAFEN.map(p => `<option value="${p.id}">${esc(p.klas + ' · ' + p.titel)}</option>`).join('');
     await laadKlassen();
   }
+  // Inloggen met een link per e-mail (geen wachtwoord op deze pagina).
   $('#loginForm').onsubmit = async e => {
     e.preventDefault(); $('#lm').textContent = 'Even geduld...';
-    const { data, error } = await sb.auth.signInWithPassword({ email: $('#em').value.trim(), password: $('#pw').value });
-    if (error) { $('#lm').textContent = 'Inloggen lukt niet. Controleer je e-mail en wachtwoord.'; return; }
-    naLogin(data.user);
+    const { error } = await sb.auth.signInWithOtp({
+      email: $('#em').value.trim(),
+      options: { emailRedirectTo: location.origin + location.pathname }
+    });
+    if (error) { $('#lm').textContent = 'Dat lukte niet. Probeer het over een minuut nog eens.'; return; }
+    $('#lm').textContent = '✉️ Kijk in je mail en klik op de link. Daarna opent het overzicht.';
   };
-  $('#maakAccount').onclick = async () => {
-    const email = $('#em').value.trim(), pw = $('#pw').value;
-    if (!email || pw.length < 6) { $('#lm').textContent = 'Vul een e-mailadres en een wachtwoord (minstens 6 tekens) in.'; return; }
-    const { data, error } = await sb.auth.signUp({ email, password: pw });
-    if (error) { $('#lm').textContent = 'Account maken lukt niet: ' + error.message; return; }
-    if (data.session) naLogin(data.user); else $('#lm').textContent = 'Kijk in je mail en klik op de bevestigingslink. Log daarna in.';
-  };
-  $('#uitlog').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+  $('#uitlog').onclick = async () => { await sb.auth.signOut(); location.href = location.pathname; };
+  let ingelogd = false;
+  const welkom = s => { if (s && !ingelogd) { ingelogd = true; history.replaceState(null, '', location.pathname); naLogin(s.user); } };
+  sb.auth.onAuthStateChange((_e, s) => welkom(s));
   const sess = await sb.auth.getSession();
-  if (sess.data.session) naLogin(sess.data.session.user);
+  welkom(sess.data.session);
 
   /* ---------- klassen ---------- */
   async function laadKlassen() {

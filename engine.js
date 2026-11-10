@@ -820,7 +820,7 @@
         <h2>${esc(P.titel)}</h2><p style="margin:0;color:var(--grijs);font-size:13px">${esc(P.klas)}</p>
         ${online ? `<label for="ak">Klascode</label><input id="ak" required maxlength="12" style="text-transform:uppercase">` : ''}
         <label for="an">Je voornaam en achternaam</label><input id="an" required maxlength="60">
-        ${online ? `<label for="ap">Pincode (4 cijfers)</label><input id="ap" required inputmode="numeric" maxlength="4" pattern="[0-9]{4}" type="password">
+        ${online ? `<label for="ap">Pincode (4 cijfers)</label><input id="ap" required type="text" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="off" class="pinvak">
         <p style="font-size:12px;color:var(--grijs);margin:6px 0 0">De eerste keer kies je zelf een pincode.<br>Onthoud hem goed!</p>` : `<p style="font-size:12px;color:var(--grijs)">Oefenmodus: je werk wordt op deze computer bewaard.</p>`}
         <button class="knop hoofd" type="submit">Start</button><div class="melding" id="am"></div></form>`;
       document.body.appendChild(div);

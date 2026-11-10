@@ -22,8 +22,9 @@ Het werk van leerlingen wordt opgeslagen in Supabase. De docent ziet per opdrach
 2. Open in Supabase de **SQL Editor**, plak `supabase-setup.sql` en klik op **Run**.
 3. Zet bij **Project Settings → API** de Project URL en de publishable key in `config.js`.
 4. Zet alle bestanden in een nieuwe GitHub-repository en zet **GitHub Pages** aan (branch `main`, map `/root`).
-5. Open `docent.html`, maak een account en daarna een klas. Je krijgt een klascode.
-6. Tip: zet daarna in Supabase bij **Authentication → Sign In / Providers** "Allow new users to sign up" uit, zodat alleen jij een account hebt.
+5. Zet in Supabase bij **Authentication → URL Configuration** de Site URL op het adres van docent.html op GitHub Pages.
+6. Open `docent.html`, vul je e-mailadres in en klik op de link in je mail. Maak daarna een klas. Je krijgt een klascode.
+7. Tip: zet daarna in Supabase bij **Authentication → Sign In / Providers** "Allow new users to sign up" uit, zodat alleen jij een account hebt.
 
 ## Leerlingen
 
