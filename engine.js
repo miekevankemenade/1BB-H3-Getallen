@@ -27,8 +27,16 @@
       .replace(/\{f:(\d*)\/(\d*)\}/g, ' hokje ')
       .replace(/\{[nf]\}/g, ' hokje ')
       .replace(/\*\*/g, '')
-      .replace(/×/g, ' keer ').replace(/:/g, ' gedeeld door ')
-      .replace(/€/g, ' euro ');
+      .replace(/(\d)\s*:\s*(\d)/g, '$1 gedeeld door $2')
+      .replace(/(\d)\s*×\s*(\d)/g, '$1 keer $2').replace(/×/g, ' keer ')
+      .replace(/(\d)\s*[−-]\s*(\d)/g, '$1 min $2')
+      .replace(/(\d)\s*\+\s*(\d)/g, '$1 plus $2')
+      .replace(/\s=\s/g, ' is ')
+      .replace(/€\s*(\d+)/g, '$1 euro').replace(/€/g, ' euro ')
+      .replace(/→/g, ', ')
+      .replace(/\.\.\./g, ' ... ')
+      .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B50}\u{FE0F}]/gu, '')
+      .replace(/\s+/g, ' ').trim();
   }
   /* Tekst met [a/b] en **vet** naar HTML */
   function opmaak(t) {
@@ -39,11 +47,29 @@
 
   /* ---------------- Voorlezen ---------------- */
   const Stem = {
-    tempo: 0.9, aan: true, stem: null,
+    tempo: 0.95, aan: true, stem: null, lijst: [],
+    /* Kies de meest natuurlijke Nederlandse stem die de browser heeft.
+       Edge heeft "Natural"-stemmen (Fenna, Colette, Maarten): die klinken het echtst. */
+    score(v) {
+      let s = 0;
+      if (/^nl[-_]NL/i.test(v.lang)) s += 30; else if (/^nl/i.test(v.lang)) s += 20; else return -1;
+      if (/natural/i.test(v.name)) s += 50;
+      if (/online/i.test(v.name)) s += 20;
+      if (/google/i.test(v.name)) s += 15;
+      if (/fenna|colette|maarten|dena|arnaud/i.test(v.name)) s += 5;
+      if (!v.localService) s += 3;
+      return s;
+    },
     kies() {
       if (!('speechSynthesis' in window)) return;
-      const v = speechSynthesis.getVoices();
-      this.stem = v.find(x => /nl[-_]NL/i.test(x.lang) && /google/i.test(x.name)) || v.find(x => /nl[-_]NL/i.test(x.lang)) || v.find(x => /^nl/i.test(x.lang)) || null;
+      this.lijst = speechSynthesis.getVoices().filter(v => this.score(v) >= 0).sort((a, b) => this.score(b) - this.score(a));
+      let bewaard = null; try { bewaard = localStorage.getItem('wiskunde_stem'); } catch (e) { }
+      this.stem = this.lijst.find(v => v.name === bewaard) || this.lijst[0] || null;
+      const sel = document.getElementById('stemkeuze');
+      if (sel) {
+        sel.innerHTML = this.lijst.map(v => `<option value="${esc(v.name)}">${esc(v.name.replace(/Microsoft |Online |\(Natural\)|- Dutch.*|\(.*?\)/g, '').trim() || v.name)}${/natural/i.test(v.name) ? ' ★' : ''}</option>`).join('') || '<option>geen stem</option>';
+        if (this.stem) sel.value = this.stem.name;
+      }
     },
     stop() { if ('speechSynthesis' in window) speechSynthesis.cancel(); },
     /* Geeft een Promise die klaar is als de zin is uitgesproken. */
@@ -860,6 +886,8 @@
     RM.maak();
     $('#rmknop').onclick = () => RM.wissel();
     $('#tempo').onchange = e => { Stem.tempo = +e.target.value; };
+    $('#stemkeuze').onchange = e => { Stem.stem = Stem.lijst.find(v => v.name === e.target.value) || Stem.stem; try { localStorage.setItem('wiskunde_stem', e.target.value); } catch (x) { } Stem.stop(); Stem.zeg('Hallo! Zo klink ik.', true); };
+    Stem.kies();
     $('#tempo').value = String(Stem.tempo);
     const remote = await aanmeldScherm();
     const lokaal = opslag.laadLokaal();
