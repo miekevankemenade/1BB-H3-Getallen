@@ -22,6 +22,6 @@ jobs:
           rsync -a --exclude '.git' --exclude '.github' --exclude 'site' ./ site/
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Naar Netlify
         run: npx --yes netlify-cli@27 deploy --dir=site --prod --message "GitHub ${GITHUB_SHA::7}"
