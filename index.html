@@ -21,12 +21,13 @@
 <main class="pagina">
   <p class="regel">Kies de paragraaf waar je mee aan de slag gaat.</p>
   <div class="tegels" id="tegels"></div>
-  <p class="voetnoot">Oefenapp wiskunde voor leerlingen van 1 Basis (VMBO).<br>Gemaakt door hun docent wiskunde.<br>Je vult alleen je naam, de klascode van je docent en een zelfgekozen pincode in.</p>
+  <p class="voetnoot">Oefenapp wiskunde voor leerlingen van 1 Basis (VMBO).<br>Gemaakt door hun docent wiskunde.<br>Je vult je naam en een zelfgekozen pincode in.</p>
 </main>
 <script src="paragrafen/lijst.js"></script>
 <script>
   document.getElementById('tegels').innerHTML = window.PARAGRAFEN.map(function (p) {
-    return '<a class="tegel" href="oefen.html?p=' + p.code + '"><span>' + p.klas + ' · ' + p.hoofdstuk + '</span><b>' + p.titel + '</b><span>Uitleg, opdrachten en mini-toets</span></a>';
+    var klas = new URLSearchParams(location.search).get('klas');
+    return '<a class="tegel" href="oefen.html?p=' + p.code + (klas ? '&klas=' + encodeURIComponent(klas) : '') + '"><span>' + p.klas + ' · ' + p.hoofdstuk + '</span><b>' + p.titel + '</b><span>Uitleg, opdrachten en mini-toets</span></a>';
   }).join('');
 </script>
 </body>

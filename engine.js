@@ -815,10 +815,12 @@
   function aanmeldScherm() {
     return new Promise(res => {
       const online = opslag.online();
+      // Klascode in de link (bijv. ?klas=BREUK7): leerlingen hoeven hem dan niet te typen.
+      const linkKlas = (new URLSearchParams(location.search).get('klas') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
       const div = document.createElement('div'); div.className = 'scherm';
       div.innerHTML = `<form class="aanmeldkaart" id="aanmeldform" autocomplete="off">
         <h2>${esc(P.titel)}</h2><p style="margin:0;color:var(--grijs);font-size:13px">${esc(P.klas)}</p>
-        ${online ? `<label for="ak">Klascode</label><input id="ak" required maxlength="12" style="text-transform:uppercase">` : ''}
+        ${online && !linkKlas ? `<label for="ak">Klascode</label><input id="ak" required maxlength="12" style="text-transform:uppercase">` : ''}
         <label for="an">Je voornaam en achternaam</label><input id="an" required maxlength="60">
         ${online ? `<label for="ap">Pincode (4 cijfers)</label><input id="ap" required type="text" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="off" class="pinvak">
         <p style="font-size:12px;color:var(--grijs);margin:6px 0 0">De eerste keer kies je zelf een pincode.<br>Onthoud hem goed!</p>` : `<p style="font-size:12px;color:var(--grijs)">Oefenmodus: je werk wordt op deze computer bewaard.</p>`}
@@ -826,13 +828,13 @@
       document.body.appendChild(div);
       const vorige = (() => { try { return JSON.parse(localStorage.getItem('wiskunde_leerling') || '{}'); } catch (e) { return {}; } })();
       if (vorige.naam) $('#an').value = vorige.naam;
-      if (online && vorige.klascode) $('#ak').value = vorige.klascode;
+      if (online && !linkKlas && vorige.klascode) $('#ak').value = vorige.klascode;
       $('#aanmeldform').onsubmit = async e => {
         e.preventDefault();
         Leerling.naam = $('#an').value.trim().replace(/\s+/g, ' ');
         if (Leerling.naam.length < 2) { $('#am').textContent = 'Vul je naam in.'; return; }
         if (!online) { div.remove(); return res(null); }
-        Leerling.klascode = $('#ak').value.trim().toUpperCase().replace(/\s/g, '');
+        Leerling.klascode = linkKlas || $('#ak').value.trim().toUpperCase().replace(/\s/g, '');
         Leerling.pin = $('#ap').value.trim();
         $('#am').textContent = 'Even geduld...';
         try {
