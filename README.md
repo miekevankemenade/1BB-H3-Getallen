@@ -1,45 +1,52 @@
-# Wiskunde oefenapps – 1 Basis
+# 1BB H3 Getallen – § 3.3 Breuken (VMBO Basis)
 
-Oefenapp voor VMBO Basis met geanimeerde uitleg, opdrachten, hints, rekenmachine, voorleesstem en een mini-toets.
-Het werk van leerlingen wordt opgeslagen in Supabase. De docent ziet per opdracht wat leerlingen fout doen.
+Oefenapp voor klas 1BB bij paragraaf 3.3 *Breuken*.
+De app is gebouwd in hetzelfde format als *2BB H2 – oefenen voor de toets*.
 
-## Bestanden
+## Wat zit erin?
 
-| Bestand | Wat doet het |
+| Bestand | Wat is het? |
 |---|---|
-| `index.html` | Startpagina met alle paragrafen |
-| `oefen.html?p=3-3` | De oefenapp voor één paragraaf |
-| `docent.html` | Docentenoverzicht: resultaten per klas en foutenanalyse |
-| `engine.js`, `figuren.js`, `stijl.css` | De werking en de huisstijl (hoef je niet te veranderen) |
-| `paragrafen/3-3.js` | De inhoud van § 3.3 Breuken |
-| `paragrafen/lijst.js` | Lijst van alle paragrafen |
-| `config.js` | Adres en sleutel van je Supabase-project |
-| `supabase-setup.sql` | Maakt de tabellen in de database |
+| `index.html` | De app voor leerlingen. |
+| `docent.html` | De pagina waar jij de resultaten bekijkt. |
+| `config.js` | De Supabase-gegevens en de naam van deze app (`MODULE`). |
+| `videos/` | De twee theoriefilmpjes (mp4, Vlaamse stem). |
+| `supabase.sql` | Script voor de tabellen (bestaan al in het project). |
 
-## Eenmalig instellen
+**Tabbladen**
+- **Wat is een breuk?** – filmpje, opdracht 1 t/m 3 (teller en noemer, prijs van een deel)
+- **Welk deel is gekleurd?** – filmpje, opdracht 4 t/m 9 (breuk aflezen uit een figuur)
+- **Zelf kleuren** – opdracht 10 en 11 (een deel van een figuur kleuren)
+- **Extra oefenen** – opdracht 12a t/m 12h
+- **Oefentoets** – 20 vragen uit de app, zonder hints en met één poging
 
-1. Maak op supabase.com een nieuw project (gratis).
-2. Open in Supabase de **SQL Editor**, plak `supabase-setup.sql` en klik op **Run**.
-3. Zet bij **Project Settings → API** de Project URL en de publishable key in `config.js`.
-4. Zet alle bestanden in een nieuwe GitHub-repository en zet **GitHub Pages** aan (branch `main`, map `/root`).
-5. Zet in Supabase bij **Authentication → URL Configuration** de Site URL op het adres van docent.html op GitHub Pages.
-6. Open `docent.html`, vul je e-mailadres in en klik op de link in je mail. Maak daarna een klas. Je krijgt een klascode.
-7. Tip: zet daarna in Supabase bij **Authentication → Sign In / Providers** "Allow new users to sign up" uit, zodat alleen jij een account hebt.
+**Eerst de uitleg:** een leerling kan pas verder met de opdrachten als hij het filmpje helemaal heeft bekeken.
 
-## Leerlingen
+**Soorten vragen:** getal, meerkeuze, stappen, breuk invullen (teller en noemer) en zelf kleuren (klik op de stukken van een figuur).
+Bij breuken telt een gelijkwaardige breuk ook als goed (bijvoorbeeld 3/5 bij 6/10), behalve bij 10c.
 
-Leerlingen openen `index.html`, kiezen de paragraaf en vullen in: klascode, naam en een zelfgekozen pincode van 4 cijfers.
-De volgende les gaan ze verder waar ze waren. Pincode vergeten? Klik in het docentenoverzicht op 🔑.
+**Punten:** 2 punten als het in één keer goed is; 1 punt bij de 2e poging of na een hint; 0 punten daarna.
+**Cijfer:** (punten ÷ totaal × 9) + 1.
 
-## Een paragraaf toevoegen
+Alle teksten, getallen en figuren zijn zelf gemaakt.
+Ze volgen de leerdoelen van de methode, maar zijn er geen kopie van.
 
-1. Kopieer `paragrafen/3-3.js` naar bijvoorbeeld `paragrafen/3-4.js`.
-2. Verander `id`, `titel`, de figuren en de onderdelen.
-3. Zet een regel erbij in `paragrafen/lijst.js`.
-De paragraaf verschijnt dan vanzelf op de startpagina en in het docentenoverzicht.
+## Online zetten
 
-## Punten
+De app staat op Netlify. Elke wijziging in deze repository komt daar vanzelf online als Netlify aan GitHub gekoppeld is.
+Anders sleep je de bestanden naar Netlify (Deploys).
 
-- 2 punten: in één keer goed, zonder hint.
-- 1 punt: goed na een hint of na een fout.
-- 0 punten: na 4 fouten. De app laat dan stap voor stap zien hoe het moet.
+## Docentenpagina
+
+Open `docent.html` en vul je e-mailadres in.
+Je krijgt een inloglink in je mail.
+Er is geen wachtwoord meer op de pagina.
+Alleen e-mailadressen in de tabel `docenten` kunnen inloggen.
+
+Het adres van `docent.html` moet in Supabase staan bij **Authentication → URL Configuration → Redirect URLs**.
+
+## Supabase
+
+Deze app gebruikt hetzelfde Supabase-project als je andere oefenapps.
+De kolom `module` (`1BB H3 Getallen – § 3.3 Breuken`) laat zien bij welke app een resultaat hoort.
+Op de docentenpagina kies je bovenaan bij **App** welke app je wilt zien.

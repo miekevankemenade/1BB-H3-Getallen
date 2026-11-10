@@ -1,34 +1,1749 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wiskunde 1 Basis – oefenapp</title>
-<meta name="description" content="Oefenapp wiskunde voor leerlingen van 1 Basis (VMBO): uitleg, opdrachten en mini-toetsen.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>§ 3.3 Breuken – 1BB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="stijl.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600;1,700&display=swap">
 <style>
-  .tegels{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:16px}
-  .tegel{background:#fff;border:2px solid var(--lijn);border-radius:14px;padding:16px;text-decoration:none;color:var(--tekst);display:block}
-  .tegel:hover{border-color:var(--roze)}
-  .tegel b{display:block;font-size:18px;color:var(--paars)}
-  .tegel span{font-size:13px;color:var(--grijs)}
+:root{
+  --roze:#E924D5; --paars:#5E0696; --cyaan:#45EDFF;
+  --bg:#FBF7FE; --vlak:#FFFFFF; --lijn:#E6D8F2; --tekst:#2A0A46; --zacht:#6B5A80;
+  --goed:#16965A; --fout:#E21E2D; --roze-licht:#FCE6FA; --paars-licht:#F1E6FA; --cyaan-licht:#DDFBFF;
+  --font:'Montserrat', 'Segoe UI', Arial, sans-serif;
+}
+*{box-sizing:border-box}
+.app>*{min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--tekst);font-family:var(--font);font-size:10pt;line-height:1.5}
+button,input,select{font-family:inherit;font-size:inherit}
+i,.var{font-style:italic;font-weight:600}
+.app{display:grid;grid-template-rows:auto auto 1fr auto;height:100vh;height:100dvh}
+/* ---------- kop ---------- */
+header{background:var(--paars);color:#fff;padding:10px max(16px,env(safe-area-inset-left)) 10px max(16px,env(safe-area-inset-right));display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-bottom:5px solid var(--roze)}
+header h1{font-size:18px;margin:0;font-weight:800;letter-spacing:.2px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:20px;padding:6px 14px;font-weight:600;font-size:14px;cursor:pointer}
+.tab.actief{background:var(--cyaan);color:var(--paars)}
+.kop-rechts{margin-left:auto;display:flex;gap:10px;align-items:center;font-size:14px}
+.kop-rechts .naam{opacity:.85}
+.knop-klein{background:var(--roze);color:#fff;border:0;border-radius:20px;padding:6px 14px;font-weight:700;cursor:pointer;font-size:14px}
+/* ---------- strook met onderdelen ---------- */
+.strook{display:flex;gap:6px;overflow-x:auto;padding:8px 16px;background:var(--vlak);border-bottom:1px solid var(--lijn)}
+.stip{flex:0 0 auto;min-width:44px;height:32px;border-radius:16px;border:2px solid var(--lijn);background:var(--vlak);color:var(--tekst);font-weight:700;font-size:13px;cursor:pointer;padding:0 8px}
+.stip.theorie{border-color:var(--cyaan);background:var(--cyaan-licht)}
+.stip.goed2{background:var(--goed);border-color:var(--goed);color:#fff}
+.stip.goed1{background:#7cc9a3;border-color:#7cc9a3;color:#fff}
+.stip.goed0{background:#f3b6bb;border-color:#f3b6bb}
+.stip.bezig{border-color:var(--roze)}
+.stip.ingeleverd{background:var(--paars-licht);border-color:var(--paars);color:var(--paars)}
+.tab.toets{background:var(--roze)}.tab.toets.actief{background:var(--cyaan);color:var(--paars)}
+.toetsregel{display:flex;gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--lijn)}
+.toetsregel .tk{font-weight:800;width:1.4em}.toetsregel .tk.g{color:var(--goed)}.toetsregel .tk.f{color:var(--fout)}
+.toets-let{background:var(--roze-licht);border-radius:12px;padding:8px 12px;font-weight:600;color:var(--paars);margin:6px 0 10px}
+.stip.huidig{outline:3px solid var(--paars);outline-offset:1px}
+/* ---------- hoofdvlak ---------- */
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:0}
+.links,.rechts{min-height:0;overflow:auto;padding:22px max(16px,env(safe-area-inset-left)) 22px 24px}
+.links{background:var(--vlak);border-right:1px solid var(--lijn);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.rechts{padding-right:max(24px,env(safe-area-inset-right))}
+.lees-balk{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0 10px}
+.lees{border:2px solid var(--paars);background:#fff;color:var(--paars);border-radius:22px;padding:7px 16px;font-weight:700;cursor:pointer;font-size:15px}
+.lees.bezig{background:var(--paars);color:#fff}
+.lees-mini{border:0;background:transparent;cursor:pointer;font-size:18px;padding:0 4px;vertical-align:middle}
+.tempo{border:0;background:var(--paars-licht);color:var(--paars);border-radius:18px;padding:6px 12px;font-weight:600;cursor:pointer;font-size:13px}
+.leest{background:var(--cyaan-licht);border-radius:6px;box-shadow:0 0 0 4px var(--cyaan-licht)}
+.label-domein{display:inline-block;font-size:12px;font-weight:600;color:var(--paars);background:var(--paars-licht);border-radius:12px;padding:3px 10px;margin-bottom:10px}
+.opdr-nr{display:flex;align-items:baseline;gap:12px;margin:0 0 8px}
+.opdr-nr b{font-size:34px;font-weight:800;color:var(--roze);line-height:1}
+.opdr-nr span{font-size:13pt;font-weight:700;color:var(--paars)}
+.zin{display:block;margin-bottom:2px}
+.formuleregel{font-size:12pt;font-weight:600;color:var(--paars);margin:6px 0}
+.blok{margin-bottom:18px}
+.vraag{font-weight:600;color:var(--paars)}
+.witregel{height:18px}
+/* invoer */
+.antw-rij{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0}
+input.inv{border:2px solid var(--lijn);border-radius:10px;padding:10px 12px;min-width:0;width:200px;background:#fff;color:var(--tekst)}
+input.inv:focus{outline:none;border-color:var(--roze);box-shadow:0 0 0 3px var(--roze-licht)}
+input.inv.breed{width:min(100%,360px)}
+input.inv.goed{border-color:var(--goed);background:#eaf8f1}
+input.inv.fout{border-color:var(--fout);background:#fdeced}
+.knoppen{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.knop{border:0;border-radius:24px;padding:11px 22px;font-weight:700;cursor:pointer}
+.knop:focus-visible,.tab:focus-visible,.stip:focus-visible,.optie:focus-visible{outline:3px solid var(--cyaan);outline-offset:2px}
+.knop.hoofd{background:var(--roze);color:#fff}
+.knop.paars{background:var(--paars);color:#fff}
+.knop.licht{background:var(--paars-licht);color:var(--paars)}
+.knop:disabled{opacity:.45;cursor:default}
+.feedback{margin-top:14px;padding:12px 16px;border-radius:12px;font-weight:600;display:none}
+.feedback.goed{display:block;background:#eaf8f1;color:var(--goed)}
+.feedback.fout{display:block;background:#fdeced;color:var(--fout)}
+.feedback.info{display:block;background:var(--cyaan-licht);color:var(--paars)}
+.hintvak{margin-top:12px;padding:12px 16px;border-radius:12px;background:var(--roze-licht);color:var(--tekst);display:none}
+.hintvak.open{display:block}
+.hintvak b{color:var(--roze)}
+.pogingen{font-size:13px;color:var(--zacht);margin-top:10px}
+/* meerkeuze */
+.opties{display:grid;gap:10px;margin:12px 0}
+.optie{text-align:left;border:2px solid var(--lijn);background:#fff;border-radius:12px;padding:11px 14px;cursor:pointer;color:var(--tekst)}
+.optie.gekozen{border-color:var(--roze);background:var(--roze-licht)}
+.optie.goed{border-color:var(--goed);background:#eaf8f1}
+.optie.fout{border-color:var(--fout);background:#fdeced}
+/* tabellen: altijd helemaal zichtbaar, geen schuifbalk */
+.tabel-wrap{max-width:100%;overflow:visible}
+table.wt{border-collapse:collapse;margin:8px 0;font-variant-numeric:tabular-nums;width:100%;max-width:640px;table-layout:fixed}
+table.wt th,table.wt td{padding:6px 3px;text-align:center;min-width:0}
+table.wt th{font-weight:600}
+table.wt tr:first-child>*{border-bottom:2px solid var(--paars)}
+table.wt th:first-child,table.wt td:first-child{border-right:2px solid var(--paars);text-align:left;padding-right:8px;width:7.5em;white-space:normal;line-height:1.25}
+table.wt td+td,table.wt th+th{border-left:1px solid var(--paars)}
+table.wt input{width:100%;max-width:64px;min-width:0;text-align:center;border:2px solid var(--lijn);border-radius:8px;padding:6px 1px}
+table.wt input.goed{border-color:var(--goed);background:#eaf8f1}
+table.wt input.fout{border-color:var(--fout);background:#fdeced}
+table.wt.kort th:first-child,table.wt.kort td:first-child{width:3em}
+@media (max-width:520px){table.wt{font-size:14px} table.wt.kort th:first-child,table.wt.kort td:first-child{width:2.2em} table.wt th:first-child,table.wt td:first-child{width:5.2em;padding-right:4px} table.wt input{font-size:14px;padding:5px 0;border-radius:6px}}
+.bron{background:var(--bg);border:2px solid var(--lijn);border-radius:14px;padding:10px 12px;margin:10px 0}
+.bron-kop{font-weight:700;color:var(--roze);font-size:14px;margin-bottom:2px}
+.bron-tabel td{padding:3px 2px}
+.zet-uit-tabel{width:100%;max-width:64px;border:2px solid var(--lijn);background:#fff;border-radius:8px;padding:5px 0;font-weight:700;color:var(--tekst);cursor:pointer;font-family:inherit;font-size:inherit}
+.zet-uit-tabel:hover{border-color:var(--roze)}
+.zet-uit-tabel.gezet{background:var(--paars);border-color:var(--paars);color:#fff}
+td.leeg{color:var(--zacht)}
+.bron-let{font-size:13px;color:var(--fout);margin-top:4px}
+.knop-tekst{border:0;background:none;color:var(--paars);font-weight:700;text-decoration:underline;cursor:pointer;font-family:inherit;font-size:inherit;padding:0}
+.gegeven{font-weight:700;color:var(--paars)}
+/* stappen */
+.stappen{display:grid;gap:10px;margin:12px 0}
+.stap{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.stap .lab{min-width:170px;font-weight:600}
+.stap input{width:120px}
+.formulestap{font-size:12pt;font-weight:600;color:var(--paars);gap:6px}
+.stap.start{font-size:12pt;font-weight:600;color:var(--paars);margin-top:8px}
+input.inv.vak{width:68px;text-align:center;font-size:10pt;padding:6px 4px}
+.stap select{border:2px solid var(--lijn);border-radius:10px;padding:9px 10px;background:#fff}
+/* visueel links */
+.kaart{background:var(--bg);border:2px solid var(--lijn);border-radius:18px;padding:22px 26px;max-width:100%}
+.kaart.formule{font-size:14pt;font-weight:600;color:var(--paars);text-align:center}
+.kaart .kl{font-size:14px;font-weight:700;color:var(--roze);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.formulelijst{display:grid;gap:6px;font-size:13pt;color:var(--paars);font-weight:600}
+.formulelijst .nr{color:var(--roze);font-weight:800;margin-right:10px}
+svg.graf{width:100%;max-width:560px;height:auto;touch-action:manipulation;user-select:none}
+main.groot{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+main.groot .links{padding:12px 16px;gap:6px;justify-content:center}
+main.groot svg.graf{max-width:900px;max-height:calc(100vh - 200px);max-height:calc(100dvh - 200px)}
+main.groot .links:has(.bron-boven) svg.graf{max-height:calc(100vh - 290px);max-height:calc(100dvh - 290px)}
+.bron-boven{width:100%;max-width:640px}
+.bron-boven .bron{margin:0;padding:6px 10px}
+.bron-boven .bron-kop{font-size:13px}
+.bron-boven table.wt{font-size:14px;margin:2px 0}
+.bron-boven table.wt th,.bron-boven table.wt td{padding:3px 2px}
+.links .graf-uitleg{font-size:13px}
+main.groot.werk{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+main.groot.werk .links{justify-content:flex-start}
+main.groot.werk svg.graf{flex:none;max-width:1500px;max-height:calc(100vh - 140px);max-height:calc(100dvh - 140px)}
+main.groot.werk .links:has(.bron-boven) svg.graf{max-height:calc(100vh - 140px);max-height:calc(100dvh - 140px)}
+@media (max-width:860px){main.groot.werk{grid-template-columns:1fr}main.groot.werk svg.graf{max-height:none}}
+@media (max-width:860px){main.groot{grid-template-columns:1fr}main.groot svg.graf{max-height:none}}
+svg.graf .klik{cursor:crosshair}
+.as-wrap{position:relative;aspect-ratio:560/440;width:min(100%,640px,calc((100vh - 230px) * 560 / 440));width:min(100%,640px,calc((100dvh - 230px) * 560 / 440));container-type:inline-size;flex:none}
+.as-wrap svg.graf{display:block;width:100%;height:100%;max-width:none!important;max-height:none!important}
+input.asvak{position:absolute;width:9.5%;height:6.2%;min-height:0;padding:0 1px;font-size:2.7cqw;font-weight:600;text-align:center;border:2px solid var(--roze);border-radius:6px;background:#fff;color:var(--tekst);font-family:inherit}
+input.asvak:focus{outline:none;box-shadow:0 0 0 3px var(--roze-licht)}
+input.asvak.goed{border-color:var(--goed);background:#eaf8f1} input.asvak.fout{border-color:var(--fout);background:#fdeced}
+@media (max-width:860px){.as-wrap{width:100%}}
+#puntMelding{min-height:2.9em;display:flex;align-items:center;justify-content:center}
+.graf-knoppen{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.knop.gum{display:inline-flex;align-items:center;gap:6px}
+.knop.gum[aria-pressed="true"]{background:var(--roze);border-color:var(--roze);color:#fff}
+.knop.gum[aria-pressed="true"] svg path.vul{fill:#fff}
+svg.graf.gum-aan{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'%3E%3Cpath d='M16.2 3.6a2 2 0 0 1 2.8 0l3.4 3.4a2 2 0 0 1 0 2.8L12 20.2H7.4L2.6 15.4a2 2 0 0 1 0-2.8z' fill='%23E924D5' stroke='%235E0696' stroke-width='1.2'/%3E%3C/svg%3E") 4 22,pointer}
+.graf-uitleg{font-size:14px;color:var(--zacht);text-align:center;max-width:520px}
+video{width:100%;max-width:820px;border-radius:14px;background:#000;box-shadow:0 8px 30px rgba(94,6,150,.18)}
+.theorie-tekst{background:var(--cyaan-licht);border-radius:16px;padding:18px 20px;margin:12px 0}
+.theorie-tekst b{color:var(--paars)}
+/* voet */
+footer{display:flex;gap:10px;align-items:center;padding:10px max(16px,env(safe-area-inset-left)) 10px max(16px,env(safe-area-inset-right));background:var(--vlak);border-top:1px solid var(--lijn)}
+footer .spacer{flex:1}
+.voortgang{font-size:14px;color:var(--zacht);font-weight:600}
+/* overlay */
+.overlay{position:fixed;inset:0;background:rgba(42,10,70,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+.overlay[hidden]{display:none!important}
+.ov-doos{background:#fff;border-radius:20px;max-width:760px;width:100%;max-height:90vh;overflow:auto;padding:26px 28px;border-top:8px solid var(--cyaan)}
+.ov-doos h2{margin:0 0 6px;color:var(--paars)}
+.ov-stap{opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s;padding:10px 14px;border-radius:12px;background:var(--bg);margin:8px 0;font-size:20px;font-weight:600}
+.ov-stap.zichtbaar{opacity:1;transform:none}
+.ov-stap .nr{display:inline-block;width:28px;height:28px;border-radius:50%;background:var(--roze);color:#fff;text-align:center;line-height:28px;font-size:14px;margin-right:10px}
+/* start en eind */
+.scherm{min-height:0;overflow:auto;width:100%;max-width:860px;margin:0 auto;padding:30px max(16px,env(safe-area-inset-left)) 40px max(16px,env(safe-area-inset-right))}
+.scherm h2{color:var(--paars);font-size:30px;margin:0 0 8px}
+.cijfer{font-size:64px;font-weight:800;color:var(--roze);line-height:1}
+.tegels{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:18px 0}
+.tegel{background:#fff;border:2px solid var(--lijn);border-radius:16px;padding:14px 16px}
+.tegel .k{font-size:13px;color:var(--zacht);font-weight:600}
+.tegel .w{font-size:26px;font-weight:800;color:var(--paars)}
+.pil{display:inline-block;padding:3px 12px;border-radius:12px;font-weight:700;font-size:14px}
+.pil.laag{background:#eaf8f1;color:var(--goed)} .pil.gemiddeld{background:#fff4d6;color:#9a6a00} .pil.hoog{background:#fdeced;color:var(--fout)}
+.analyse{background:#fff;border:2px solid var(--lijn);border-radius:16px;padding:16px 18px;margin:14px 0}
+.analyse li{margin:4px 0}
+pre.export{white-space:pre-wrap;background:var(--paars-licht);border-radius:12px;padding:14px;font-size:14px;max-height:280px;overflow:auto}
+.status{font-size:14px;font-weight:600;margin-top:8px}
+.code{font-family:'Courier New',monospace;font-size:20px;letter-spacing:2px;color:var(--roze)}
+.code-groot{font-family:'Courier New',monospace;font-size:44px;font-weight:700;letter-spacing:6px;color:var(--paars);background:var(--cyaan-licht);border-radius:14px;text-align:center;padding:16px;margin:12px 0}
+.startkeuze{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.startkeuze[hidden]{display:none!important}
+@media (max-width:860px){
+  main{grid-template-columns:1fr;grid-template-rows:auto auto}
+  .app{height:auto;min-height:100vh}
+  .links,.rechts{overflow:visible;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+  .links{border-right:0;border-bottom:1px solid var(--lijn)}
+  .stap .lab{min-width:0}
+}
+/* rekenmachine (examenmodel) */
+.rm{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(76px + env(safe-area-inset-bottom));width:330px;max-width:calc(100vw - 24px);max-height:calc(100vh - 20px);overflow:auto;background:#555;border:1px solid #333;border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.35);z-index:40;touch-action:none;font-family:Arial,Helvetica,sans-serif}
+.rm[hidden]{display:none!important}
+@media (min-width:861px){.rm{right:auto;left:max(16px,env(safe-area-inset-left))}}
+.rm-kop{display:flex;align-items:center;gap:10px;cursor:move;background:#fff;border-bottom:3px solid var(--paars);padding:8px 12px;border-radius:14px 14px 0 0;font-weight:700;color:var(--paars);font-size:20px;user-select:none;font-family:var(--font)}
+.rm-kop .pijlknop{margin-left:0;border:0;width:auto;height:auto;font-size:14px;padding:2px 6px}
+.rm.ingeklapt .rm-lijf{display:none}
+.rm-kop button{margin-left:auto;border:2px solid var(--paars);background:#fff;color:var(--paars);border-radius:4px;width:30px;height:30px;font-weight:800;font-size:16px;cursor:pointer;line-height:1}
+.rm-lijf{padding:10px 12px 14px}
+.rm-lcd{background:#e9e985;border:3px solid #333;border-radius:10px;height:112px;padding:6px 10px;display:flex;flex-direction:column;justify-content:space-between;color:#111;font-family:'Courier New',monospace;box-shadow:inset 0 2px 6px rgba(0,0,0,.25)}
+.rm-ind{display:flex;gap:10px;font-size:11px;font-weight:700;min-height:13px;font-family:Arial,sans-serif}
+.rm-in{font-size:19px;white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;direction:ltr;cursor:text;min-height:26px;padding:2px 0}
+.rm-in::-webkit-scrollbar{display:none}
+.rm-in .tk{padding:0 0.5px}
+.rm-in .tk:hover{background:rgba(0,0,0,.08);border-radius:3px}
+.rm-uit.oud{opacity:.35}
+.rm-tip{font-size:11px;color:#ddd;margin-top:5px;font-family:var(--font)}
+.rm-in .caret{display:inline-block;width:2px;height:20px;background:#111;vertical-align:middle;animation:knipper 1s steps(1) infinite}
+@keyframes knipper{50%{opacity:0}}
+.rm-uit{font-size:26px;font-weight:700;text-align:right;white-space:nowrap;overflow:hidden;display:flex;justify-content:flex-end;align-items:center;min-height:36px}
+.breuk{display:inline-flex;flex-direction:column;align-items:center;font-size:18px;line-height:1.05;vertical-align:middle;margin:0 2px}
+.breuk span:first-child{border-bottom:2px solid #111;padding:0 3px}
+.rm-in sup{font-size:12px}
+.rm-modus{display:flex;gap:18px;margin:8px 2px 6px;color:#fff;font-weight:700;font-size:16px}
+.rm-modus label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.rm-modus input{width:22px;height:22px;accent-color:#1e6cff;margin:0}
+.rm-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px 6px}
+.rm-lbl{font-size:10px;color:#f0a830;text-align:center;align-self:end;min-height:12px;font-weight:700}
+.rm-grid button{border:0;border-radius:4px;padding:8px 0;font-size:17px;font-weight:700;cursor:pointer;background:#ddd;color:#111;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25);font-family:'Times New Roman',serif}
+.rm-grid button:active{transform:translateY(1px);box-shadow:none}
+.rm-grid button.cijfer{background:#2a2a2a;color:#fff;font-size:24px;padding:6px 0;font-family:Arial,sans-serif}
+.rm-grid button.rood{background:#c0201e;color:#fff;font-family:Arial,sans-serif}
+.rm-grid button.blauw{background:#2f7dc0;color:#fff;font-size:24px}
+.rm-grid button.ans{background:#8a8a8a;color:#222;font-family:Arial,sans-serif}
+.rm-grid button.inv{background:#e39a12;color:#111;font-family:Arial,sans-serif}
+.rm-grid button.inv.aan{background:#ffcf4a;outline:3px solid #fff}
+.rm-grid button.sym{font-family:Arial,sans-serif}
+.rm-tussen{grid-column:1/-1;height:6px}
+@media (max-width:520px),(max-height:820px){.rm{width:280px}.rm-kop{font-size:16px;padding:6px 10px}.rm-lijf{padding:8px 10px 10px}.rm-lcd{height:88px}.rm-in{font-size:16px}.rm-uit{font-size:21px;min-height:28px}.rm-modus{font-size:13px;margin:5px 2px 3px}.rm-modus input{width:16px;height:16px}.rm-grid{gap:5px 5px}.rm-grid button{padding:5px 0;font-size:14px}.rm-grid button.cijfer,.rm-grid button.blauw{font-size:19px;padding:4px 0}.rm-lbl{font-size:9px;min-height:10px}}
+.rm-grid button.kopieer{grid-column:1/-1;background:#fff;color:var(--paars);font-family:var(--font);font-size:15px;padding:9px 0;margin-top:4px}
+.rm-melding{color:#fff;font-size:13px;min-height:18px;margin-top:6px;font-family:var(--font)}
+.berekeningen{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.berekening{font-family:'Courier New',monospace;font-size:14px;background:#fff;border:2px solid var(--lijn);border-radius:6px;padding:3px 8px}
+.rm{cursor:move}.rm button,.rm input,.rm label,.rm-lcd{cursor:pointer}.rm-lcd{cursor:text}
+.knop-klein.rm-knop{background:var(--cyaan);color:var(--paars)}
+@media (prefers-reduced-motion:reduce){.ov-stap{transition:none}}
+/* ---- breuken ---- */
+.breuk{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 3px;font-weight:700;font-size:.95em}
+.breuk .t{border-bottom:2px solid currentColor;padding:0 3px}
+.breuk .n{padding:0 3px}
+.breuk.groot{font-size:34px;font-weight:800;margin:0 10px}
+.breukenrij{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;align-items:center;background:var(--paars-licht,#f1e6fb);border-radius:16px;padding:22px}
+.figrij{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:center}
+.figcel{display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px;border-radius:12px}
+.figcel.goed{background:#dcf6e6}.figcel.fout{background:#fde3e6}
+.figcel .onder{font-size:15px}
+.figlabel{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;border-radius:12px;background:#c7176f;color:#fff;font-size:13px;font-weight:700}
+.breukfig{max-width:100%;height:auto}
+.klikfig .stuk{cursor:pointer}
+.klikfig .stuk:hover{opacity:.8}
+.ruitjes{background-color:#fff;background-image:linear-gradient(#d9e3f3 1px,transparent 1px),linear-gradient(90deg,#d9e3f3 1px,transparent 1px);background-size:16px 16px;border:1px solid #d9e3f3;padding:10px;border-radius:4px}
+.stuknr{font-size:15px;font-weight:800;fill:#5E0696;pointer-events:none}
+.breukstap{display:flex;align-items:center;gap:10px;margin:6px 0}
+.breukvak{display:inline-flex;flex-direction:column;align-items:center;gap:3px}
+.breukvak .streep{width:64px;height:3px;background:currentColor;border-radius:2px}
+.breukvak input{width:58px;text-align:center}
+.breukvak input[readonly]{border-color:transparent;background:transparent;font-weight:700}
+.kleur-uitleg{font-size:14px;color:#6b6478;margin:6px 0}
+.theorie-slot{background:#fde6fa;border:2px solid #E924D5;border-radius:12px;padding:10px 14px;margin:10px 0}
 </style>
 </head>
 <body>
-<header class="kop"><h1>Wiskunde oefenen<small>1 Basis</small></h1><a class="kopknop" href="docent.html" style="text-decoration:none">👩‍🏫 Docent</a></header>
-<main class="pagina">
-  <p class="regel">Kies de paragraaf waar je mee aan de slag gaat.</p>
-  <div class="tegels" id="tegels"></div>
-  <p class="voetnoot">Oefenapp wiskunde voor leerlingen van 1 Basis (VMBO).<br>Gemaakt door hun docent wiskunde.<br>Je vult je naam en een zelfgekozen pincode in.</p>
-</main>
-<script src="paragrafen/lijst.js"></script>
+<div class="app" id="app"></div>
+<div class="rm" id="rm" hidden role="dialog" aria-label="Rekenmachine">
+  <div class="rm-kop" id="rmKop"><button class="pijlknop" id="rmKlap" aria-label="Rekenmachine inklappen" aria-expanded="true">▼</button>Rekenmachine<button id="rmSluit" aria-label="Rekenmachine sluiten">✕</button></div>
+  <div class="rm-lijf">
+    <div class="rm-lcd" id="rmLcd" tabindex="0" aria-label="Scherm van de rekenmachine">
+      <div class="rm-ind"><span id="rmIndInv"></span><span>D</span><span id="rmIndModus">Math</span></div>
+      <div class="rm-in" id="rmIn"></div>
+      <div class="rm-uit" id="rmUit" aria-live="polite"></div>
+    </div>
+    <div class="rm-tip">Getal veranderen? Tik in de som of gebruik ◀ ▶ en DEL. Druk daarna op =.</div>
+    <div class="rm-modus" role="radiogroup" aria-label="Weergave">
+      <label><input type="radio" name="rmModus" value="math" checked>Mathematisch</label>
+      <label><input type="radio" name="rmModus" value="lin">Lineair</label>
+    </div>
+    <div class="rm-grid" id="rmToetsen">
+      <span class="rm-lbl">sin⁻¹</span><span class="rm-lbl">cos⁻¹</span><span class="rm-lbl">tan⁻¹</span><span class="rm-lbl"></span><span class="rm-lbl"></span>
+      <button data-t="sin">sin</button><button data-t="cos">cos</button><button data-t="tan">tan</button><button data-t="breuk" aria-label="breuk">▭<br style="line-height:0">▭</button><button data-t="e10" aria-label="keer tien tot de macht"><i>×10<sup>y</sup></i></button>
+      <button data-t="wortel" aria-label="wortel">√▢</button><button data-t="kw" aria-label="kwadraat"><i>x</i>²</button><button data-t="macht" aria-label="macht"><i>x</i><sup>▢</sup></button><button data-t="inv1" aria-label="één gedeeld door"><i>x</i>⁻¹</button><button data-t="pi" aria-label="pi">π</button>
+      <button class="inv" data-t="INV" id="rmInv">INV</button><button class="sym" data-t="links" aria-label="cursor naar links">◀</button><button class="sym" data-t="rechts" aria-label="cursor naar rechts">▶</button><button class="sym" data-t="haak" aria-label="haakje">( )</button><button class="sym" data-t="fd" aria-label="breuk of decimaal">f↔d</button>
+      <span class="rm-lbl"></span><span class="rm-lbl"></span><span class="rm-lbl"></span><span class="rm-lbl"></span><span class="rm-lbl">AC</span>
+      <button class="cijfer" data-t="7">7</button><button class="cijfer" data-t="8">8</button><button class="cijfer" data-t="9">9</button><button class="rood" data-t="DEL">DEL</button><button class="rood" data-t="C">C</button>
+      <button class="cijfer" data-t="4">4</button><button class="cijfer" data-t="5">5</button><button class="cijfer" data-t="6">6</button><button class="sym" data-t="×" style="font-size:24px">×</button><button class="sym" data-t="÷" style="font-size:24px">÷</button>
+      <button class="cijfer" data-t="1">1</button><button class="cijfer" data-t="2">2</button><button class="cijfer" data-t="3">3</button><button class="sym" data-t="+" style="font-size:24px">+</button><button class="sym" data-t="−" style="font-size:24px">−</button>
+      <button class="cijfer" data-t="0">0</button><button data-t="," style="font-size:22px">,</button><button class="sym" data-t="neg" aria-label="negatief">(−)</button><button class="ans" data-t="ANS">ANS</button><button class="blauw" data-t="=">=</button>
+      <button class="kopieer" data-t="kopieer" id="rmKopieer" title="Zet de berekening en het antwoord in het antwoordvak">⧉ Kopieer naar antwoordvak</button>
+    </div>
+    <div class="rm-melding" id="rmMelding" role="status"></div>
+  </div>
+</div>
+<div class="overlay" id="overlay" hidden>
+  <div class="ov-doos" role="dialog" aria-modal="true" aria-labelledby="ovTitel">
+    <h2 id="ovTitel">Stap voor stap</h2>
+    <div id="ovInhoud"></div>
+    <div class="knoppen"><button class="knop hoofd" id="ovSluit">Ik snap het, ik probeer het zelf</button></div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
-  document.getElementById('tegels').innerHTML = window.PARAGRAFEN.map(function (p) {
-    var klas = new URLSearchParams(location.search).get('klas');
-    return '<a class="tegel" href="oefen.html?p=' + p.code + (klas ? '&klas=' + encodeURIComponent(klas) : '') + '"><span>' + p.klas + ' · ' + p.hoofdstuk + '</span><b>' + p.titel + '</b><span>Uitleg, opdrachten en mini-toets</span></a>';
+"use strict";
+/* =========================================================
+   HULPFUNCTIES
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const VARWOORDEN = ['aantal minuten','aantal uren','aantal uur','aantal liters','kosten','hoogte','lengte','leeftijd','afstand','tijd'];
+// zet losse letters (variabelen) en woordvariabelen cursief
+function fmt(s){
+  let t = esc(s);
+  t = t.replace(/(^|[^A-Za-zÀ-ÿ'’])([a-z])(?=$|[^A-Za-zÀ-ÿ'’])/g, '$1<i>$2</i>');
+  t = t.replace(/\[(\d+)\/(\d+)\]/g, '<span class="breuk" data-b="$1/$2"><span class="t">$1</span><span class="n">$2</span></span>');
+  return t;
+}
+function fmtF(s){ // formule: ook woordvariabelen cursief
+  let t = fmt(s);
+  VARWOORDEN.forEach(w => { t = t.replace(new RegExp('(^|[^A-Za-z>])(' + w + ')(?=$|[^A-Za-z<])','g'), '$1<i>$2</i>'); });
+  return t;
+}
+// splitst tekst zodat elke zin op een eigen regel komt
+function splitsZinnen(t){ return String(t).split(/(?<=[.?!])\s+(?=[A-Z0-9−€(❶❷❸•ÉÈ]|[a-z]\s*=)/); }
+function zinnen(lines){
+  return lines.map(l => {
+    if (l === '') return '<div class="witregel"></div>';
+    if (l.startsWith('F:')) return `<span class="zin formuleregel">${fmtF(l.slice(2))}</span>`;
+    return splitsZinnen(l).map(z => `<span class="zin">${fmtF(z)}</span>`).join('');
   }).join('');
+}
+function regels(t){ return splitsZinnen(t).map(z => fmtF(z)).join('<br>'); }
+function parseNum(v){
+  if (v == null) return NaN;
+  let s = String(v).trim().toLowerCase()
+    .replace(/[−–—‐‑]/g, '-')
+    .replace(/euro|€|liters?|l$|cm|uur|minuten|min$/g, '')
+    .replace(/[,.]-+$/, '')            // 21,- en 21.-
+    .replace(/\s+/g, '').replace(/^\+/, '')
+    .replace(/^-+/, m => m.length % 2 ? '-' : '');   // dubbele min-tekens getypt
+  if (/^-?\d+,\d+$/.test(s)) s = s.replace(',', '.');
+  if (s === '' || s === '-') return NaN;
+  if (!/^-?\d*\.?\d+$/.test(s)) return NaN;
+  return Number(s);
+}
+function parseTijd(v){
+  const s = String(v).trim().toLowerCase().replace(/^om/, '').replace(/uur/g, '').replace(/\s+/g, ':').replace(/[.u,;h]/g, ':').replace(/:+/g, ':').replace(/^:|:$/g, '');
+  const m = s.match(/^(\d{1,2}):?(\d{2})$/);
+  if (!m || +m[1] > 23 || +m[2] > 59) return null;
+  return Number(m[1]) * 60 + Number(m[2]);
+}
+const nu = () => Date.now();
+const sec = ms => Math.max(0, Math.round(ms / 1000));
+
+/* ---------- formule-parser (voor gelijkwaardigheid) ---------- */
+function normFormule(s){
+  return String(s).toLowerCase().replace(/^\s*dus\s*/, '').replace(/[−–—‐‑]/g,'-').replace(/[×·∙⋅]/g,'*').replace(/÷|:/g,'/').replace(/,/g,'.').replace(/\s+/g,'').replace(/\.$/, '').replace(/==+/g, '=');
+}
+// 'x' als keerteken als x geen letter in de formule is
+function normFormuleX(s, letters){
+  let n = normFormule(s);
+  if (!letters.includes('x')) n = n.replace(/x/g, '*');
+  return n;
+}
+function tokens(s){
+  const out = []; let i = 0;
+  while (i < s.length){
+    const c = s[i];
+    if (/[0-9.]/.test(c)){ let j = i; while (j < s.length && /[0-9.]/.test(s[j])) j++; out.push({t:'n', v:parseFloat(s.slice(i,j))}); i = j; continue; }
+    if (/[a-z]/.test(c)){ out.push({t:'v', v:c}); i++; continue; }
+    if ('+-*/()'.includes(c)){ out.push({t:c}); i++; continue; }
+    throw new Error('teken');
+  }
+  // impliciete vermenigvuldiging invoegen
+  const res = [];
+  out.forEach((tk, k) => {
+    const p = res[res.length - 1];
+    if (p && (p.t === 'n' || p.t === 'v' || p.t === ')') && (tk.t === 'n' || tk.t === 'v' || tk.t === '(')) res.push({t:'*', impl:true});
+    res.push(tk);
+  });
+  return res;
+}
+function parseExpr(s){
+  const tk = tokens(s); let p = 0;
+  const peek = () => tk[p], eat = t => { if (!tk[p] || tk[p].t !== t) throw new Error('syntax'); p++; };
+  function expr(){ let n = term(); while (peek() && (peek().t === '+' || peek().t === '-')){ const o = tk[p++].t; const r = term(); const l = n; n = o === '+' ? (e => l(e) + r(e)) : (e => l(e) - r(e)); } return n; }
+  function term(){ let n = unary(); while (peek() && (peek().t === '*' || peek().t === '/')){ const o = tk[p++].t; const r = unary(); const l = n; n = o === '*' ? (e => l(e) * r(e)) : (e => l(e) / r(e)); } return n; }
+  function unary(){ if (peek() && peek().t === '-'){ p++; const u = unary(); return e => -u(e); } if (peek() && peek().t === '+'){ p++; return unary(); } return atom(); }
+  function atom(){ const t = peek(); if (!t) throw new Error('eind');
+    if (t.t === 'n'){ p++; return () => t.v; }
+    if (t.t === 'v'){ p++; return e => { if (!(t.v in e)) throw new Error('var:' + t.v); return e[t.v]; }; }
+    if (t.t === '('){ p++; const n = expr(); eat(')'); return n; }
+    throw new Error('syntax'); }
+  const f = expr(); if (p !== tk.length) throw new Error('syntax'); return f;
+}
+function vergelijking(s){ // geeft {uit, f} of gooit fout
+  const n = normFormule(s); const delen = n.split('=');
+  if (delen.length !== 2 || !delen[0] || !delen[1]) throw new Error('is');
+  if (/^[a-z]$/.test(delen[0]) && !/^[a-z]$/.test(delen[1])) return {uit: delen[0], f: parseExpr(delen[1]), expr: delen[1]};
+  if (/^[a-z]$/.test(delen[1])) return {uit: delen[1], f: parseExpr(delen[0]), expr: delen[0]};
+  throw new Error('uitvoer');
+}
+function gelijkwaardig(orig, antw, invoerVars){
+  const o = vergelijking(orig); const a = vergelijking(antw);
+  if (o.uit !== a.uit) return false;
+  const proef = [-3.7, -1, 0, 1.3, 2, 5.5, 10];
+  for (let k = 0; k < proef.length; k++){
+    const env = {}; invoerVars.forEach((v, j) => env[v] = proef[(k + j * 2) % proef.length] + j * .37);
+    const x = o.f(env), y = a.f(env);
+    if (!isFinite(y) || Math.abs(x - y) > 1e-6 * Math.max(1, Math.abs(x))) return false;
+  }
+  return true;
+}
+
+/* =========================================================
+   GRAFIEK (SVG)
+   ========================================================= */
+function maakGrafiek(cfg, opties = {}){
+  const W = 560, H = 440, m = {l: 54, r: 40, t: 30, b: 50};
+  const [x0, x1] = cfg.x, [y0, y1] = cfg.y;
+  const X = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
+  const Y = v => H - m.b - (v - y0) / (y1 - y0) * (H - m.t - m.b);
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('class', 'graf'); svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'Assenstelsel met ' + cfg.lx + ' horizontaal en ' + cfg.ly + ' verticaal');
+  const el = (n, a, txt) => { const e = document.createElementNS(ns, n); for (const k in a) e.setAttribute(k, a[k]); if (txt != null) e.textContent = txt; svg.appendChild(e); return e; };
+  const gs = cfg.gridY || cfg.ys, gx = cfg.gridX || cfg.xs;
+  for (let v = x0; v <= x1 + 1e-9; v += gx) el('line', {x1: X(v), x2: X(v), y1: Y(y0), y2: Y(y1), stroke: '#E1D2F0', 'stroke-width': 1});
+  for (let v = y0; v <= y1 + 1e-9; v += gs) el('line', {x1: X(x0), x2: X(x1), y1: Y(v), y2: Y(v), stroke: '#E1D2F0', 'stroke-width': 1});
+  const ax = Math.min(Math.max(0, y0), y1), ay = Math.min(Math.max(0, x0), x1);
+  el('line', {x1: X(x0), x2: X(x1) + 14, y1: Y(ax), y2: Y(ax), stroke: '#5E0696', 'stroke-width': 2.5});
+  el('line', {x1: X(ay), x2: X(ay), y1: Y(y0), y2: Y(y1) - 14, stroke: '#5E0696', 'stroke-width': 2.5});
+  el('path', {d: `M${X(x1)+18},${Y(ax)} l-10,-5 v10 z`, fill: '#5E0696'});
+  el('path', {d: `M${X(ay)},${Y(y1)-18} l-5,10 h10 z`, fill: '#5E0696'});
+  const lab = cfg.labX || cfg.xs;
+  for (let v = x0; v <= x1 + 1e-9; v += lab){ const r = Math.round(v * 100) / 100; if (r === 0 && ay === 0) continue;
+    const tx = cfg.labTekstX ? cfg.labTekstX(r) : String(r).replace('-', '−'); if (tx == null) continue;
+    el('text', {x: X(r), y: Y(ax) + 20, 'text-anchor': 'middle', 'font-size': 13, fill: '#2A0A46', 'font-family': 'Montserrat'}, tx); }
+  const laby = cfg.labY || cfg.ys;
+  for (let v = y0; v <= y1 + 1e-9; v += laby){ const r = Math.round(v * 100) / 100; if (r === 0) continue;
+    const ty = cfg.labTekstY ? cfg.labTekstY(r) : String(r).replace('-', '−'); if (ty == null) continue;
+    el('text', {x: X(ay) - 8, y: Y(r) + 4, 'text-anchor': 'end', 'font-size': 13, fill: '#2A0A46', 'font-family': 'Montserrat'}, ty); }
+  el('text', {x: X(ay) - 8, y: Y(ax) + 20, 'text-anchor': 'end', 'font-size': 13, fill: '#2A0A46', 'font-family': 'Montserrat', 'font-style': cfg.oorsprong ? 'italic' : 'normal'}, cfg.oorsprong || '0');
+  if (cfg.lx) el('text', {x: X(x1) + 4, y: Y(ax) + 38, 'text-anchor': 'end', 'font-size': 14, 'font-style': 'italic', 'font-weight': 600, fill: '#5E0696', 'font-family': 'Montserrat'}, cfg.lx + ' →');
+  if (cfg.ly) el('text', {x: X(ay) + 10, y: Y(y1) - 4, 'font-size': 14, 'font-style': 'italic', 'font-weight': 600, fill: '#5E0696', 'font-family': 'Montserrat'}, cfg.ly + ' ↑');
+  // vaste lijnen
+  (opties.lijnen || []).forEach(L => {
+    if (L.pts){ // knikgrafiek door gegeven punten
+      el('polyline', {points: L.pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' '), fill: 'none', stroke: L.kleur || '#E924D5', 'stroke-width': 3.5, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', 'data-vast': 1});
+      if (L.label){ const p = L.pts[L.pts.length - 1]; el('text', {'data-vast': 1, x: X(p[0]) + 8, y: Y(p[1]) + 6 + (L.dy || 0), 'font-size': 17, 'font-weight': 800, fill: L.kleur || '#E924D5', 'font-family': 'Montserrat'}, L.label); }
+      return;
+    }
+    const pts = []; const st = (x1 - x0) / 200;
+    for (let v = x0; v <= x1 + 1e-9; v += st){ const w = L.f(v); if (w >= y0 - 1e-9 && w <= y1 + 1e-9) pts.push([v, w]); }
+    if (pts.length > 1) el('line', {'data-vast': 1, x1: X(pts[0][0]), y1: Y(pts[0][1]), x2: X(pts[pts.length-1][0]), y2: Y(pts[pts.length-1][1]), stroke: L.kleur || '#E924D5', 'stroke-width': 3.5, 'stroke-linecap': 'round'});
+    if (L.label){ const p = pts[Math.floor(pts.length * (L.pos || .85))]; el('text', {'data-vast': 1, x: X(p[0]) + 8, y: Y(p[1]) - 10, 'font-size': 18, 'font-weight': 800, fill: L.kleur || '#E924D5', 'font-family': 'Montserrat'}, L.label); }
+  });
+  (opties.stippen || []).forEach(([px, py]) => el('circle', {cx: X(px), cy: Y(py), r: 6, fill: '#2A0A46'}));
+  (opties.letters || []).forEach(([px, py, n, dx = 9, dy = 20]) => { el('circle', {cx: X(px), cy: Y(py), r: 7, fill: '#E924D5'}); el('text', {x: X(px) + dx, y: Y(py) + dy, 'font-size': 16, 'font-style': 'italic', 'font-weight': 700, fill: '#2A0A46', 'font-family': 'Montserrat'}, n); });
+  (opties.punten || []).forEach(([px, py]) => { el('circle', {cx: X(px), cy: Y(py), r: 7, fill: '#5E0696'}); el('text', {x: X(px) + 10, y: Y(py) - 10, 'font-size': 14, 'font-weight': 700, fill: '#5E0696', 'font-family': 'Montserrat'}, `(${px}, ${py})`.replace(/-/g, '−')); });
+  // interactief tekenen
+  if (opties.interactief){
+    const snx = cfg.snapX || 1, sny = cfg.snapY || 1;
+    // fijne hulplijnen op de plekken waar een punt kan komen
+    if (sny < gs) for (let v = y0; v <= y1 + 1e-9; v += sny) el('line', {x1: X(x0), x2: X(x1), y1: Y(v), y2: Y(v), stroke: '#F1E8F8', 'stroke-width': 1, 'stroke-dasharray': '3 4'});
+    svg.querySelectorAll('[data-vast]').forEach(e => svg.appendChild(e)); // vaste lijnen boven de hulplijnen
+    const laag = document.createElementNS(ns, 'g'); svg.appendChild(laag);
+    const spook = document.createElementNS(ns, 'g'); spook.setAttribute('pointer-events', 'none'); spook.style.display = 'none'; svg.appendChild(spook);
+    spook.innerHTML = `<line class="hx" stroke="none"/><line class="hy" stroke="none"/><circle r="9" fill="none" stroke="#E924D5" stroke-width="3"/><rect rx="8" fill="#5E0696"/><text font-size="15" font-weight="700" fill="#fff" font-family="Montserrat"></text>`;
+    const vang = el('rect', {x: m.l - 14, y: m.t - 14, width: W - m.l - m.r + 28, height: H - m.t - m.b + 28, fill: 'transparent', class: 'klik'});
+    const naarPunt = ev => {
+      const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+      const q = pt.matrixTransform(svg.getScreenCTM().inverse());
+      const vx = x0 + (q.x - m.l) / (W - m.l - m.r) * (x1 - x0), vy = y0 + (H - m.b - q.y) / (H - m.t - m.b) * (y1 - y0);
+      const px = Math.round(Math.round(vx / snx) * snx * 100) / 100, py = Math.round(Math.round(vy / sny) * sny * 100) / 100;
+      if (px < x0 || px > x1 || py < y0 || py > y1) return null;
+      return [px, py];
+    };
+    const toonSpook = p => {
+      if (!p || (opties.slot && opties.slot())){ spook.style.display = 'none'; return; }
+      spook.style.display = '';
+      const [px, py] = p, cx = X(px), cy = Y(py);
+      const hx = spook.querySelector('.hx'), hy = spook.querySelector('.hy');
+      hx.setAttribute('x1', X(Math.min(Math.max(0, x0), x1))); hx.setAttribute('x2', cx); hx.setAttribute('y1', cy); hx.setAttribute('y2', cy);
+      hy.setAttribute('x1', cx); hy.setAttribute('x2', cx); hy.setAttribute('y1', Y(Math.min(Math.max(0, y0), y1))); hy.setAttribute('y2', cy);
+      spook.querySelector('circle').setAttribute('cx', cx); spook.querySelector('circle').setAttribute('cy', cy);
+      const t = spook.querySelector('text'); t.textContent = '';
+      const bw = t.textContent.length * 9 + 14, bx = cx + 14 + bw > W ? cx - 14 - bw : cx + 14, by = cy - 40 < 0 ? cy + 12 : cy - 40;
+      const r = spook.querySelector('rect'); r.setAttribute('display', 'none'); r.setAttribute('x', bx); r.setAttribute('y', by); r.setAttribute('width', bw); r.setAttribute('height', 28);
+      t.setAttribute('x', bx + 7); t.setAttribute('y', by + 19);
+    };
+    vang.addEventListener('pointermove', ev => toonSpook(opties.gum && opties.gum() ? null : naarPunt(ev)));
+    vang.addEventListener('pointerleave', () => toonSpook(null));
+    const teken = () => {
+      laag.innerHTML = '';
+      const pts = opties.punt().slice().sort((a, b) => a[0] - b[0]);
+      if (opties.volgorde && pts.length >= 2){ // punten verbinden: op volgorde van x, of in de volgorde van klikken
+        const rij = opties.volgorde === 'klik' ? opties.punt() : pts;
+        const ln = document.createElementNS(ns, 'polyline');
+        Object.entries({points: rij.map(p => X(p[0]) + ',' + Y(p[1])).join(' '), fill: 'none', stroke: '#E924D5', 'stroke-width': 3.5, 'stroke-linejoin': 'round', 'stroke-linecap': 'round'}).forEach(([k, v]) => ln.setAttribute(k, v));
+        laag.appendChild(ln);
+      } else if (pts.length >= 2){
+        const a = pts[0], b = pts[pts.length - 1];
+        const ln = document.createElementNS(ns, 'line');
+        Object.entries({x1: X(a[0]), y1: Y(a[1]), x2: X(b[0]), y2: Y(b[1]), stroke: '#E924D5', 'stroke-width': 3.5, 'stroke-linecap': 'round'}).forEach(([k, v]) => ln.setAttribute(k, v));
+        laag.appendChild(ln);
+      }
+      pts.forEach(([px, py]) => { const c = document.createElementNS(ns, 'circle'); c.setAttribute('cx', X(px)); c.setAttribute('cy', Y(py)); c.setAttribute('r', 7); c.setAttribute('fill', opties.kleurPunt ? opties.kleurPunt(px, py) : '#5E0696'); laag.appendChild(c);
+        const t = document.createElementNS(ns, 'text'); t.setAttribute('x', X(px) + 10); t.setAttribute('y', Y(py) + 20); t.setAttribute('font-size', 12); t.setAttribute('font-weight', 700); t.setAttribute('fill', '#5E0696'); t.setAttribute('font-family', 'Montserrat'); laag.appendChild(t); });
+    };
+    const wissel = (px, py) => {
+      const pts = opties.punt(); const i = pts.findIndex(p => p[0] === px && p[1] === py);
+      const gum = opties.gum && opties.gum(), meld = opties.melding || (() => {});
+      if (gum){ if (i < 0) return meld('Klik met de gum op een punt om het weg te halen.'); pts.splice(i, 1); meld('Punt weggehaald.'); }
+      else if (opties.gum){ if (i >= 0) return meld('Dit punt staat er al. Wil je het weghalen? Klik eerst op de gum.'); pts.push([px, py]); meld(''); }
+      else { if (i >= 0) pts.splice(i, 1); else pts.push([px, py]); }
+      teken(); opties.bijWijziging && opties.bijWijziging();
+    };
+    vang.addEventListener('click', ev => {
+      if (opties.slot && opties.slot()) return;
+      const p = naarPunt(ev); if (!p) return; wissel(p[0], p[1]); toonSpook(opties.gum && opties.gum() ? null : p);
+    });
+    svg._teken = teken; svg._wissel = wissel; svg._snap = [snx, sny]; teken();
+  }
+  svg._X = X; svg._Y = Y; svg._W = W; svg._H = H; svg._as = [ax, ay];
+  return svg;
+}
+
+/* =========================================================
+   INHOUD: CONTEXTEN EN OPDRACHTEN
+   1BB H3 Getallen – § 3.3 Breuken
+   ========================================================= */
+const D54 = 'WI/K/5 Rekenen, meten en schatten · breuken';
+const D51 = 'WI/K/5 Rekenen, meten en schatten · rekenen met geld';
+
+/* ---------- figuren die je in stukken kunt verdelen en kleuren ---------- */
+const KLEUR = {roze: '#efc3cb', geel: '#fdd78a', blauw: '#bcc9ea', groen: '#7ccbb1', magenta: '#c7176f', oranje: '#f9b12a', lichtroze: '#f3c9cf', donkerroze: '#e39aa8', perzik: '#fde9c7'};
+const FLIJN = '#1f6fae';
+const r2 = v => Math.round(v * 100) / 100;
+const ppt = (x, y) => r2(x) + ' ' + r2(y);
+const polyPad = p => 'M' + p.map(q => ppt(q[0], q[1])).join(' L') + ' Z';
+const midden = p => [p.reduce((a, q) => a + q[0], 0) / p.length, p.reduce((a, q) => a + q[1], 0) / p.length];
+const FIG = {
+  cirkel(n, o = {}){ const R = o.r || 80, c = R + 4, gk = o.gk || [], st = o.stippel || [], stukken = [];
+    for (let i = 0; i < n; i++){ const a1 = -Math.PI / 2 + i * 2 * Math.PI / n, a2 = a1 + 2 * Math.PI / n, am = (a1 + a2) / 2;
+      const p1 = [c + R * Math.cos(a1), c + R * Math.sin(a1)], p2 = [c + R * Math.cos(a2), c + R * Math.sin(a2)];
+      stukken.push({d: `M${ppt(c, c)} L${ppt(p1[0], p1[1])} A${R} ${R} 0 ${a2 - a1 > Math.PI ? 1 : 0} 1 ${ppt(p2[0], p2[1])} Z`, k: gk.includes(i) ? (o.k || 'geel') : null, stippel: st.includes(i), cx: c + R * .6 * Math.cos(am), cy: c + R * .6 * Math.sin(am)}); }
+    return {w: 2 * c, h: 2 * c, stukken, alleenRand: !!o.alleenRand}; },
+  veelhoek(n, o = {}){ const R = o.r || 82, c = R + 4, gk = o.gk || [], off = -90 - 180 / n, hoek = [], stukken = [];
+    for (let i = 0; i < n; i++){ const a = (off + i * 360 / n) * Math.PI / 180; hoek.push([c + R * Math.cos(a), c + R * Math.sin(a)]); }
+    for (let i = 0; i < n; i++){ const p = [[c, c], hoek[i], hoek[(i + 1) % n]], m = midden(p); stukken.push({d: polyPad(p), k: gk.includes(i) ? (o.k || 'roze') : null, cx: m[0], cy: m[1]}); }
+    return {w: 2 * c, h: 2 * c, stukken}; },
+  rooster(kol, rij, o = {}){ const s = o.s || 30, gk = o.gk || [], weg = o.weg || [], stukken = [];
+    for (let y = 0; y < rij; y++) for (let x = 0; x < kol; x++){ const i = y * kol + x; if (weg.includes(i)) continue;
+      stukken.push({d: polyPad([[3 + x * s, 3 + y * s], [3 + (x + 1) * s, 3 + y * s], [3 + (x + 1) * s, 3 + (y + 1) * s], [3 + x * s, 3 + (y + 1) * s]]), k: gk.includes(i) ? (o.k || 'geel') : null, cx: 3 + (x + .5) * s, cy: 3 + (y + .5) * s}); }
+    return {w: kol * s + 6, h: rij * s + 6, stukken}; },
+  vormen(polys, o = {}){ const s = o.s || 60, gk = o.gk || []; let mx = 0, my = 0;
+    polys.forEach(p => p.forEach(q => { mx = Math.max(mx, q[0]); my = Math.max(my, q[1]); }));
+    return {w: mx * s + 8, h: my * s + 8, stukken: polys.map((p, i) => { const pp = p.map(q => [4 + q[0] * s, 4 + q[1] * s]), m = midden(pp); return {d: polyPad(pp), k: gk.includes(i) ? (o.k || 'geel') : null, cx: m[0], cy: m[1]}; })}; },
+  ovaal4(o = {}){ const rx = o.rx || 24, ry = o.ry || 50, cx = rx + 4, cy = ry + 4, gk = o.gk || [], P = [[cx, cy - ry], [cx + rx, cy], [cx, cy + ry], [cx - rx, cy]], stukken = [];
+    for (let i = 0; i < 4; i++){ const a = P[i], b = P[(i + 1) % 4]; stukken.push({d: `M${ppt(cx, cy)} L${ppt(a[0], a[1])} A${rx} ${ry} 0 0 1 ${ppt(b[0], b[1])} Z`, k: gk.includes(i) ? (o.k || 'blauw') : null, cx: cx + (i < 2 ? 1 : -1) * rx * .45, cy: cy + (i === 0 || i === 3 ? -1 : 1) * ry * .45}); }
+    return {w: 2 * cx, h: 2 * cy, stukken}; },
+  // tekenen als SVG-tekst. o.kleurSet: welke stukken gekleurd (voor kleuropdrachten), o.nummers: 'alle' of 'gk'
+  svg(f, o = {}){ const sch = o.schaal || 1, kl = o.kleur || 'geel';
+    let s = `<svg class="breukfig${o.klik ? ' klikfig' : ''}" viewBox="0 0 ${r2(f.w)} ${r2(f.h)}" width="${r2(f.w * sch)}" height="${r2(f.h * sch)}" role="img" aria-label="figuur in ${f.stukken.length} stukken">`;
+    f.stukken.forEach((p, i) => { const vul = o.kleurSet ? (o.kleurSet.includes(i) ? KLEUR[kl] : '#fff') : (p.k ? KLEUR[p.k] : (p.stippel ? 'none' : '#fff'));
+      s += `<path class="stuk" data-i="${i}" d="${p.d}" fill="${vul}" stroke="${f.alleenRand ? 'none' : FLIJN}" stroke-width="2" stroke-linejoin="round"${p.stippel ? ' stroke-dasharray="7 6"' : ''}/>`; });
+    if (f.alleenRand){ f.stukken.forEach(p => { s += `<path d="${p.d}" fill="none" stroke="#9fc0de" stroke-width="1" stroke-dasharray="3 4" pointer-events="none"/>`; });
+      s += `<circle cx="${f.w / 2}" cy="${f.h / 2}" r="${f.w / 2 - 4}" fill="none" stroke="${FLIJN}" stroke-width="2" pointer-events="none"/>`; }
+    if (o.nummers){ const lijst = o.nummers === 'gk' ? f.stukken.map((p, i) => (o.kleurSet ? o.kleurSet.includes(i) : !!p.k) ? i : -1).filter(i => i >= 0) : f.stukken.map((p, i) => i);
+      lijst.forEach((i, n) => { const p = f.stukken[i]; s += `<text class="stuknr" x="${r2(p.cx)}" y="${r2(p.cy)}" text-anchor="middle" dominant-baseline="central">${n + 1}</text>`; }); }
+    return s + '</svg>'; }
+};
+function vierkant8(o){ const TL = [0, 0], Tm = [1, 0], TR = [2, 0], Rm = [2, 1], BR = [2, 2], Bm = [1, 2], BL = [0, 2], Lm = [0, 1], C = [1, 1];
+  return FIG.vormen([[TL, Tm, C], [Tm, TR, C], [TR, Rm, C], [Rm, BR, C], [BR, Bm, C], [Bm, BL, C], [BL, Lm, C], [Lm, TL, C]], o); }
+function driehoek9(o){ const h = Math.sqrt(3) / 2, rij = [], p = [];
+  for (let j = 0; j <= 3; j++){ const r = []; for (let i = 0; i <= j; i++) r.push([1.5 - j / 2 + i, j * h]); rij.push(r); }
+  for (let j = 0; j < 3; j++){ for (let i = 0; i <= j; i++) p.push([rij[j][i], rij[j + 1][i], rij[j + 1][i + 1]]); for (let i = 0; i < j; i++) p.push([rij[j][i], rij[j][i + 1], rij[j + 1][i + 1]]); }
+  return FIG.vormen(p, o); }
+function ruit4(o){ const T = [1, 0], R = [2, 1.4], B = [1, 2.8], L = [0, 1.4], C = [1, 1.4]; return FIG.vormen([[T, R, C], [R, B, C], [B, L, C], [L, T, C]], o); }
+function strook4(o){ return FIG.vormen([0, 1, 2, 3].map(x => [[x, 0], [x + 1, 0], [x + 1, 2], [x, 2]]), o); }
+function vierkantDriehoek8(o){ const p = []; [[0, 0], [1, 0], [0, 1], [1, 1]].forEach(([x, y]) => { p.push([[x, y], [x + 1, y], [x, y + 1]]); p.push([[x + 1, y], [x + 1, y + 1], [x, y + 1]]); }); return FIG.vormen(p, o); }
+
+const FIGUREN = {
+  zes2: () => FIG.veelhoek(6, {r: 120, gk: [3, 4], k: 'roze'}),
+  taart: () => FIG.cirkel(8, {r: 150, gk: [0, 1, 2, 6, 7], k: 'perzik', stippel: [3, 4, 5]}),
+  noah: () => FIG.cirkel(4, {r: 110}), sara: () => FIG.cirkel(6, {r: 110}),
+  noahKlein: () => FIG.cirkel(4, {r: 70}), saraKlein: () => FIG.cirkel(6, {r: 70}),
+  figA: () => FIG.cirkel(3, {r: 120, gk: [0, 2], k: 'geel'}),
+  figB: () => ruit4({s: 44, gk: [0, 2], k: 'geel'}),
+  figC: () => strook4({s: 38, gk: [0, 1, 3], k: 'blauw'}),
+  figD: () => FIG.rooster(4, 2, {s: 38, gk: [0, 5, 6], k: 'donkerroze'}),
+  figE: () => vierkantDriehoek8({s: 56, gk: [0, 3, 4, 6, 7], k: 'lichtroze'}),
+  f8_1: () => FIG.cirkel(8, {r: 62, gk: [0, 1, 2], k: 'magenta'}),
+  f8_2: () => vierkant8({s: 62, gk: [0, 1, 2, 4, 5], k: 'oranje'}),
+  f8_3: () => FIG.ovaal4({rx: 32, ry: 66, gk: [0, 1]}),
+  f8_4: () => FIG.cirkel(8, {r: 62, gk: [0, 1, 2, 3, 4, 5, 6], k: 'blauw'}),
+  f9_1: () => FIG.rooster(5, 2, {s: 34, gk: [0, 1, 2, 5, 6, 7], k: 'geel'}),
+  f9_2: () => FIG.cirkel(8, {r: 62, gk: [0, 1, 2], k: 'groen'}),
+  f9_3: () => FIG.rooster(6, 1, {s: 30, gk: [5], k: 'blauw'}),
+  f9_4: () => FIG.rooster(3, 3, {s: 38, gk: [0, 1, 3, 4], k: 'blauw'}),
+  lvorm: () => FIG.rooster(4, 2, {s: 70, weg: [2, 3]}),
+  vk8: () => vierkant8({s: 90}), dr9: () => driehoek9({s: 80}),
+  cirkel4: () => FIG.cirkel(4, {r: 70, alleenRand: true}),
+  lvormK: () => FIG.rooster(4, 2, {s: 40, weg: [2, 3]}),
+  r74: () => FIG.rooster(7, 4, {s: 26}),
+  t_zes: () => FIG.cirkel(6, {r: 110, gk: [0, 1], k: 'roze'}),
+  t_strook: () => FIG.rooster(5, 1, {s: 60, gk: [0, 1], k: 'blauw'}),
+  t_vk4: () => FIG.rooster(2, 2, {s: 100}),
+  t_r72: () => FIG.rooster(7, 2, {s: 48}),
+  half: () => FIG.cirkel(2, {r: 70, gk: [0], k: 'geel'}), kwart: () => FIG.cirkel(4, {r: 70, gk: [0], k: 'geel'}),
+};
+function fig(naam, o){ return FIG.svg(FIGUREN[naam](), o || {}); }
+function figLab(naam, lab, o){ return `<div class="figcel">${fig(naam, o)}${lab ? `<span class="figlabel">${esc(lab)}</span>` : ''}</div>`; }
+function figRij(cellen){ return `<div class="figrij">${cellen.join('')}</div>`; }
+function breukGroot(t, n){ return `<span class="breuk groot"><span class="t">${t}</span><span class="n">${n}</span></span>`; }
+function breukenRij(lijst){ return `<div class="breukenrij">${lijst.map(b => breukGroot(b[0], b[1])).join('')}</div>`; }
+function pizza(snij){ const c = 70; let s = `<svg viewBox="0 0 140 140" width="140" height="140" role="img" aria-label="pizza"><circle cx="${c}" cy="${c}" r="68" fill="#d58a3c"/><circle cx="${c}" cy="${c}" r="59" fill="#c4402a"/>`;
+  [[45, 45, 13], [90, 42, 11], [68, 70, 14], [40, 88, 12], [95, 90, 13], [70, 104, 10], [104, 66, 9], [33, 66, 9]].forEach(k => s += `<circle cx="${k[0]}" cy="${k[1]}" r="${k[2]}" fill="#f2dfa8"/>`);
+  [[58, 52], [84, 74], [52, 79], [79, 97], [99, 52], [45, 104]].forEach(h => s += `<circle cx="${h[0]}" cy="${h[1]}" r="8" fill="#9c2a2a"/>`);
+  if (snij >= 2) s += `<line x1="${c}" y1="0" x2="${c}" y2="140" stroke="#fff" stroke-width="3"/>`;
+  if (snij >= 4) s += `<line x1="0" y1="${c}" x2="140" y2="${c}" stroke="#fff" stroke-width="3"/>`;
+  return s + '</svg>'; }
+
+const CTX = {
+  c1: {intro: ['Bij Pizzeria Napoli koop je een hele pizza of een stuk pizza.', 'Een hele pizza kost 16 euro.'],
+       links: () => `<div class="figrij">${pizza(1)}${pizza(2)}${pizza(4)}</div><div class="kaart" style="text-align:center"><b>Hele pizza: € 16</b></div>`},
+  c2: {intro: ['Hier staan vier breuken.'], links: () => breukenRij([[3, 4], [1, 6], [5, 9], [1, 9]])},
+  c3: {intro: ['Hier staan zes breuken.'], links: () => breukenRij([[3, 10], [3, 8], [10, 3], [7, 10], [10, 13], [1, 3]])},
+  c4: {intro: ['Bakker Sem verkoopt appeltaart per stuk.', 'De stukken met stippellijnen zijn al verkocht.'], links: () => figRij([fig('taart')])},
+  c5: {intro: ['Noah eet [1/4] deel van zijn pizza.', 'Sara eet [2/6] deel van haar pizza.', 'De pizza\'s zijn even groot.'],
+       links: () => figRij([figLab('noahKlein', 'Noah'), figLab('saraKlein', 'Sara')])},
+  c6: {intro: ['Een deel van de figuur is roze.', 'De rest is wit.'], links: () => figRij([fig('zes2')])},
+  c7: {intro: ['Kijk naar figuur A.'], links: () => figRij([figLab('figA', 'A')])},
+  c7d: {intro: ['Kijk naar de figuren B, C, D en E.', 'Een deel is gekleurd.'], links: () => figRij([figLab('figB', 'B'), figLab('figC', 'C'), figLab('figD', 'D'), figLab('figE', 'E')])},
+  c8: {intro: ['Hier staan vier figuren.', 'Een deel is gekleurd.'], links: () => figRij([figLab('f8_1', '1'), figLab('f8_2', '2'), figLab('f8_3', '3'), figLab('f8_4', '4')])},
+  c9: {intro: ['Hier staan weer vier figuren.', 'Een deel is gekleurd.'], links: () => figRij([figLab('f9_1', '1'), figLab('f9_2', '2'), figLab('f9_3', '3'), figLab('f9_4', '4')])},
+  c10: {intro: ['Kijk naar figuur 1.', 'De figuur bestaat uit vierkantjes.'], links: () => figRij([figLab('lvorm', '1')])},
+  c10c: {intro: ['Kijk naar figuur 1.', 'Bij de vorige vraag heb je vierkantjes groen gemaakt.'], links: () => { const k = ((S.items['10b'] || {}).kleur || [[]])[0]; return figRij([`<div class="figcel">${FIG.svg(FIGUREN.lvorm(), {kleurSet: k, kleur: 'groen'})}<span class="figlabel">1</span></div>`]); }},
+  c10d: {intro: ['Kijk naar figuur 2 en figuur 3.', 'Onder elke figuur staat een breuk.'], links: () => ''},
+  c11: {intro: ['Hier staan vier figuren op ruitjespapier.', 'Onder elke figuur staat een breuk.'], links: () => ''},
+  cT1: {intro: ['Kijk naar de figuur.'], links: () => figRij([fig('t_zes')])},
+  cT2: {intro: ['Kijk naar de breuk.'], links: () => breukenRij([[3, 7]])},
+  cT3: {intro: ['Hier staan vier breuken.'], links: () => breukenRij([[2, 9], [4, 7], [2, 5], [1, 4]])},
+  cT4: {intro: ['Een taart is in 6 even grote stukken verdeeld.', 'De hele taart kost 18 euro.'], links: () => figRij([FIG.svg(FIG.cirkel(6, {r: 120, gk: [0, 1, 2, 3, 4, 5], k: 'perzik'}))])},
+  cT5: {intro: ['Kijk naar de strook.'], links: () => figRij([fig('t_strook')])},
+  cT6: {intro: ['Je ziet een vierkant in 4 stukken.'], links: () => ''},
+  cT7: {intro: ['Je ziet een figuur met hokjes.'], links: () => ''},
+  cT8: {intro: ['Sam eet [1/2] pizza.', 'Jan eet [1/4] pizza.', 'De pizza\'s zijn even groot.'], links: () => figRij([figLab('half', 'Sam'), figLab('kwart', 'Jan')])},
+};
+
+const SECTIES = [
+ {id: 's1', titel: 'Wat is een breuk?', items: [
+  {id: 'th1', theorie: true, titel: 'Wat is een breuk?', video: 'videos/uitleg1-wat-is-een-breuk.mp4',
+   tekst: ['Een breuk heeft een <b>teller</b> en een <b>noemer</b>.', `Bij de breuk ${breukGroot(1, 6)} is 1 de teller.`, 'De teller staat boven de streep.', 'De noemer is 6.', 'De noemer staat onder de streep.']},
+  {id: '1a', nr: '1', deel: 'a', ctx: 'c1', dom: D51, vraag: ['Een halve pizza is de pizza in 2 even grote stukken.', 'Hoeveel kost een halve pizza?'], type: 'num', ans: 8, eenheid: 'euro',
+   hint: ['Een halve pizza is de helft.', 'Deel de prijs van de hele pizza door 2.'], uitleg: ['De helft uitrekenen: je deelt door 2.', '16 : 2 = 8', 'Een halve pizza kost 8 euro.'], fouten: {16: 'Prijs van de hele pizza genomen', 32: 'Keer 2 gedaan in plaats van gedeeld door 2'}},
+  {id: '1b', nr: '1', deel: 'b', ctx: 'c1', dom: D51, vraag: ['De pizza wordt in 4 even grote stukken gesneden.', 'Vul in.'], type: 'stappen',
+   velden: [{tpl: 'Eén stuk kost {} euro.', ans: [4]}, {tpl: 'Drie stukken kosten samen {} euro.', ans: [12]}],
+   hint: ['De pizza heeft 4 stukken.', 'Eén stuk: deel 16 euro door 4.', 'Drie stukken: doe de prijs van één stuk keer 3.'], uitleg: ['Eén stuk kost 16 : 4 = 4 euro.', 'Drie stukken kosten 3 × 4 = 12 euro.'], fouten: {8: 'Door 2 gedeeld in plaats van door 4'}},
+  {id: '2', nr: '2', deel: '', ctx: 'c2', dom: D54, vraag: ['Welke twee breuken hebben dezelfde noemer?', 'Kies er twee.'], type: 'mk', multi: true,
+   opties: ['[3/4]', '[1/6]', '[5/9]', '[1/9]'], ans: [2, 3],
+   hint: ['De noemer is het getal onder de streep.', 'Schrijf bij elke breuk het getal onder de streep op.'], uitleg: ['Kijk naar het getal onder de streep.', '[3/4] → 4, [1/6] → 6, [5/9] → 9 en [1/9] → 9.', '[5/9] en [1/9] hebben dezelfde noemer: 9.']},
+  {id: '3a', nr: '3', deel: 'a', ctx: 'c3', dom: D54, vraag: ['Welke breuk heeft dezelfde noemer als [3/10]?'], type: 'mk',
+   opties: ['[3/8]', '[10/3]', '[7/10]', '[10/13]', '[1/3]'], ans: 2,
+   hint: ['De noemer van [3/10] is 10.', 'Zoek een andere breuk met 10 onder de streep.'], uitleg: ['[3/10] heeft noemer 10.', '[7/10] heeft ook noemer 10.', 'Let op: bij [10/3] staat de 10 boven de streep. Dat is de teller.']},
+  {id: '3b', nr: '3', deel: 'b', ctx: 'c3', dom: D54, vraag: ['Welke breuk heeft dezelfde noemer als [10/3]?'], type: 'mk',
+   opties: ['[3/10]', '[3/8]', '[7/10]', '[10/13]', '[1/3]'], ans: 4,
+   hint: ['De noemer van [10/3] is 3.', 'Zoek een andere breuk met 3 onder de streep.'], uitleg: ['[10/3] heeft noemer 3.', '[1/3] heeft ook noemer 3.']},
+ ]},
+ {id: 's2', titel: 'Welk deel is gekleurd?', items: [
+  {id: 'th2', theorie: true, titel: 'Welk deel is gekleurd?', video: 'videos/uitleg2-welk-deel-is-gekleurd.mp4',
+   tekst: ['Tel eerst alle stukken.', 'Dat getal is de <b>noemer</b>.', 'Tel dan de gekleurde stukken.', 'Dat getal is de <b>teller</b>.', `4 van de 6 stukken gekleurd: ${breukGroot(4, 6)} deel.`, 'De stukken moeten even groot zijn.']},
+  {id: '4a', hulpFig: [['taart']], nr: '4', deel: 'a', ctx: 'c4', dom: D54, vraag: ['Uit hoeveel even grote stukken bestond de hele taart?'], type: 'num', ans: 8, eenheid: 'stukken',
+   hint: ['Tel alle stukken.', 'Tel ook de stukken met stippellijnen.'], uitleg: ['Tel alle stukken: de gekleurde stukken en de stukken met stippellijnen.', '5 + 3 = 8', 'De hele taart had 8 stukken.'], fouten: {5: 'Alleen de stukken die er nog zijn geteld', 3: 'Alleen de verkochte stukken geteld'}},
+  {id: '4b', nr: '4', deel: 'b', ctx: 'c4', dom: D54, vraag: ['Hoeveel stukken zijn al verkocht?'], type: 'num', ans: 3, eenheid: 'stukken',
+   hint: ['Verkochte stukken zijn er niet meer.', 'Tel de stukken met stippellijnen.'], uitleg: ['De stukken met stippellijnen zijn verkocht.', 'Er zijn 3 stukken verkocht.'], fouten: {5: 'Stukken geteld die er nog zijn'}},
+  {id: '4c', nr: '4', deel: 'c', ctx: 'c4', dom: D51, vraag: ['De hele taart kost 16 euro.', 'Hoeveel kost één stuk?'], type: 'num', ans: 2, eenheid: 'euro',
+   hint: ['De hele taart heeft 8 stukken.', 'Deel de prijs door het aantal stukken.'], uitleg: ['16 : 8 = 2', 'Eén stuk taart kost 2 euro.'], fouten: {128: 'Keer gedaan in plaats van gedeeld'}},
+  {id: '5a', nr: '5', deel: 'a', ctx: 'c5', dom: D54, vraag: ['Kleur [1/4] deel van de pizza van Noah.'], type: 'kleur', figs: [{fig: 'noah', nodig: 1, label: 'Noah', kleur: 'geel'}],
+   hint: ['De noemer is 4: de pizza heeft 4 stukken.', 'De teller is 1: kleur 1 stuk.'], uitleg: ['[1/4] betekent: 1 van de 4 stukken.', 'Je kleurt 1 stuk.']},
+  {id: '5b', nr: '5', deel: 'b', ctx: 'c5', dom: D54, vraag: ['Kleur [2/6] deel van de pizza van Sara.'], type: 'kleur', figs: [{fig: 'sara', nodig: 2, label: 'Sara', kleur: 'geel'}],
+   hint: ['De noemer is 6: de pizza heeft 6 stukken.', 'De teller is 2: kleur 2 stukken.'], uitleg: ['[2/6] betekent: 2 van de 6 stukken.', 'Je kleurt 2 stukken.']},
+  {id: '5c', nr: '5', deel: 'c', ctx: 'c5', dom: D54, vraag: ['Wie heeft meer pizza gegeten?'], type: 'mk', opties: ['Noah', 'Sara'], ans: 1,
+   hint: ['Kijk naar de pizza\'s die je bij a en b hebt gekleurd.', 'Welk gekleurd deel is groter?'], uitleg: ['Noah at [1/4] deel: een kwart.', 'Sara at [2/6] deel: dat is een derde.', 'Het deel van Sara is groter.', 'Sara heeft meer pizza gegeten.']},
+  {id: '6', hulpFig: [['zes2']], nr: '6', deel: '', ctx: 'c6', dom: D54, vraag: ['Welk deel van de figuur is wit?'], type: 'stappen', velden: [{breuk: true, lab: 'Wit:', na: 'deel', ans: [4, 6]}],
+   hint: ['Tel eerst alle stukken. Dat is de noemer.', 'Tel dan de witte stukken. Dat is de teller.'], uitleg: ['Er zijn 6 stukken.', '2 stukken zijn roze. 6 − 2 = 4 stukken zijn wit.', 'Dus [4/6] deel is wit.'], fouten: {'2/6': 'Gekleurde stukken geteld in plaats van witte'}},
+  {id: '7a', hulpFig: [['figA', 'A']], nr: '7', deel: 'a', ctx: 'c7', dom: D54, vraag: ['In hoeveel even grote stukken is figuur A verdeeld?'], type: 'num', ans: 3, eenheid: 'stukken',
+   hint: ['Tel alle stukken van figuur A.', 'Tel ook het witte stuk.'], uitleg: ['Figuur A heeft 3 even grote stukken.'], fouten: {2: 'Alleen de gekleurde stukken geteld'}},
+  {id: '7b', nr: '7', deel: 'b', ctx: 'c7', dom: D54, vraag: ['Hoeveel stukken zijn geel?'], type: 'num', ans: 2, eenheid: 'stukken',
+   hint: ['Tel alleen de gele stukken.'], uitleg: ['Er zijn 2 stukken geel.']},
+  {id: '7c', hulpFig: [['figA', 'A']], nr: '7', deel: 'c', ctx: 'c7', dom: D54, vraag: ['Welk deel van figuur A is geel?', 'Schrijf het als breuk.'], type: 'stappen', velden: [{breuk: true, lab: 'Geel:', na: 'deel', ans: [2, 3]}],
+   hint: ['De teller is het aantal gele stukken.', 'De noemer is het totaal aantal stukken.'], uitleg: ['Teller: 2 gele stukken.', 'Noemer: 3 stukken.', 'Dus [2/3] deel is geel.'], fouten: {'3/2': 'Teller en noemer omgedraaid', '1/3': 'Witte stukken geteld'}},
+  {id: '7d', hulpFig: [['figB', 'B'], ['figC', 'C'], ['figD', 'D'], ['figE', 'E']], nr: '7', deel: 'd', ctx: 'c7d', dom: D54, vraag: ['Welk deel is gekleurd?', 'Schrijf bij elke figuur een breuk.'], type: 'stappen',
+   velden: [{breuk: true, lab: 'B:', na: 'deel', ans: [2, 4]}, {breuk: true, lab: 'C:', na: 'deel', ans: [3, 4]}, {breuk: true, lab: 'D:', na: 'deel', ans: [3, 8]}, {breuk: true, lab: 'E:', na: 'deel', ans: [5, 8]}],
+   hint: ['Tel bij elke figuur eerst alle stukken. Dat is de noemer.', 'Tel daarna de gekleurde stukken. Dat is de teller.', 'Figuur D en E hebben allebei 8 stukken.'], uitleg: ['B: 2 van de 4 stukken: [2/4] deel.', 'C: 3 van de 4 stukken: [3/4] deel.', 'D: 3 van de 8 stukken: [3/8] deel.', 'E: 5 van de 8 stukken: [5/8] deel.']},
+  {id: '8', hulpFig: [['f8_1', '1'], ['f8_2', '2'], ['f8_3', '3'], ['f8_4', '4']], nr: '8', deel: '', ctx: 'c8', dom: D54, vraag: ['Welk deel is gekleurd?', 'Schrijf bij elke figuur een breuk.', 'Bij figuur 1 staat de teller er al.'], type: 'stappen',
+   velden: [{breuk: true, lab: '1:', na: 'deel', ans: [3, 8], vastT: true}, {breuk: true, lab: '2:', na: 'deel', ans: [5, 8]}, {breuk: true, lab: '3:', na: 'deel', ans: [2, 4]}, {breuk: true, lab: '4:', na: 'deel', ans: [7, 8]}],
+   hint: ['Tel bij elke figuur alle stukken. Dat getal komt onder de streep.', 'Tel de gekleurde stukken. Dat getal komt boven de streep.'], uitleg: ['1: 3 van de 8 stukken: [3/8] deel.', '2: 5 van de 8 stukken: [5/8] deel.', '3: 2 van de 4 stukken: [2/4] deel.', '4: 7 van de 8 stukken: [7/8] deel.']},
+  {id: '9', hulpFig: [['f9_1', '1'], ['f9_2', '2'], ['f9_3', '3'], ['f9_4', '4']], nr: '9', deel: '', ctx: 'c9', dom: D54, vraag: ['Welk deel is gekleurd?', 'Schrijf bij elke figuur een breuk.'], type: 'stappen',
+   velden: [{breuk: true, lab: '1:', na: 'deel', ans: [6, 10]}, {breuk: true, lab: '2:', na: 'deel', ans: [3, 8]}, {breuk: true, lab: '3:', na: 'deel', ans: [1, 6]}, {breuk: true, lab: '4:', na: 'deel', ans: [4, 9]}],
+   hint: ['Figuur 1 heeft 2 rijen van 5 hokjes.', 'Tel steeds eerst alle stukken (noemer), daarna de gekleurde stukken (teller).'], uitleg: ['1: 6 van de 10 hokjes: [6/10] deel.', '2: 3 van de 8 stukken: [3/8] deel.', '3: 1 van de 6 hokjes: [1/6] deel.', '4: 4 van de 9 hokjes: [4/9] deel.']},
+ ]},
+ {id: 's3', titel: 'Zelf kleuren', items: [
+  {id: '10a', hulpFig: [['lvormK', '1']], nr: '10', deel: 'a', ctx: 'c10', dom: D54, vraag: ['Hoeveel vierkantjes heeft figuur 1?'], type: 'num', ans: 6, eenheid: 'vierkantjes',
+   hint: ['Tel de vierkantjes in de bovenste rij.', 'Tel daarna de vierkantjes in de onderste rij.'], uitleg: ['Bovenste rij: 2 vierkantjes.', 'Onderste rij: 4 vierkantjes.', '2 + 4 = 6 vierkantjes.']},
+  {id: '10b', nr: '10', deel: 'b', ctx: 'c10', dom: D54, vraag: ['Maak in figuur 1 vier vierkantjes groen.'], type: 'kleur', figs: [{fig: 'lvorm', nodig: 4, label: '1', kleur: 'groen'}],
+   hint: ['Klik op een vierkantje om het groen te maken.', 'Je kleurt er precies 4.'], uitleg: ['Je kleurt 4 van de 6 vierkantjes.', 'Welke 4 maakt niet uit.']},
+  {id: '10c', nr: '10', deel: 'c', ctx: 'c10c', dom: D54, vraag: ['Welk deel van figuur 1 is nu groen?'], type: 'stappen', velden: [{breuk: true, lab: 'Groen:', na: 'deel', ans: [4, 6], vastN: true, exact: true}],
+   hint: ['Hoeveel vierkantjes heb je groen gemaakt?', 'Dat getal komt boven de streep.'], uitleg: ['Je kleurde 4 van de 6 vierkantjes.', 'Dus [4/6] deel is groen.']},
+  {id: '10d', nr: '10', deel: 'd', ctx: 'c10d', dom: D54, vraag: ['Kleur bij figuur 2 en figuur 3 het deel dat onder de figuur staat.'], type: 'kleur',
+   figs: [{fig: 'vk8', nodig: 5, label: '2', onder: '[5/8] deel', kleur: 'geel'}, {fig: 'dr9', nodig: 4, label: '3', onder: '[4/9] deel', kleur: 'geel'}],
+   hint: ['Kijk naar de teller: zoveel stukken kleur je.', 'Bij figuur 2 kleur je 5 stukken.', 'Bij figuur 3 kleur je 4 stukken.'], uitleg: ['[5/8]: kleur 5 van de 8 stukken.', '[4/9]: kleur 4 van de 9 stukken.']},
+  {id: '11', nr: '11', deel: '', ctx: 'c11', dom: D54, vraag: ['Kleur bij elke figuur het deel dat onder de figuur staat.'], type: 'kleur',
+   figs: [{fig: 'cirkel4', nodig: 3, label: '1', onder: '[3/4] deel', kleur: 'blauw', ruitjes: true},
+          {fig: 'lvormK', nodig: 5, label: '2', onder: '[5/6] deel', kleur: 'blauw', ruitjes: true},
+          {fig: 'r74', nodig: 8, label: '3', onder: '[2/7] deel', kleur: 'blauw', ruitjes: true, voorbeeld: [0, 1, 7, 8, 14, 15, 21, 22]},
+          {fig: 'r74', nodig: 20, label: '4', onder: '[5/7] deel', kleur: 'blauw', ruitjes: true, voorbeeld: [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 21, 22, 23, 24, 25]}],
+   hint: ['Figuur 1: de cirkel heeft 4 gelijke stukken. Klik op 3 stukken.', 'Figuur 3 heeft 28 hokjes. 28 : 7 = 4. Dus [1/7] deel is 4 hokjes.', 'Hoeveel hokjes zijn dan [2/7] deel en [5/7] deel?'],
+   uitleg: ['1: kleur 3 van de 4 stukken.', '2: kleur 5 van de 6 vierkantjes.', '3: [1/7] deel is 4 hokjes. [2/7] deel is 2 × 4 = 8 hokjes.', '4: [5/7] deel is 5 × 4 = 20 hokjes.']},
+ ]},
+ {id: 's4', titel: 'Extra oefenen', items: [
+  {id: '12a', hulpFig: [['t_zes']], nr: '12', deel: 'a', ctx: 'cT1', dom: D54, vraag: ['Welk deel van de figuur is gekleurd?'], type: 'stappen', velden: [{breuk: true, lab: 'Gekleurd:', na: 'deel', ans: [2, 6]}],
+   hint: ['Tel alle stukken (noemer) en de gekleurde stukken (teller).'], uitleg: ['2 van de 6 stukken zijn gekleurd.', 'Dus [2/6] deel.']},
+  {id: '12b', nr: '12', deel: 'b', ctx: 'cT2', dom: D54, vraag: ['Wat is de noemer van deze breuk?'], type: 'num', ans: 7,
+   hint: ['De noemer staat onder de streep.'], uitleg: ['De noemer is het getal onder de streep: 7.'], fouten: {3: 'Teller genomen in plaats van noemer'}},
+  {id: '12c', nr: '12', deel: 'c', ctx: 'cT3', dom: D54, vraag: ['Welke twee breuken hebben dezelfde teller?', 'Kies er twee.'], type: 'mk', multi: true, opties: ['[2/9]', '[4/7]', '[2/5]', '[1/4]'], ans: [0, 2],
+   hint: ['De teller staat boven de streep.'], uitleg: ['[2/9] en [2/5] hebben allebei teller 2.']},
+  {id: '12d', nr: '12', deel: 'd', ctx: 'cT4', dom: D51, vraag: ['Hoeveel kost één stuk taart?'], type: 'num', ans: 3, eenheid: 'euro',
+   hint: ['Deel de prijs door het aantal stukken.'], uitleg: ['18 : 6 = 3', 'Eén stuk kost 3 euro.']},
+  {id: '12e', hulpFig: [['t_strook']], nr: '12', deel: 'e', ctx: 'cT5', dom: D54, vraag: ['Welk deel van de strook is niet gekleurd?'], type: 'stappen', velden: [{breuk: true, lab: 'Wit:', na: 'deel', ans: [3, 5]}],
+   hint: ['Tel de witte hokjes. Dat is de teller.', 'Tel alle hokjes. Dat is de noemer.'], uitleg: ['3 van de 5 hokjes zijn wit.', 'Dus [3/5] deel is niet gekleurd.'], fouten: {'2/5': 'Gekleurde hokjes geteld in plaats van witte'}},
+  {id: '12f', nr: '12', deel: 'f', ctx: 'cT6', dom: D54, vraag: ['Kleur [3/4] deel van het vierkant.'], type: 'kleur', figs: [{fig: 't_vk4', nodig: 3, kleur: 'roze'}],
+   hint: ['Het vierkant heeft 4 stukken.', 'Kleur er 3.'], uitleg: ['Kleur 3 van de 4 stukken.']},
+  {id: '12g', nr: '12', deel: 'g', ctx: 'cT7', dom: D54, vraag: ['Kleur [2/7] deel van de figuur.'], type: 'kleur', figs: [{fig: 't_r72', nodig: 4, kleur: 'groen', voorbeeld: [0, 1, 7, 8]}],
+   hint: ['De figuur heeft 14 hokjes. 14 : 7 = 2.', '[1/7] deel is 2 hokjes. Hoeveel hokjes is dan [2/7] deel?'], uitleg: ['14 : 7 = 2 hokjes.', '[2/7] deel is 2 × 2 = 4 hokjes.']},
+  {id: '12h', nr: '12', deel: 'h', ctx: 'cT8', dom: D54, vraag: ['Wie eet de meeste pizza?'], type: 'mk', opties: ['Sam', 'Jan'], ans: 0,
+   hint: ['Kijk naar de gele stukken.', 'Welk stuk is groter: een half of een vierde?'], uitleg: ['Een halve pizza is groter dan een kwart pizza.', 'Sam eet de meeste pizza.']},
+ ]},
+];
+
+/* ---------- oefentoets: dezelfde vragen, maar in toetsmodus ---------- */
+const TOETS_IDS = ['1a', '1b', '2', '3a', '4a', '4c', '5b', '5c', '6', '7c', '7d', '8', '9', '10d', '11', '12b', '12c', '12e', '12g', '12h'];
+(() => { const alle = SECTIES.flatMap(s => s.items);
+  SECTIES.push({id: 'toets', titel: 'Oefentoets', toets: true, items: TOETS_IDS.map(id => { const o = alle.find(i => i.id === id);
+    return Object.assign({}, o, {id: 'T' + id, toets: true, bron: o.bron && o.bron.map(b => typeof b === 'string' ? (TOETS_IDS.includes(b) ? 'T' + b : b) : b)}); })}); })();
+const ITEMS = []; SECTIES.forEach(s => s.items.forEach(it => { it.sectie = s.id; ITEMS.push(it); }));
+const VRAGEN = ITEMS.filter(i => !i.theorie && !i.toets);
+const TOETSVRAGEN = ITEMS.filter(i => i.toets);
+
+/* =========================================================
+   TOESTAND
+   ========================================================= */
+const OPSLAG = 'breuken-1bb-33-v1';
+let S = laad() || {naam: '', klas: '', start: new Date().toISOString(), huidig: 0, items: {}, gestart: false, klaar: false};
+// bij het openen altijd eerst het startscherm: zo gaat op een gedeelde computer niemand per ongeluk verder in het werk van een ander
+S.gestart = false;
+function laad(){ try { return JSON.parse(localStorage.getItem(OPSLAG)); } catch (e) { return null; } }
+function bewaar(){ S.module = (window.APP_CONFIG || {}).MODULE || null; try { localStorage.setItem(OPSLAG, JSON.stringify(S)); } catch (e) {} wolkLater(); }
+/* ---------- online opslaan met een persoonlijke code ---------- */
+let DB = null;
+function db(){ const c = window.APP_CONFIG || {}; if (!DB && c.SUPABASE_URL && c.SUPABASE_ANON_KEY && window.supabase) DB = window.supabase.createClient(c.SUPABASE_URL, c.SUPABASE_ANON_KEY); return DB; }
+function nieuweCode(){
+  const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; const r = new Uint32Array(8); crypto.getRandomValues(r);
+  const t = Array.from(r, x => abc[x % abc.length]).join(''); return t.slice(0, 4) + '-' + t.slice(4);
+}
+function normCode(c){ const t = String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); return t.length === 8 ? t.slice(0, 4) + '-' + t.slice(4) : ''; }
+let wolkTimer = null, wolkStatus = '';
+function zetWolkStatus(t){ wolkStatus = t; const e = document.getElementById('wolk'); if (e) e.textContent = t; }
+function wolkLater(){ if (!S.code || !db()) return; clearTimeout(wolkTimer); zetWolkStatus('Opslaan…'); wolkTimer = setTimeout(wolkNu, 1200); }
+async function wolkNu(){
+  clearTimeout(wolkTimer); if (!S.code || !db()) return;
+  try {
+    const {error} = await db().rpc('voortgang_opslaan', {p_code: S.code, p_leerling: S.naam || 'onbekend', p_klas: S.klas || null, p_data: S});
+    if (error) throw error; zetWolkStatus('✓ Opgeslagen');
+  } catch (e) { zetWolkStatus('⚠ Niet opgeslagen (geen internet?)'); }
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') wolkNu(); });
+function st(id){ if (!S.items[id]) S.items[id] = {pogingen: [], hint: 0, opgelost: false, punten: null, tijd: 0, gezien: null, laatste: null, hulpGetoond: false, invoer: null};
+  const x = S.items[id]; if (!x.label){ const it = ITEMS.find(i => i.id === id); if (it){ x.label = (it.toets ? 'Toets ' : '') + (it.nr === 'Leerdoelen' ? 'Leerdoelen ' : '') + (it.nr !== 'Leerdoelen' ? it.nr : '') + (it.deel ? ' ' + it.deel : ''); x.vraag = (it.vraag || []).filter(v => !v.startsWith('F:')).join(' ').slice(0, 140); x.toets = !!it.toets; x.volg = ITEMS.indexOf(it); } }
+  return x; }
+function puntenVan(s){ if (!s.opgelost) return 0; if ('toetsGoed' in s) return s.toetsGoed ? 2 : 0; const fouten = s.pogingen.filter(p => !p.goed).length; if (fouten === 0 && !s.hint) return 2; if (fouten <= 1) return 1; return 0; }
+
+/* =========================================================
+   WEERGAVE
+   ========================================================= */
+const app = $('#app');
+function render(){
+  stopLezen();
+  if (!S.gestart) return startScherm();
+  if (!S.code && db()){ S.code = nieuweCode(); bewaar(); }
+  if (S.klaar) return eindScherm();
+  if (S.toetsScherm) return toetsScherm();
+  { const sl = eersteSlot(S.huidig); if (sl >= 0) S.huidig = sl; }
+  const it = ITEMS[S.huidig];
+  const sec = SECTIES.find(s => s.id === it.sectie);
+  app.innerHTML = `
+  <header>
+    <h1>§ 3.3 Breuken</h1>
+    <nav class="tabs" aria-label="Paragrafen">${SECTIES.map(s => `<button class="tab ${s.toets ? 'toets' : ''} ${s.id === sec.id ? 'actief' : ''}" data-sec="${s.id}">${esc(s.titel)}</button>`).join('')}</nav>
+    <div class="kop-rechts"><button class="knop-klein rm-knop" id="rmOpen" aria-pressed="${!$('#rm').hidden}">🧮 Rekenmachine</button><span class="naam">${esc(S.naam)}</span>${S.code ? `<button class="knop-klein" id="codeKnop" style="background:rgba(255,255,255,.15)" title="Jouw code om later verder te gaan">Code: ${esc(S.code)}</button><span id="wolk" style="font-size:12px;opacity:.85">${esc(wolkStatus)}</span>` : ''}<button class="knop-klein" id="naarEind">Afronden</button></div>
+  </header>
+  <div>
+    <div class="strook" id="strook">${sec.items.map(i => {
+      const idx = ITEMS.indexOf(i);
+      if (i.theorie) return `<button class="stip theorie ${idx === S.huidig ? 'huidig' : ''}" data-i="${idx}" title="Theorie: ${esc(i.titel)}">▶ Theorie</button>`;
+      const s = S.items[i.id]; let k = '';
+      if (s && s.opgelost) k = (i.toets && !S.toetsKlaar) ? 'ingeleverd' : 'goed' + puntenVan(s); else if (s && s.pogingen.length) k = 'bezig';
+      return `<button class="stip ${k} ${idx === S.huidig ? 'huidig' : ''}" data-i="${idx}" title="Opdracht ${esc(i.nr)} ${esc(i.deel)}">${esc(i.nr)}${esc(i.deel ? ' ' + i.deel : '')}</button>`;
+    }).join('')}</div>
+  </div>
+  <main id="main"></main>
+  <footer>
+    <button class="knop licht" id="vorige" ${S.huidig === 0 ? 'disabled' : ''}>← Vorige</button>
+    <span class="spacer"></span>
+    <span class="voortgang">${it.toets ? `${TOETSVRAGEN.filter(v => S.items[v.id] && S.items[v.id].opgelost).length} van ${TOETSVRAGEN.length} toetsvragen gemaakt` : `${VRAGEN.filter(v => S.items[v.id] && S.items[v.id].opgelost).length} van ${VRAGEN.length} opdrachten af`}</span>
+    <span class="spacer"></span>
+    <button class="knop paars" id="volgende">${it.toets && it === TOETSVRAGEN[TOETSVRAGEN.length - 1] ? (S.toetsKlaar ? 'Naar de uitslag →' : 'Toets inleveren →') : S.huidig === ITEMS.length - 1 ? 'Naar resultaten →' : (it.theorie ? 'Naar de opdracht →' : 'Volgende / overslaan →')}</button>
+  </footer>`;
+  app.querySelectorAll('.tab').forEach(b => b.onclick = () => { const s = SECTIES.find(x => x.id === b.dataset.sec); ga(ITEMS.indexOf(s.items[0])); });
+  app.querySelectorAll('.stip').forEach(b => b.onclick = () => ga(+b.dataset.i));
+  $('#vorige').onclick = () => ga(S.huidig - 1);
+  $('#volgende').onclick = () => it.toets && it === TOETSVRAGEN[TOETSVRAGEN.length - 1] ? toetsInleveren() : S.huidig === ITEMS.length - 1 ? afronden() : ga(S.huidig + 1);
+  $('#naarEind').onclick = afronden;
+  $('#rmOpen').onclick = () => rmToggle();
+  const ck = $('#codeKnop'); if (ck) ck.onclick = () => toonCode(false);
+  const cur = app.querySelector('.stip.huidig'); if (cur) cur.scrollIntoView({block: 'nearest', inline: 'center'});
+  it.theorie ? toonTheorie(it) : toonVraag(it);
+}
+// eerst de uitleg bekijken: een opdracht na een filmpje dat nog niet bekeken is, gaat naar dat filmpje
+function eersteSlot(i){ return ITEMS.findIndex((x, j) => j < i && x.theorie && !(S.theorieGezien || {})[x.id]); }
+function ga(i){ if (i < 0 || i >= ITEMS.length) return; const sl = eersteSlot(i); if (sl >= 0){ S.slotMelding = i !== sl; i = sl; } S.huidig = i; bewaar(); render(); window.scrollTo(0, 0); }
+
+function toonTheorie(it){
+  $('#main').innerHTML = `
+   <section class="links"><video controls preload="metadata" playsinline src="${it.video}" aria-label="Animatie: ${esc(it.titel)}"></video>
+     <div class="graf-uitleg">Zet je geluid aan. Je kunt het filmpje zo vaak bekijken als je wilt.</div></section>
+   <section class="rechts">
+     <span class="label-domein">Theorie</span>
+     <div class="opdr-nr"><span>${esc(it.titel)}</span></div>
+     ${leesKnoppen()}
+     <div class="theorie-tekst">${it.tekst.map(t => `<span class="zin">${t}</span>`).join('')}</div>
+     ${(S.theorieGezien || {})[it.id] ? '<p>Je hebt het filmpje bekeken.<br>Klik op <b>Naar de opdracht</b>.</p>' : `<div class="theorie-slot">${S.slotMelding ? '<b>Eerst de uitleg!</b><br>' : ''}Bekijk eerst het hele filmpje.<br>Daarna kun je verder met de opdrachten.</div>`}
+   </section>`;
+  S.slotMelding = false;
+  const gezien = (S.theorieGezien || {})[it.id];
+  if (!gezien) $('#volgende').disabled = true;
+  $('#main video').addEventListener('ended', () => { S.theorieGezien = S.theorieGezien || {}; S.theorieGezien[it.id] = true; bewaar(); wolkLater(); render(); });
+}
+
+function toonVraag(it){
+  const s = st(it.id); if (!s.gezien) s.gezien = nu(); s.laatste = nu(); bewaar();
+  const ctx = CTX[it.ctx];
+  $('#main').innerHTML = `
+   <section class="links" id="links"></section>
+   <section class="rechts">
+     <span class="label-domein">${esc(it.dom)}</span>
+     <div class="opdr-nr"><b>${esc(it.nr)}</b><span>${esc(it.deel)}</span></div>
+     ${leesKnoppen()}
+     <div class="blok">${zinnen(ctx.intro)}</div>
+     <div class="witregel"></div>
+     ${it.toets && !S.toetsKlaar ? '<div class="toets-let">Oefentoets: je hebt één poging en er zijn geen hints.</div>' : ''}
+     <div class="blok vraag">${zinnen(it.vraag)}</div>
+     <div id="invoer"></div>
+     <div class="knoppen">
+       <button class="knop hoofd" id="controleer">Controleer</button>
+       <button class="knop licht" id="hintKnop">💡 Hint</button>
+     </div>
+     <div class="hintvak" id="hintvak"></div>
+     <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+     <div class="berekeningen" id="berekeningen"></div>
+     <div class="pogingen" id="pogingen"></div>
+   </section>`;
+  // linkerkant
+  const links = $('#links');
+  $('#main').classList.toggle('groot', it.type === 'grafiek' || !!it.graf || !!ctx.graf);
+  $('#main').classList.toggle('werk', it.type === 'grafiek');
+  if (it.type === 'grafiek'){
+    s.invoer = s.invoer || [];
+    const toetsFout = it.toets && S.toetsKlaar && s.opgelost && !s.toetsGoed;
+    let gumAan = false;
+    const svg = maakGrafiek(it.g, {interactief: true, punt: () => s.invoer, slot: () => s.opgelost, bijWijziging: bewaar,
+      gum: () => gumAan, melding: t => { const m = document.getElementById('puntMelding'); if (m) m.textContent = t; }, volgorde: it.volgorde,
+      lijnen: (it.vast || []).concat(toetsFout ? [it.pts ? {pts: it.pts, kleur: '#16965A'} : {f: it.f, kleur: '#16965A'}] : []),
+      kleurPunt: (x, y) => s.opgelost && (!it.toets || (S.toetsKlaar && s.toetsGoed)) ? '#16965A' : '#5E0696'});
+    links.appendChild(svg);
+    links.insertAdjacentHTML('beforeend', `<div class="graf-uitleg">Klik op het rooster om een punt te zetten.<br>Verkeerd punt? Klik op de gum en dan op dat punt.</div>
+      <div class="graf-uitleg" id="puntMelding" role="status"></div>
+      <div class="graf-knoppen">
+        <button class="knop licht gum" id="gum" type="button" aria-pressed="false" title="Gum: haal één punt weg"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path class="vul" d="M16.2 3.6a2 2 0 0 1 2.8 0l3.4 3.4a2 2 0 0 1 0 2.8L12 20.2H7.4L2.6 15.4a2 2 0 0 1 0-2.8z" fill="#E924D5"/><path d="M9 9.2l6.2 6.2" stroke="#5E0696" stroke-width="2"/><path d="M13 20.2h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Gum</span></button>
+        <button class="knop licht" id="wis" type="button">Alles wissen</button>
+      </div>`);
+    const zetGum = aan => { gumAan = aan; const g = $('#gum'); g.setAttribute('aria-pressed', aan); g.querySelector('span').textContent = aan ? 'Gum aan' : 'Gum'; svg.classList.toggle('gum-aan', aan);
+      $('#puntMelding').textContent = aan ? 'De gum staat aan. Klik op het punt dat weg moet.' : ''; };
+    $('#gum').onclick = () => { if (s.opgelost) return; zetGum(!gumAan); };
+    $('#wis').onclick = () => { if (s.opgelost) return; s.invoer.length = 0; svg._teken(); bewaar(); zetGum(false); };
+    if (s.opgelost){ $('#gum').disabled = true; $('#wis').disabled = true; }
+    if (it.bron) toonBronTabellen(it);
+  } else if (it.type === 'kleur'){
+    s.kleur = s.kleur || it.figs.map(() => []);
+    links.innerHTML = `<div class="figrij">${it.figs.map((f, fi) => `<div class="figcel" data-fi="${fi}"><div class="${f.ruitjes ? 'ruitjes' : ''}">${FIG.svg(FIGUREN[f.fig](), {klik: true, kleurSet: s.kleur[fi], kleur: f.kleur})}</div>${f.label ? `<span class="figlabel">${esc(f.label)}</span>` : ''}${f.onder ? `<div class="onder">${fmt(f.onder)}</div>` : ''}</div>`).join('')}</div>`;
+    links.querySelectorAll('.figcel').forEach(cel => cel.addEventListener('click', e => {
+      const p = e.target.closest('.stuk'); if (!p || s.opgelost) return;
+      const fi = +cel.dataset.fi, i = +p.dataset.i, a = s.kleur[fi], j = a.indexOf(i);
+      j >= 0 ? a.splice(j, 1) : a.push(i);
+      p.setAttribute('fill', a.includes(i) ? KLEUR[it.figs[fi].kleur] : '#fff');
+      cel.classList.remove('goed', 'fout'); bewaar();
+    }));
+  } else if (it.graf){ links.appendChild(it.graf()); }
+  else if (ctx.graf){ links.appendChild(ctx.graf()); }
+  else { links.innerHTML = ctx.links(); }
+  // invoer rechts
+  const inv = $('#invoer');
+  if (it.type === 'num'){
+    inv.innerHTML = `<div class="antw-rij"><label for="a0">Antwoord:</label><input class="inv" id="a0" inputmode="decimal" autocomplete="off">${it.eenheid ? `<span>${esc(it.eenheid)}</span>` : ''}</div>`;
+  } else if (it.type === 'tijd'){
+    inv.innerHTML = `<div class="antw-rij"><label for="a0">Tijd:</label><input class="inv" id="a0" placeholder="bijv. 9:30" autocomplete="off"><span>uur</span></div>`;
+  } else if (it.type === 'formule'){
+    const n = it.aantal || 1;
+    inv.innerHTML = Array.from({length: n}, (_, k) => `<div class="antw-rij"><label for="a${k}">${n > 1 ? 'Manier ' + (k + 1) + ':' : 'Formule:'}</label><input class="inv breed" id="a${k}" autocomplete="off" spellcheck="false" placeholder="${it.begin ? it.begin + ' = …' : 'typ de formule'}"></div>`).join('')
+      + `<div class="pogingen">Typ een min als - en een keer als * of ×.</div>`;
+  } else if (it.type === 'tabel'){
+    inv.innerHTML = `<div class="tabel-wrap"><table class="wt${it.kop.every(k => k.length <= 3) ? ' kort' : ''}"><tr><th>${fmtF(it.kop[0])}</th>${it.xs.map(x => `<th>${String(x).replace('-', '−')}</th>`).join('')}</tr>
+      <tr><th>${fmtF(it.kop[1])}</th>${it.ans.map((a, k) => (it.gegeven || []).includes(k) ? `<td class="gegeven">${String(a).replace('-', '−')}</td>` : `<td><input id="c${k}" inputmode="decimal" autocomplete="off" aria-label="${esc(it.kop[1])} bij ${esc(it.kop[0])} = ${it.xs[k]}"></td>`).join('')}</tr></table></div>`;
+  } else if (it.type === 'stappen'){
+    const vak = (id, lab) => `<input class="inv vak" id="${id}" inputmode="decimal" autocomplete="off" aria-label="${esc(lab)}">`;
+    inv.innerHTML = (it.begin ? `<div class="stap start">${fmtF(it.begin)}</div>` : '') + `<div class="stappen">${it.velden.map((v, k) => {
+      if (v.as) return '';
+      if (v.breuk){ const iv = (j, vast) => vast ? `<input class="inv vak" id="a${k}_${j}" value="${v.ans[j]}" readonly tabindex="-1" aria-label="${j ? 'noemer' : 'teller'} ${v.ans[j]}">` : vak(`a${k}_${j}`, `${v.lab} ${j ? 'noemer' : 'teller'}`);
+        return `<div class="stap breukstap"><span class="lab">${fmtF(v.lab || '')}</span><span class="breukvak">${iv(0, v.vastT)}<span class="streep"></span>${iv(1, v.vastN)}</span>${v.na ? `<span>${esc(v.na)}</span>` : ''}</div>`; }
+      if (v.tpl){ const d = v.tpl.split('{}'); return `<div class="stap formulestap">${d.map((t, j) => fmtF(t) + (j < d.length - 1 ? vak(`a${k}_${j}`, `Stap ${k + 1}, vakje ${j + 1}`) : '')).join('')}</div>`; }
+      return `<div class="stap"><label class="lab" for="a${k}">${fmtF(v.lab)}</label>${v.soort === 'keuze'
+       ? `<select id="a${k}">${v.opties.map((o, j) => `<option value="${j}">${esc(o)}</option>`).join('')}</select>`
+       : `<input class="inv" id="a${k}" inputmode="decimal" autocomplete="off">`}</div>`; }).join('')}</div>`;
+  } else if (it.type === 'kleur'){
+    inv.innerHTML = `<div class="kleur-uitleg">Klik links op een stuk om het te kleuren.<br>Klik nog een keer om het weer wit te maken.</div><button class="knop licht" id="wisKleur" type="button">✕ Wis kleuren</button>`;
+    $('#wisKleur').onclick = () => { if (s.opgelost) return; s.kleur = it.figs.map(() => []); bewaar(); render(); };
+  } else if (it.type === 'mk'){
+    inv.innerHTML = `<div class="opties">${it.opties.map((o, k) => `<button class="optie" data-k="${k}" aria-pressed="false">${regels(o)}</button>`).join('')}</div>`;
+    s.keuze = s.keuze || [];
+    inv.querySelectorAll('.optie').forEach(b => b.onclick = () => {
+      if (s.opgelost) return; const k = +b.dataset.k;
+      if (it.multi){ const i = s.keuze.indexOf(k); i >= 0 ? s.keuze.splice(i, 1) : s.keuze.push(k); }
+      else s.keuze = [k];
+      inv.querySelectorAll('.optie').forEach(x => { const on = s.keuze.includes(+x.dataset.k); x.classList.toggle('gekozen', on); x.setAttribute('aria-pressed', on); });
+    });
+    if (it.multi){
+      inv.insertAdjacentHTML('beforeend', '<button class="knop licht" id="wisKeuze" type="button">✕ Wis antwoorden</button>');
+      $('#wisKeuze').onclick = () => {
+        if (s.opgelost) return;
+        s.keuze = []; bewaar();
+        inv.querySelectorAll('.optie').forEach(x => { x.classList.remove('gekozen', 'goed', 'fout'); x.setAttribute('aria-pressed', false); });
+        const fb = $('#feedback'); if (fb && !fb.classList.contains('goed')){ fb.className = 'feedback'; fb.innerHTML = ''; }
+      };
+    }
+  }
+  if (it.type === 'stappen' && it.velden.some(v => v.as)) zetAsVakken(it);
+  herstelInvoer(it, s);
+  $('#controleer').onclick = () => controleer(it);
+  $('#hintKnop').onclick = () => toonHint(it);
+  if (it.toets){ $('#hintKnop').hidden = true; $('#controleer').textContent = 'Antwoord inleveren'; }
+  inv.querySelectorAll('input').forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') controleer(it); }));
+  toonStatus(it);
+  toonBerekeningen(it);
+}
+
+// invulvakjes direct op de as van het assenstelsel
+function zetAsVakken(it){
+  const svg = document.querySelector('#links svg.graf'); if (!svg) return;
+  const wrap = document.createElement('div'); wrap.className = 'as-wrap'; svg.replaceWith(wrap); wrap.appendChild(svg);
+  const [ax, ay] = svg._as, W = svg._W, H = svg._H;
+  it.velden.forEach((v, k) => { if (!v.as) return; v.pos.forEach((w, j) => {
+    const inp = document.createElement('input'); inp.className = 'asvak'; inp.id = `a${k}_${j}`; inp.inputMode = 'decimal'; inp.autocomplete = 'off';
+    inp.setAttribute('aria-label', `${v.as === 'y' ? 'Verticale' : 'Horizontale'} as, vakje ${j + 1}`);
+    if (v.as === 'y'){ inp.style.left = ((svg._X(ay) - 5) / W * 100) + '%'; inp.style.top = (svg._Y(w) / H * 100) + '%'; inp.style.transform = 'translate(-100%,-50%)'; }
+    else { inp.style.left = (svg._X(w) / W * 100) + '%'; inp.style.top = ((svg._Y(ax) + 15) / H * 100) + '%'; inp.style.transform = 'translate(-50%,-50%)'; }
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') controleer(it); });
+    wrap.appendChild(inp);
+  }); });
+}
+function herstelInvoer(it, s){
+  const w = s.waarden || {};
+  Object.entries(w).forEach(([id, v]) => { const e = document.getElementById(id); if (e) e.value = v; });
+  if (it.type === 'mk' && s.keuze) document.querySelectorAll('.optie').forEach(x => x.classList.toggle('gekozen', s.keuze.includes(+x.dataset.k)));
+  if (s.hint){ const hv = $('#hintvak'); hv.classList.add('open'); hv.innerHTML = it.hint.slice(0, s.hint).map((h, k) => `<div><b>Hint ${k + 1}:</b> ${miniLees()}<br>${regels(h)}</div>`).join(''); }
+}
+
+/* ---------- wat heeft de leerling precies ingevuld (voor de docent) ---------- */
+function antwTekst(it, w, s){
+  try {
+    const sym = v => String(v).trim() === '' ? '…' : String(v).trim();
+    if (it.type === 'mk') return (s.keuze || []).map(k => it.opties[k]).join(' + ');
+    if (it.type === 'grafiek') return (s.invoer || []).map(p => `(${p[0]}, ${p[1]})`).join(' ');
+    if (it.type === 'kleur') return it.figs.map((f, i) => (f.label ? f.label + ': ' : '') + ((s.kleur || [])[i] || []).length + ' gekleurd').join('  ');
+    if (it.type === 'tabel') return it.xs.map((x, k) => (it.gegeven || []).includes(k) ? null : `${x}→${sym(w['c' + k] || '')}`).filter(Boolean).join('  ');
+    if (it.type === 'stappen') return it.velden.map((f, k) => {
+      if (f.breuk) return (f.lab || '') + ' ' + sym(w[`a${k}_0`] || '') + '/' + sym(w[`a${k}_1`] || '');
+      if (f.tpl){ const d = f.tpl.split('{}'); return d.map((t, j) => t + (j < d.length - 1 ? '[' + sym(w[`a${k}_${j}`] || '') + ']' : '')).join(''); }
+      if (f.soort === 'keuze') return (f.lab || '') + ' ' + (f.opties[+w['a' + k]] || '…');
+      if (f.as) return f.ans.map((a, j) => sym(w[`a${k}_${j}`] || '')).join(', ');
+      return (f.lab || '') + ' ' + sym(w['a' + k] || '');
+    }).join(' | ');
+    return Object.keys(w).sort().map(k => sym(w[k])).join(' | ');
+  } catch (e) { return ''; }
+}
+function verzamel(it){
+  const w = {}; document.querySelectorAll('#invoer input, #invoer select, #links input.asvak').forEach(e => w[e.id] = e.value); return w;
+}
+function toonStatus(it){
+  const s = st(it.id); const fb = $('#feedback'); const pg = $('#pogingen');
+  const n = s.pogingen.length;
+  pg.textContent = n ? `Pogingen: ${n}${s.hint ? ' · hint gebruikt' : ''}` : '';
+  if (s.opgelost && it.toets){
+    if (!S.toetsKlaar){ fb.className = 'feedback info'; fb.innerHTML = 'Je antwoord is opgeslagen.<br>Ga door naar de volgende vraag.'; }
+    else if (s.toetsGoed){ fb.className = 'feedback goed'; fb.innerHTML = `${miniLees()}Goed! Je krijgt 2 punten.<br>${it.uitleg.map(u => regels(u)).join('<br>')}`; }
+    else { fb.className = 'feedback fout'; fb.innerHTML = `${miniLees()}Dit was niet goed. 0 punten.<br>Zo moest het:<br>${it.uitleg.map(u => regels(u)).join('<br>')}${it.type === 'grafiek' ? '<br>De goede grafiek is groen.' : ''}`; }
+    pg.textContent = '';
+    document.querySelectorAll('#invoer input, #invoer select, #links input.asvak').forEach(e => { e.disabled = true; });
+    $('#controleer').disabled = true;
+    return;
+  }
+  if (s.opgelost){
+    const p = puntenVan(s);
+    fb.className = 'feedback goed';
+    const vx = it.vrij && s.waarden ? parseNum(s.waarden.a0_0 || '') : NaN;
+    const uitl = it.vrijUitleg && !isNaN(vx) ? it.vrijUitleg(vx) : it.uitleg;
+    fb.innerHTML = `${miniLees()}Goed zo! Je krijgt ${p} ${p === 1 ? 'punt' : 'punten'}.<br>${uitl.map(u => regels(u)).join('<br>')}`;
+    document.querySelectorAll('#invoer input, #invoer select, #links input.asvak').forEach(e => { e.disabled = true; });
+    $('#controleer').disabled = true; $('#hintKnop').disabled = true;
+    const wk = $('#wisKeuze'); if (wk) wk.disabled = true;
+  }
+}
+
+
+/* ---------- tabel van de vorige vraag bij een grafiekopdracht ---------- */
+function toonBronTabellen(it){
+  const links = $('#links'); if (!links) return;
+  const vak = document.createElement('div'); vak.className = 'bron-boven'; links.prepend(vak);
+  // alle bron-tabellen samenvoegen tot één tabel die bij het assenstelsel hoort
+  const kol = new Map(); const nietAf = []; let kop = null;
+  it.bron.forEach(bid => {
+    const vast = typeof bid === 'object';
+    const b = vast ? bid : ITEMS.find(x => x.id === bid); if (!b) return; kop = kop || b.kop;
+    const bs = vast ? {opgelost: true} : (S.items[bid] || {}); const af = !!bs.opgelost; const w = bs.waarden || {};
+    if (!af) nietAf.push({bid, naam: (b.nr + b.deel).replace(/\s+/g, '')});
+    b.xs.forEach((x, k) => {
+      let y = null;
+      if ((b.gegeven || []).includes(k) || af) y = b.ans[k];
+      else { const v = parseNum(w['c' + k]); if (!isNaN(v)) y = v; }
+      if (y != null) y = String(y).replace('.', ',');
+      if (!kol.has(x) || kol.get(x) == null) kol.set(x, y);
+    });
+  });
+  const xs = [...kol.keys()].sort((p, q) => p - q);
+  vak.innerHTML = `<div class="bron">
+      <div class="bron-kop">Tabel bij de grafiek</div>
+      <div class="tabel-wrap"><table class="wt bron-tabel${kop.every(k => k.length <= 3) ? ' kort' : ''}">
+        <tr><th>${fmtF(kop[0])}</th>${xs.map(x => `<th>${String(x).replace('-', '−')}</th>`).join('')}</tr>
+        <tr><th>${fmtF(kop[1])}</th>${xs.map(x => { const y = kol.get(x); return y == null ? '<td class="leeg">…</td>' : `<td class="gegeven">${String(y).replace('-', '−')}</td>`; }).join('')}</tr>
+      </table></div>
+      ${nietAf.map(n => `<div class="bron-let">Let op: opdracht ${esc(n.naam)} is nog niet goed af. <button class="knop-tekst" data-ga="${esc(n.bid)}">Ga naar ${esc(n.naam)}</button></div>`).join('')}
+    </div>`;
+  vak.querySelectorAll('[data-ga]').forEach(b => b.onclick = () => ga(ITEMS.findIndex(x => x.id === b.dataset.ga)));
+
+}
+/* ---------- nakijken ---------- */
+function controleer(it){
+  const s = st(it.id); if (s.opgelost) return;
+  const w = verzamel(it); s.waarden = w;
+  let goed = false, cat = '', leeg = false, schrijf = '';
+  const markeer = (id, ok) => { const e = document.getElementById(id); if (e){ e.classList.toggle('goed', ok); e.classList.toggle('fout', !ok); } };
+  const NUMMSG = 'Typ in elk vakje alleen een getal, bijvoorbeeld 90 of −7.';
+  if (it.type === 'num'){
+    const v = parseNum(w.a0); leeg = w.a0.trim() === '';
+    if (!leeg && isNaN(v)) schrijf = 'Typ alleen een getal, bijvoorbeeld 90 of −7.';
+    goed = it.bereik ? (v >= it.bereik[0] - 1e-9 && v <= it.bereik[1] + 1e-9) : Math.abs(v - it.ans) < 1e-9;
+    if (!goed && !leeg){ cat = (it.fouten && it.fouten[String(v)]) || (Math.abs(v + it.ans) < 1e-9 ? 'Min-teken fout' : 'Rekenfout'); }
+    if (!schrijf) markeer('a0', goed);
+  } else if (it.type === 'tijd'){
+    leeg = w.a0.trim() === '';
+    const v = parseTijd(w.a0); goed = v === parseTijd(it.ans);
+    if (!leeg && v == null) schrijf = 'Schrijf de tijd zo: 9:30 (uren, dubbele punt, minuten).';
+    if (!goed && !leeg){ const k = v == null ? '' : `${Math.floor(v / 60)}:${String(v % 60).padStart(2, '0')}`; cat = (it.fouten && it.fouten[k]) || 'Afleesfout of rekenfout bij de tijd'; }
+    if (!schrijf) markeer('a0', goed);
+  } else if (it.type === 'tabel'){
+    let fout = 0, min = 0, leegVak = 0, onleesbaar = 0; leeg = true; const res = [];
+    it.ans.forEach((a, k) => { if ((it.gegeven || []).includes(k)) return; const raw = w['c' + k]; const v = parseNum(raw);
+      if (raw.trim() === '') leegVak++; else { leeg = false; if (isNaN(v)) onleesbaar++; }
+      const ok = Math.abs(v - a) < 1e-9; res.push(['c' + k, ok]); if (!ok){ fout++; if (Math.abs(v + a) < 1e-9 && a !== 0) min++; } });
+    if (!leeg && onleesbaar) schrijf = NUMMSG; else if (!leeg && leegVak) schrijf = 'Vul eerst alle vakjes van de tabel in.';
+    if (!schrijf) res.forEach(([id, ok]) => markeer(id, ok));
+    goed = fout === 0;
+    if (!goed && !leeg) cat = min ? `Min-teken fout in de tabel (${fout} ${fout === 1 ? 'vakje' : 'vakjes'} fout)` : `Rekenfout in de tabel (${fout} ${fout === 1 ? 'vakje' : 'vakjes'} fout)`;
+  } else if (it.type === 'stappen'){
+    let fout = 0; leeg = true; let eerste = '', leegVak = 0, onleesbaar = 0, geenKeuze = 0; const res = [];
+    const getal = (id, ans, catVeld) => { const raw = w[id] || ''; const v = parseNum(raw);
+      if (raw.trim() === '') leegVak++; else { leeg = false; if (isNaN(v)) onleesbaar++; }
+      const ok = Math.abs(v - ans) < 1e-9;
+      if (!ok && !eerste && raw.trim() !== '') eerste = catVeld || (it.fouten && it.fouten[String(v)]) || (!isNaN(v) && Math.abs(v + ans) < 1e-9 && ans !== 0 ? 'Min-teken fout' : '');
+      res.push([id, ok]); if (!ok) fout++; };
+    // vrij: de leerling kiest zelf het getal dat hij invult; de andere vakjes worden daarmee nagerekend
+    const vrijX = it.vrij ? parseNum(w['a0_0'] || '') : NaN;
+    const vrijAns = it.vrij && !isNaN(vrijX) ? it.vrij(vrijX) : null;
+    it.velden.forEach((f, k) => {
+      if (f.breuk){
+        const ids = [`a${k}_0`, `a${k}_1`], rt = w[ids[0]] || '', rn = w[ids[1]] || '', vt = parseNum(rt), vn = parseNum(rn);
+        [rt, rn].forEach((r, j) => { if ((j === 0 && f.vastT) || (j === 1 && f.vastN)) return; if (r.trim() === '') leegVak++; else { leeg = false; if (isNaN(parseNum(r))) onleesbaar++; } });
+        const ok = !isNaN(vt) && !isNaN(vn) && vn !== 0 && (f.exact ? (vt === f.ans[0] && vn === f.ans[1]) : Math.abs(vt * f.ans[1] - f.ans[0] * vn) < 1e-9);
+        if (!ok && !eerste && rt.trim() && rn.trim()) eerste = (it.fouten && it.fouten[`${vt}/${vn}`]) || (vt === f.ans[1] && vn === f.ans[0] ? 'Teller en noemer omgedraaid' : (vn === f.ans[1] ? 'Gekleurde stukken verkeerd geteld' : (vt === f.ans[0] ? 'Totaal aantal stukken verkeerd geteld' : '')));
+        ids.forEach(id => res.push([id, ok])); if (!ok) fout++; return;
+      }
+      if (f.tpl || f.as){ (vrijAns ? vrijAns[k] : f.ans).forEach((a, j) => getal(`a${k}_${j}`, a, f.invul && j === 0 && !vrijAns ? 'Verkeerd getal ingevuld in de formule' : '')); return; }
+      if (f.soort === 'keuze'){ const raw = w['a' + k]; const ok = +raw === f.ans; if (+raw === 0) geenKeuze++; else leeg = false; if (!ok && !eerste && +raw !== 0) eerste = 'Verkeerde keuze gemaakt'; res.push(['a' + k, ok]); if (!ok) fout++; }
+      else getal('a' + k, f.ans);
+    });
+    if (!leeg && onleesbaar) schrijf = NUMMSG; else if (!leeg && leegVak) schrijf = 'Vul eerst alle vakjes in.'; else if (!leeg && geenKeuze) schrijf = 'Maak ook een keuze in het keuzelijstje.';
+    if (!schrijf) res.forEach(([id, ok]) => markeer(id, ok));
+    goed = fout === 0; if (!goed && !leeg) cat = eerste || 'Rekenfout in een tussenstap';
+  } else if (it.type === 'mk'){
+    const k = (s.keuze || []).slice().sort(); leeg = k.length === 0;
+    const ans = (it.multi ? it.ans : [it.ans]).slice().sort();
+    if (!leeg && it.multi && k.length !== ans.length) schrijf = `Kies ${ans.length} antwoorden.`;
+    goed = k.length === ans.length && k.every((v, i) => v === ans[i]);
+    if (!schrijf) document.querySelectorAll('.optie').forEach(x => { x.classList.remove('goed', 'fout'); if (k.includes(+x.dataset.k)) x.classList.add(goed ? 'goed' : 'fout'); });
+    if (!goed && !leeg) cat = 'Verkeerde keuze gemaakt';
+  } else if (it.type === 'formule'){
+    const n = it.aantal || 1; const ok = []; leeg = true; const res = [];
+    const uit = vergelijking(it.orig).uit; const letters = it.vars.concat(uit);
+    const gezien = new Set([normFormule(it.orig)]);
+    let leegVak = 0;
+    for (let k = 0; k < n; k++){
+      const raw = w['a' + k] || ''; if (raw.trim()) leeg = false; else { leegVak++; ok.push(false); res.push(['a' + k, false]); continue; }
+      let r = false, c = '';
+      const nf = normFormuleX(raw, letters);
+      const vreemd = (nf.match(/[a-z]/g) || []).filter(l => !letters.includes(l));
+      if ((nf.match(/=/g) || []).length !== 1){ if (!schrijf) schrijf = `Een formule heeft één = teken. Bijvoorbeeld: ${it.begin || uit} = …`; }
+      else if (vreemd.length){ if (!schrijf) schrijf = `Gebruik alleen de letters ${letters.join(' en ')}. Je typte: ${[...new Set(vreemd)].join(', ')}.`; }
+      else if ((nf.match(/\(/g) || []).length !== (nf.match(/\)/g) || []).length){ if (!schrijf) schrijf = 'Er ontbreekt een haakje. Controleer of elk ( ook een ) heeft.'; }
+      else {
+        try {
+          vergelijking(nf);
+          if (it.zonderKeer && /\*/.test(nf)) c = '×-teken niet weggelaten';
+          else if (n > 1 && (nf === normFormule(it.orig) || gezien.has(nf))) c = 'Zelfde formule als de gegeven formule (of twee keer dezelfde)';
+          else if (it.begin && !nf.startsWith(it.begin + '=')) c = `Begin met ${it.begin} =`;
+          else if (it.moetStarten && !nf.startsWith(it.begin + '=' + it.moetStarten)) c = 'Wat links en rechts van het + teken staat is niet verwisseld';
+          else if (gelijkwaardig(it.orig, nf, it.vars)) r = true;
+          else c = (/\(/.test(it.orig) && !/\(/.test(nf)) ? 'Haakjes vergeten' : 'Formule is niet gelijkwaardig aan de gegeven formule';
+          gezien.add(nf);
+        } catch (e) { if (!schrijf) schrijf = `Deze formule kan ik niet lezen. Schrijf hem bijvoorbeeld zo: ${it.begin || uit} = …`; }
+      }
+      res.push(['a' + k, r]); ok.push(r); if (!r && !cat) cat = c;
+    }
+    if (!schrijf && !leeg && leegVak) schrijf = n > 1 ? 'Vul beide manieren in.' : '';
+    if (!schrijf) res.forEach(([id, r]) => markeer(id, r));
+    goed = ok.every(Boolean);
+  } else if (it.type === 'kleur'){
+    const kl = s.kleur || []; leeg = kl.every(a => !a || !a.length);
+    const per = it.figs.map((f, i) => (kl[i] || []).length === f.nodig);
+    goed = per.every(Boolean);
+    if (!it.toets) document.querySelectorAll('#links .figcel').forEach((c, i) => { c.classList.remove('goed', 'fout'); if (!leeg) c.classList.add(per[i] ? 'goed' : 'fout'); });
+    if (!goed && !leeg) cat = it.figs.length > 1 ? `Verkeerd aantal stukken gekleurd bij figuur ${it.figs.map((f, i) => per[i] ? null : f.label).filter(Boolean).join(' en ')}` : 'Verkeerd aantal stukken gekleurd';
+  } else if (it.type === 'grafiek'){
+    const pts = s.invoer || []; leeg = pts.length === 0;
+    const opLijn = ([x, y]) => it.pts ? it.pts.some(q => Math.abs(q[0] - x) < 1e-9 && Math.abs(q[1] - y) < 1e-9) : Math.abs(it.f(x) - y) < 1e-9;
+    const fout = pts.filter(p => !opLijn(p));
+    if (it.pts && !fout.length && pts.length >= it.min && it.volgorde === 'klik' && !it.pts.every((q, k) => pts[k] && pts[k][0] === q[0] && pts[k][1] === q[1])){
+      goed = false; cat = 'Punten in de verkeerde volgorde verbonden';
+    } else {
+    if (!leeg && pts.length < it.min && !fout.length && !it.pts) schrijf = `Zet minstens ${it.min} punten.`;
+    goed = pts.length >= it.min && fout.length === 0;
+    if (!goed && !leeg) cat = `Punt ligt niet op de goede plek (${fout.map(p => '(' + p.join('; ').replace(/\./g, ',') + ')').join(' ').replace(/-/g, '−')})`;
+    if (!goed && !leeg && !fout.length && it.pts) cat = '', schrijf = `Je mist nog ${it.min - pts.length} ${it.min - pts.length === 1 ? 'punt' : 'punten'} uit de tabel.`;
+    }
+  }
+  const fb = $('#feedback');
+  if (leeg){ fb.className = 'feedback info'; fb.textContent = 'Vul eerst een antwoord in.'; return; }
+  if (schrijf){ fb.className = 'feedback info'; fb.innerHTML = `${fmtF(schrijf)}<br><span style="font-weight:500">Dit telt niet als fout. Pas het aan en klik opnieuw op Controleer.</span>`; return; }
+  if (it.toets){
+    const t = nu(); s.pogingen.push({goed, cat, ms: t - (s.laatste || t), keuze: it.type === 'mk' ? (s.keuze || []).slice() : undefined, hint: 0, antw: antwTekst(it, w, s).slice(0, 300)});
+    s.tijd = t - s.gezien; s.opgelost = true; s.toetsGoed = goed; s.punten = goed ? 2 : 0; bewaar();
+    document.querySelectorAll('#main input.goed, #main input.fout, #main select.goed, #main select.fout, #main .optie.goed, #main .optie.fout').forEach(e => e.classList.remove('goed', 'fout'));
+    toonStatus(it); updateStrook(); if (it.type === 'grafiek') document.querySelector('svg.graf')._teken(); return;
+  }
+  const t = nu(); const dt = t - (s.laatste || t); s.laatste = t;
+  s.pogingen.push({goed, cat, ms: dt, keuze: it.type === 'mk' ? (s.keuze || []).slice() : undefined, hint: s.hint, antw: antwTekst(it, w, s).slice(0, 300)});
+  s.tijd = t - s.gezien;
+  if (goed){ s.opgelost = true; s.punten = puntenVan(s); bewaar(); toonStatus(it); updateStrook(); if (it.type === 'grafiek') document.querySelector('svg.graf')._teken(); return; }
+  bewaar();
+  const fouten = s.pogingen.filter(p => !p.goed).length;
+  fb.className = 'feedback fout';
+  fb.innerHTML = `${miniLees()}Nog niet goed.${cat ? '<br>' + fmtF(cat) + '.' : ''}<br>${fouten === 1 ? 'Kijk nog eens goed en probeer het opnieuw.' : fouten === 2 ? 'Gebruik de hint als je vastzit.' : 'Probeer het nog een keer.'}`;
+  $('#pogingen').textContent = `Pogingen: ${s.pogingen.length}${s.hint ? ' · hint gebruikt' : ''}`;
+  updateStrook();
+  if (fouten >= 4 && !s.hulpGetoond){ s.hulpGetoond = true; bewaar(); toonHulp(it); }
+}
+function updateStrook(){
+  const it = ITEMS[S.huidig]; const b = document.querySelector(`.stip[data-i="${S.huidig}"]`); if (!b) return;
+  const s = S.items[it.id]; b.classList.remove('goed0', 'goed1', 'goed2', 'bezig', 'ingeleverd');
+  if (s.opgelost) b.classList.add(it.toets && !S.toetsKlaar ? 'ingeleverd' : 'goed' + puntenVan(s)); else if (s.pogingen.length) b.classList.add('bezig');
+  const v = document.querySelector('.voortgang'); if (v && it.toets) v.textContent = `${TOETSVRAGEN.filter(x => S.items[x.id] && S.items[x.id].opgelost).length} van ${TOETSVRAGEN.length} toetsvragen gemaakt`; else if (v) v.textContent = `${VRAGEN.filter(x => S.items[x.id] && S.items[x.id].opgelost).length} van ${VRAGEN.length} opdrachten af`;
+}
+function toonHint(it){
+  const s = st(it.id); if (s.opgelost) return;
+  s.hint = Math.min(it.hint.length, (s.hint || 0) + 1); bewaar();
+  const hv = $('#hintvak'); hv.classList.add('open');
+  hv.innerHTML = it.hint.slice(0, s.hint).map((h, k) => `<div><b>Hint ${k + 1}:</b> ${miniLees()}<br>${regels(h)}</div>`).join('')
+    + (s.hint >= it.hint.length ? '' : '<div style="font-size:13px;margin-top:6px">Klik nog een keer op Hint voor meer hulp.</div>');
+  $('#pogingen').textContent = `Pogingen: ${s.pogingen.length} · hint gebruikt`;
+}
+function toonHulp(it){
+  const ov = $('#overlay'); const inh = $('#ovInhoud');
+  inh.innerHTML = `<p>Je hebt het nu vier keer geprobeerd.<br>Hier zie je stap voor stap hoe het werkt.</p>` + it.uitleg.map((u, k) => `<div class="ov-stap"><span class="nr">${k + 1}</span>${fmtF(u)}</div>`).join('');
+  if (it.type === 'kleur' || it.hulpFig){ const d = document.createElement('div'); d.className = 'figrij'; d.style.marginTop = '10px';
+    d.innerHTML = it.type === 'kleur'
+      ? it.figs.map(f => `<div class="figcel"><div class="${f.ruitjes ? 'ruitjes' : ''}">${FIG.svg(FIGUREN[f.fig](), {kleurSet: f.voorbeeld || Array.from({length: f.nodig}, (_, i) => i), kleur: f.kleur, nummers: 'gk', schaal: .8})}</div>${f.label ? `<span class="figlabel">${esc(f.label)}</span>` : ''}<div class="onder">${f.nodig} ${f.nodig === 1 ? 'stuk' : 'stukken'} gekleurd</div></div>`).join('')
+      : it.hulpFig.map(([n, lab]) => `<div class="figcel">${FIG.svg(FIGUREN[n](), {nummers: 'alle', schaal: .8})}${lab ? `<span class="figlabel">${esc(lab)}</span>` : ''}</div>`).join('');
+    inh.appendChild(d); }
+  if (it.type === 'grafiek'){ const g = maakGrafiek(it.g, {lijnen: (it.vast || []).concat([it.pts ? {pts: it.pts} : {f: it.f}])}); g.style.maxWidth = '440px'; inh.appendChild(g); }
+  ov.hidden = false;
+  inh.querySelectorAll('.ov-stap').forEach((e, k) => setTimeout(() => e.classList.add('zichtbaar'), 400 + k * 1100));
+  $('#ovSluit').focus();
+}
+$('#ovSluit').onclick = () => { $('#overlay').hidden = true; };
+
+/* =========================================================
+   START- EN EINDSCHERM
+   ========================================================= */
+function startScherm(){
+  const online = !!db();
+  const terug = S.naam && Object.keys(S.items).length;
+  app.innerHTML = `<div class="scherm" style="grid-row:1/-1">
+    <span class="label-domein">VMBO Basis · 1BB · Hoofdstuk 3 Getallen</span>
+    <h2>§ 3.3 Breuken</h2>
+    <p>In deze app leer en oefen je:<br>• wat een breuk is: teller en noemer<br>• welk deel van een figuur gekleurd is<br>• zelf een deel van een figuur kleuren<br>• rekenen met een deel van de prijs</p>
+    <p>Bij elk onderdeel kijk je eerst een kort filmpje.<br>Zet je geluid aan.</p>
+    <p>Klaar met oefenen?<br>Maak dan de <b>Oefentoets</b>: 20 vragen, zonder hints en met één poging.</p>
+    ${terug ? `<div class="analyse"><b>Welkom terug, ${esc(S.naam)}!</b><br>Je hebt al ${VRAGEN.filter(v => S.items[v.id] && S.items[v.id].opgelost).length} opdrachten af.${S.code ? `<br>Jouw code: <b class="code">${esc(S.code)}</b>` : ''}
+      <div class="knoppen"><button class="knop hoofd" id="verderHier">Verder gaan</button><button class="knop licht" id="andere">Ik ben iemand anders</button></div></div>` : ''}
+    <div class="startkeuze" ${terug ? 'hidden' : ''} id="startkeuze">
+      <div class="analyse">
+        <b>Ik begin voor het eerst</b>
+        <div class="antw-rij"><label for="naam" style="min-width:150px">Je naam:</label><input class="inv breed" id="naam" autocomplete="name"></div>
+        <div class="antw-rij"><label for="klas" style="min-width:150px">Je klas:</label><input class="inv" id="klas"></div>
+        <div class="feedback" id="fbStart"></div>
+        <div class="knoppen"><button class="knop hoofd" id="begin">Beginnen</button></div>
+      </div>
+      <div class="analyse">
+        <b>Ik ga verder met mijn code</b>
+        ${online ? `<div class="antw-rij"><label for="codeIn" style="min-width:150px">Jouw code:</label><input class="inv" id="codeIn" placeholder="ABCD-2345" autocomplete="off" spellcheck="false" style="text-transform:uppercase;letter-spacing:2px"></div>
+        <div class="feedback" id="fbCode"></div>
+        <div class="knoppen"><button class="knop paars" id="laadCode">Verder werken</button></div>` : '<p>Online opslaan staat uit. Je werk wordt alleen op deze computer bewaard.</p>'}
+      </div>
+    </div>
+  </div>`;
+  const vh = $('#verderHier'); if (vh) vh.onclick = () => { S.gestart = true; if (!S.code && online){ S.code = nieuweCode(); bewaar(); return toonCode(true); } bewaar(); render(); };
+  const an = $('#andere'); if (an) an.onclick = () => { wolkNu(); S = {naam: '', klas: '', start: new Date().toISOString(), huidig: 0, items: {}, gestart: false, klaar: false}; try { localStorage.removeItem(OPSLAG); } catch (e) {} render(); };
+  $('#begin').onclick = () => { const n = $('#naam').value.trim(); if (!n){ const f = $('#fbStart'); f.className = 'feedback fout'; f.textContent = 'Vul eerst je naam in.'; return; }
+    S = {naam: n, klas: $('#klas').value.trim(), start: new Date().toISOString(), huidig: 0, items: {}, gestart: true, klaar: false, code: online ? nieuweCode() : null};
+    bewaar(); online ? toonCode(true) : render(); };
+  const lc = $('#laadCode');
+  if (lc){
+    const laad = async () => {
+      const f = $('#fbCode'); const code = normCode($('#codeIn').value);
+      if (!code){ f.className = 'feedback fout'; f.textContent = 'Een code heeft 8 tekens, bijvoorbeeld ABCD-2345.'; return; }
+      f.className = 'feedback info'; f.textContent = 'Bezig met laden…';
+      try {
+        const {data, error} = await db().rpc('voortgang_laden', {p_code: code});
+        if (error) throw error;
+        if (!data){ f.className = 'feedback fout'; f.textContent = 'Deze code bestaat niet. Kijk goed of je hem goed hebt overgeschreven, of vraag je docent.'; return; }
+        if (!data.data || data.data.module !== (window.APP_CONFIG || {}).MODULE){ f.className = 'feedback fout'; f.textContent = 'Deze code hoort bij een andere oefenapp. Gebruik de code die je bij deze app hebt gekregen.'; return; }
+        S = Object.assign({items: {}, huidig: 0}, data.data, {code, gestart: true, klaar: false}); bewaar(); render();
+      } catch (e) { f.className = 'feedback fout'; f.textContent = 'Laden lukt niet. Heb je internet?'; }
+    };
+    lc.onclick = laad; $('#codeIn').addEventListener('keydown', e => { if (e.key === 'Enter') laad(); });
+  }
+}
+function toonCode(nieuw){
+  const ov = $('#overlay'); $('#ovTitel').textContent = nieuw ? 'Schrijf je code op!' : 'Jouw code';
+  $('#ovInhoud').innerHTML = `<p>Met deze code kun je de volgende les verder waar je gebleven was, ook op een andere computer.</p>
+    <div class="code-groot">${esc(S.code)}</div>
+    <p>Schrijf hem in je agenda of schrift.<br>Je docent kan je code ook opzoeken als je hem kwijt bent.</p>`;
+  $('#ovSluit').textContent = nieuw ? 'Ik heb mijn code opgeschreven' : 'Sluiten';
+  ov.hidden = false;
+  $('#ovSluit').onclick = () => { ov.hidden = true; $('#ovSluit').textContent = 'Ik snap het, ik probeer het zelf'; $('#ovTitel').textContent = 'Stap voor stap'; $('#ovSluit').onclick = () => { $('#overlay').hidden = true; }; render(); };
+  $('#ovSluit').focus();
+}
+
+function analyse(){
+  let behaald = 0; const totaal = VRAGEN.length * 2; const regels = []; const cats = {};
+  let alle = 0, snel = 0, spreiding = 0, rits = 0;
+  VRAGEN.forEach(v => {
+    const s = S.items[v.id];
+    const naam = `Vraag ${v.nr}${v.deel ? v.deel.replace(/\s+/g, '') : ''}`;
+    if (!s || !s.pogingen.length){ regels.push({naam, tekst: 'Overgeslagen', punten: 0, pogingen: 0, tijd: 0, fouten: []}); return; }
+    const p = puntenVan(s); behaald += p;
+    const fouten = s.pogingen.filter(x => !x.goed).map(x => x.cat).filter(Boolean);
+    fouten.forEach(c => { const k = c.replace(/\s*\(.*\)$/, ''); cats[k] = (cats[k] || 0) + 1; });
+    alle += s.pogingen.length;
+    s.pogingen.forEach((x, i) => { if (x.ms < 3000) snel++; if (i > 0 && !x.goed && !s.pogingen[i - 1].goed && x.ms < 5000 && !x.hint) rits++; });
+    if (v.type === 'mk' && !v.multi){ const geprobeerd = new Set(s.pogingen.map(x => (x.keuze || [])[0])); if (geprobeerd.size >= v.opties.length - 1 && v.opties.length >= 3) spreiding++; }
+    const t = sec(s.tijd || 0);
+    let tekst;
+    if (!s.opgelost) tekst = `0 pt (Niet afgemaakt; Fout: ${fouten[fouten.length - 1] || 'onbekend'}; Pogingen: ${s.pogingen.length}, Tijd: ${t}s)`;
+    else if (p === 2) tekst = `Goed (Pogingen: ${s.pogingen.length}, Tijd: ${t}s)`;
+    else tekst = `${p} pt (${fouten.length ? 'Fout: ' + fouten[0] + '; ' : 'Hint gebruikt; '}Pogingen: ${s.pogingen.length}, Tijd: ${t}s)`;
+    if (s.rekenmachine) tekst = tekst.replace(/\)$/, ', rekenmachine gebruikt)');
+    regels.push({naam, tekst, punten: p, pogingen: s.pogingen.length, tijd: t, fouten, hint: s.hint || 0, rekenmachine: s.rekenmachine || 0});
+  });
+  const cijfer = Math.min(10, Math.max(1, Math.round(((behaald / totaal) * 9 + 1) * 10) / 10));
+  const gokScore = alle ? (snel + spreiding * 3 + rits) / alle : 0;
+  const gok = gokScore < .15 ? 'Laag' : gokScore < .35 ? 'Gemiddeld' : 'Hoog';
+  const top = Object.entries(cats).sort((a, b) => b[1] - a[1]);
+  const ADVIES = {
+    'Min-teken fout': 'Oefen min × min = plus en min − min = plus met de getallenlijn.',
+    'Min × min = plus vergeten': 'Herhaal de regel: min keer min is plus.',
+    'Min min wordt plus vergeten': 'Herhaal: iets aftrekken van een negatief getal is optellen (6 − −2 = 6 + 2).',
+    '×-teken niet weggelaten': 'Laat zien dat 6 × k korter wordt geschreven als 6k.',
+    'Haakjes vergeten': 'Laat zien dat bij korter schrijven de haakjes blijven staan.',
+    'Rekenfout in de tabel': 'Laat de leerling eerst één vakje hardop uitrekenen.',
+    'Min-teken fout in de tabel': 'Oefen het invullen van negatieve getallen met een getallenlijn.',
+    'Punt ligt niet op de goede plek': 'Laat de leerling punten uit de tabel overnemen in het assenstelsel: eerst opzij, dan omhoog.',
+    'Afleesfout': 'Oefen aflezen: zoek het getal op de as, ga naar de grafiek en dan recht naar de andere as.',
+    'Punten in de verkeerde volgorde verbonden': 'Laat de leerling de punten hardop in volgorde benoemen.',
+    'Formule is niet gelijkwaardig aan de gegeven formule': 'Laat met een tabel controleren of twee formules gelijkwaardig zijn.',
+    'Verkeerde keuze gemaakt': 'Laat de leerling eerst de tabellen vergelijken voordat hij kiest.'
+  };
+  const tip = top.length ? (ADVIES[top[0][0]] || `Meest gemaakte fout: "${top[0][0]}". Bespreek deze opdrachten samen.`) : (behaald === totaal ? 'Alles in één keer goed: geef deze leerling uitdagende opdrachten.' : 'Laat de leerling de overgeslagen opdrachten nog maken.');
+  return {behaald, totaal, cijfer, gok, regels, cats: top, tip, snel, spreiding, rits, alle};
+}
+function exportTekst(A){
+  const d = new Date();
+  return `Leerling: ${S.naam}${S.klas ? ' (' + S.klas + ')' : ''}
+Datum & Tijd: ${d.toLocaleDateString('nl-NL')} ${d.toLocaleTimeString('nl-NL', {hour: '2-digit', minute: '2-digit'})}
+Cijfer: ${A.cijfer.toFixed(1).replace('.', ',')} (Score: ${A.behaald}/${A.totaal})
+Gokkans: ${A.gok}
+Foutenanalyse:
+${A.regels.map(r => `- ${r.naam}: ${r.tekst}`).join('\n')}
+Korte samenvatting: ${A.tip}`;
+}
+/* ---------- oefentoets inleveren en uitslag ---------- */
+function toetsInleveren(){
+  const open = TOETSVRAGEN.filter(v => !(S.items[v.id] && S.items[v.id].opgelost)).length;
+  if (!S.toetsKlaar && open && !S.toetsBevestig){ S.toetsBevestig = true;
+    const fb = $('#feedback'); fb.className = 'feedback info'; fb.innerHTML = `Je hebt nog ${open} ${open === 1 ? 'vraag' : 'vragen'} niet gemaakt.<br>Klik nog een keer op <b>Toets inleveren</b> als je toch wilt inleveren.`; return; }
+  S.toetsBevestig = false; S.toetsKlaar = true; S.toetsScherm = true; bewaar(); render(); window.scrollTo(0, 0);
+}
+function toetsScherm(){
+  const cfg = window.APP_CONFIG || {};
+  const behaald = TOETSVRAGEN.reduce((a, v) => a + (S.items[v.id] ? puntenVan(S.items[v.id]) : 0), 0), totaal = TOETSVRAGEN.length * 2;
+  const cijfer = Math.min(10, Math.max(1, Math.round(((behaald / totaal) * 9 + 1) * 10) / 10));
+  const naam = v => `Vraag ${v.nr}${v.deel ? v.deel.replace(/\s+/g, '') : ''}`;
+  const regelsT = TOETSVRAGEN.map(v => { const s = S.items[v.id]; return {v, s, goed: !!(s && s.toetsGoed), gemaakt: !!(s && s.opgelost)}; });
+  const txt = `Leerling: ${S.naam}${S.klas ? ' (' + S.klas + ')' : ''}\nOefentoets: ${cfg.MODULE || ''}\nCijfer: ${cijfer.toFixed(1).replace('.', ',')} (Score: ${behaald}/${totaal})\n` + regelsT.map(r => `- ${naam(r.v)}: ${r.goed ? 'Goed' : r.gemaakt ? 'Fout' : 'Niet gemaakt'}`).join('\n');
+  app.innerHTML = `<div class="scherm" style="grid-row:1/-1;overflow:auto">
+    <span class="label-domein">Uitslag oefentoets · ${esc(cfg.MODULE || '')}</span>
+    <h2>Je oefentoets is nagekeken, ${esc(S.naam)}!</h2>
+    <div class="tegels">
+      <div class="tegel"><div class="k">Cijfer</div><div class="cijfer">${cijfer.toFixed(1).replace('.', ',')}</div></div>
+      <div class="tegel"><div class="k">Punten</div><div class="w">${behaald} / ${totaal}</div></div>
+      <div class="tegel"><div class="k">Goed</div><div class="w">${regelsT.filter(r => r.goed).length} / ${regelsT.length}</div></div>
+    </div>
+    <div class="analyse"><b>Per vraag</b><br>Klik op een vraag om te zien hoe het moest.
+      ${regelsT.map(r => `<div class="toetsregel"><span class="tk ${r.goed ? 'g' : 'f'}">${r.goed ? '✓' : '✗'}</span><button class="knop-tekst" data-ga="${esc(r.v.id)}">${esc(naam(r.v))}</button><span>${r.goed ? 'goed' : r.gemaakt ? 'fout' : 'niet gemaakt'}</span></div>`).join('')}
+    </div>
+    <div class="knoppen">
+      <button class="knop hoofd" id="opnieuw">Toets opnieuw maken</button>
+      <button class="knop licht" id="terugT">← Terug naar de opdrachten</button>
+    </div>
+    <div class="status" id="dbStatus"></div>
+  </div>`;
+  app.querySelectorAll('[data-ga]').forEach(b => b.onclick = () => { S.toetsScherm = false; ga(ITEMS.findIndex(x => x.id === b.dataset.ga)); });
+  $('#terugT').onclick = () => { S.toetsScherm = false; ga(0); };
+  $('#opnieuw').onclick = () => { TOETSVRAGEN.forEach(v => delete S.items[v.id]); S.toetsKlaar = false; S.toetsScherm = false; S.toetsOpgeslagen = null; ga(ITEMS.indexOf(TOETSVRAGEN[0])); };
+  // één keer per poging opslaan bij de docent
+  const el = $('#dbStatus');
+  const sleutel = S.start + '|' + TOETSVRAGEN.map(v => (S.items[v.id] || {}).pogingen ? S.items[v.id].pogingen.length : 0).join('');
+  if (S.toetsOpgeslagen === sleutel){ el.style.color = 'var(--goed)'; el.textContent = 'Je uitslag is opgeslagen bij je docent.'; return; }
+  if (!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY || !window.supabase) return;
+  (async () => { try {
+    const d = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+    const {error} = await d.from(cfg.TABEL || 'resultaten').insert({leerling: S.naam, klas: S.klas || null, module: (cfg.MODULE || '') + ' · oefentoets', cijfer, score: behaald, totaal, gokkans: null,
+      samenvatting: `Oefentoets: ${regelsT.filter(r => r.goed).length} van ${regelsT.length} goed.`, export_tekst: txt,
+      details: {vragen: regelsT.map(r => ({id: r.v.id, goed: r.goed, gemaakt: r.gemaakt, fout: r.s && r.s.pogingen[0] ? r.s.pogingen[0].cat : null}))}, sessie_start: S.start, code: S.code || null});
+    if (error) throw error; S.toetsOpgeslagen = sleutel; bewaar(); el.style.color = 'var(--goed)'; el.textContent = 'Je uitslag is opgeslagen bij je docent.';
+  } catch (e) { el.style.color = 'var(--fout)'; el.textContent = 'Opslaan bij je docent is niet gelukt.'; } })();
+}
+function afronden(){ S.klaar = true; bewaar(); render(); }
+
+function eindScherm(){
+  const A = analyse(); const txt = exportTekst(A);
+  const cfg = window.APP_CONFIG || {};
+  app.innerHTML = `<div class="scherm" style="grid-row:1/-1;overflow:auto">
+    <span class="label-domein">Resultaten · ${esc(cfg.MODULE || '§ 3.3 Breuken')}</span>
+    <h2>Goed gewerkt, ${esc(S.naam)}!</h2>
+    <div class="tegels">
+      <div class="tegel"><div class="k">Cijfer</div><div class="cijfer">${A.cijfer.toFixed(1).replace('.', ',')}</div></div>
+      <div class="tegel"><div class="k">Punten</div><div class="w">${A.behaald} / ${A.totaal}</div></div>
+      <div class="tegel"><div class="k">Opdrachten af</div><div class="w">${VRAGEN.filter(v => S.items[v.id] && S.items[v.id].opgelost).length} / ${VRAGEN.length}</div></div>
+      <div class="tegel"><div class="k">Gokkans</div><div class="w"><span class="pil ${A.gok.toLowerCase()}">${A.gok}</span></div></div>
+    </div>
+    <div class="analyse"><b>Wat ging er mis?</b>
+      ${A.cats.length ? `<ul>${A.cats.slice(0, 6).map(([c, n]) => `<li>${fmtF(c)}: ${n} keer</li>`).join('')}</ul>` : '<p>Geen fouten gevonden.</p>'}
+      <b>Tip:</b> ${esc(A.tip)}
+      <p style="font-size:13px;color:var(--zacht)">Gokkans is berekend uit snelle antwoorden (onder 3 seconden: ${A.snel}), snel achter elkaar fout zonder hint (${A.rits}) en alle opties uitproberen (${A.spreiding}).</p>
+    </div>
+    <div class="knoppen">
+      <button class="knop hoofd" id="kopieer">Kopieer resultaten voor Forms</button>
+      <button class="knop paars" id="dlTxt">Download resultaten (.txt)</button>
+      <button class="knop paars" id="dlJson">Download resultaten (.json)</button>
+      <button class="knop licht" id="terug">← Terug naar de opdrachten</button>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="status" id="dbStatus"></div>
+    <pre class="export" id="exportTxt">${esc(txt)}</pre>
+  </div>`;
+  $('#terug').onclick = () => { S.klaar = false; bewaar(); render(); };
+  $('#kopieer').onclick = async () => {
+    try { await navigator.clipboard.writeText(txt); $('#status').textContent = 'Gekopieerd! Plak het met Ctrl+V in Forms.'; }
+    catch (e) { const r = document.createRange(); r.selectNodeContents($('#exportTxt')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); $('#status').textContent = 'Kopiëren lukte niet automatisch. De tekst is geselecteerd: druk op Ctrl+C.'; }
+  };
+  const json = () => JSON.stringify({leerling: S.naam, klas: S.klas, module: cfg.MODULE, datum: new Date().toISOString(), cijfer: A.cijfer, score: A.behaald, totaal: A.totaal, gokkans: A.gok, tip: A.tip,
+    vragen: VRAGEN.map(v => { const s = S.items[v.id] || {pogingen: []}; return {id: v.id, opgelost: !!s.opgelost, punten: puntenVan(s), pogingen: s.pogingen.length, hints: s.hint || 0, rekenmachine: s.rekenmachine || 0, berekeningen: s.berekeningen || [], tijd_s: sec(s.tijd || 0), fouten: s.pogingen.filter(p => !p.goed).map(p => p.cat)}; })}, null, 1);
+  const download = (naam, inhoud, type) => {
+    try { const b = new Blob([inhoud], {type}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = naam; document.body.appendChild(a); a.click(); a.remove(); $('#status').textContent = 'Bestand gedownload.'; }
+    catch (e) { $('#status').textContent = 'Downloaden lukt hier niet. Gebruik de kopieerknop.'; }
+  };
+  const bestandsnaam = (S.naam || 'leerling').replace(/[^A-Za-z0-9_-]+/g, '_');
+  $('#dlTxt').onclick = () => download(`resultaten_${bestandsnaam}.txt`, txt, 'text/plain');
+  $('#dlJson').onclick = () => download(`resultaten_${bestandsnaam}.json`, json(), 'application/json');
+  opslaanSupabase(A, txt, JSON.parse(json()));
+}
+
+/* =========================================================
+   SUPABASE
+   ========================================================= */
+async function opslaanSupabase(A, txt, detail){
+  const cfg = window.APP_CONFIG || {}; const el = $('#dbStatus');
+  const sleutel = A.behaald + '-' + A.alle + '-' + A.regels.filter(r => r.pogingen).length;
+  if (S.opgeslagen === sleutel){ el.style.color = 'var(--goed)'; el.textContent = 'Je resultaten zijn al opgeslagen bij je docent.'; return; }
+  if (!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY || !window.supabase){ el.textContent = 'Online opslaan staat uit. Gebruik de kopieer- of downloadknop.'; return; }
+  el.textContent = 'Resultaten worden opgeslagen…';
+  try {
+    const db = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+    const rij = {leerling: S.naam, klas: S.klas || null, module: cfg.MODULE || null, cijfer: A.cijfer, score: A.behaald, totaal: A.totaal, gokkans: A.gok, samenvatting: A.tip, export_tekst: txt, details: detail, sessie_start: S.start, code: S.code || null};
+    const {error} = await db.from(cfg.TABEL || 'resultaten').insert(rij);
+    if (error) throw error;
+    S.opgeslagen = sleutel; bewaar();
+    el.style.color = 'var(--goed)'; el.textContent = 'Je resultaten zijn opgeslagen bij je docent.';
+  } catch (e) {
+    el.style.color = 'var(--fout)'; el.textContent = 'Opslaan bij je docent is niet gelukt. Gebruik de kopieer- of downloadknop.';
+  }
+}
+
+/* =========================================================
+   REKENMACHINE (examenmodel)
+   Tokens: getallen/tekens als array, met cursor.
+   ========================================================= */
+const RM = {tok: [], cur: 0, inv: false, ans: 0, uit: null, toonBreuk: true, modus: 'math', klaar: false, fout: ''};
+const RM_TONEN = {'sin(': 'sin(', 'cos(': 'cos(', 'tan(': 'tan(', 'asin(': 'sin⁻¹(', 'acos(': 'cos⁻¹(', 'atan(': 'tan⁻¹(', '√(': '√(', '^(': '^(', '×10^(': '×10^(',
+  '²': '²', '⁻¹': '⁻¹', 'π': 'π', 'Ans': 'Ans', '⁄': '⁄', 'neg': '−', '−': ' − ', '+': ' + ', '×': ' × ', '÷': ' ÷ ', '(': '(', ')': ')', ',': ','};
+function rmDelen(tokens){
+  return tokens.map((t, i) => {
+    if (t === '−'){ const v = i > 0 ? tokens[i - 1] : null; if (v == null || ['+', '−', '×', '÷', 'neg', '⁄'].includes(v) || /\($/.test(v)) return '−'; }
+    return RM_TONEN[t] != null ? RM_TONEN[t] : t; });
+}
+function rmTekst(tokens){ return rmDelen(tokens).join(''); }
+function rmBewerk(pos){ RM.klaar = false; RM.oud = true; RM.cur = Math.max(0, Math.min(RM.tok.length, pos)); }
+function rmInvoegen(t){
+  if (RM.klaar){
+    RM.klaar = false;
+    // verder rekenen met het antwoord als je met een bewerking begint
+    if (['+', '−', '×', '÷', '²', '⁻¹', '^(', '⁄', '×10^('].includes(t)){ RM.tok = ['Ans']; RM.cur = 1; }
+    else { RM.tok = []; RM.cur = 0; }
+  }
+  RM.tok.splice(RM.cur, 0, t); RM.cur++;
+}
+function rmToets(t){
+  RM.fout = '';
+  const inv = RM.inv; if (t !== 'INV') RM.inv = false;
+  switch (t){
+    case 'INV': RM.inv = !RM.inv; break;
+    case 'C': if (inv){ RM.ans = 0; } RM.tok = []; RM.cur = 0; RM.uit = null; RM.klaar = false; break;
+    case 'DEL': if (RM.klaar) rmBewerk(RM.tok.length); if (RM.cur > 0){ RM.tok.splice(RM.cur - 1, 1); RM.cur--; } break;
+    case 'links': if (RM.klaar){ rmBewerk(RM.tok.length); break; } RM.cur = Math.max(0, RM.cur - 1); break;
+    case 'rechts': if (RM.klaar){ rmBewerk(0); break; } RM.cur = Math.min(RM.tok.length, RM.cur + 1); break;
+    case 'sin': case 'cos': case 'tan': rmInvoegen((inv ? 'a' : '') + t + '('); break;
+    case 'wortel': rmInvoegen('√('); break;
+    case 'kw': rmInvoegen('²'); break;
+    case 'macht': rmInvoegen('^('); break;
+    case 'inv1': rmInvoegen('⁻¹'); break;
+    case 'pi': rmInvoegen('π'); break;
+    case 'e10': rmInvoegen('×10^('); break;
+    case 'breuk': rmInvoegen('⁄'); break;
+    case 'neg': rmInvoegen('neg'); break;
+    case 'ANS': rmInvoegen('Ans'); break;
+    case 'haak': {
+      const voor = RM.klaar ? [] : RM.tok.slice(0, RM.cur);
+      const open = voor.filter(x => /\($/.test(x)).length - voor.filter(x => x === ')').length;
+      const laatste = voor[voor.length - 1];
+      const naGetal = laatste != null && (/^[0-9,]$/.test(laatste) || [')', 'π', 'Ans', '²', '⁻¹'].includes(laatste));
+      rmInvoegen(open > 0 && naGetal ? ')' : '('); break;
+    }
+    case 'fd': if (RM.uit != null) RM.toonBreuk = !RM.toonBreuk; break;
+    case '=': rmBereken(); break;
+    default: rmInvoegen(t);
+  }
+  rmTeken();
+}
+function rmParse(tokens){
+  // maak er een lijst van eenheden van: getallen samenvoegen
+  const L = []; let num = '';
+  const flush = () => { if (num){ if (!/^\d*,?\d+$|^\d+,$/.test(num)) throw new Error('Syntax'); L.push({t: 'n', v: parseFloat(num.replace(',', '.'))}); num = ''; } };
+  tokens.forEach(t => { if (/^[0-9,]$/.test(t)) num += t; else { flush(); L.push({t}); } });
+  flush();
+  let p = 0; const pk = () => L[p], neem = () => L[p++];
+  const isStart = x => x && (x.t === 'n' || x.t === 'π' || x.t === 'Ans' || x.t === '(' || /\($/.test(x.t) && x.t !== '^(' && x.t !== '×10^(' || x.t === 'neg');
+  function expr(){ let v = term(); while (pk() && (pk().t === '+' || pk().t === '−')){ const o = neem().t; const r = term(); v = o === '+' ? v + r : v - r; } return v; }
+  function term(){ let v = unair();
+    for (;;){ const x = pk(); if (!x) break;
+      if (x.t === '×' || x.t === '÷'){ p++; const r = unair(); if (x.t === '÷' && r === 0) throw new Error('Wiskundefout'); v = x.t === '×' ? v * r : v / r; }
+      else if (x.t === '×10^('){ p++; const e = expr(); sluit(); v = v * Math.pow(10, e); }
+      else if (isStart(x) && x.t !== 'neg'){ v = v * unair(); }   // impliciet keer, bv. 2π of 3(4)
+      else break; }
+    return v; }
+  function unair(){ if (pk() && (pk().t === 'neg' || pk().t === '−')){ p++; return -unair(); } if (pk() && pk().t === '+'){ p++; return unair(); } return breuk(); }
+  function breuk(){ let v = macht(); while (pk() && pk().t === '⁄'){ p++; const r = macht(); if (r === 0) throw new Error('Wiskundefout'); v = v / r; } return v; }
+  function macht(){ let v = post(); if (pk() && pk().t === '^('){ p++; const e = expr(); sluit(); v = Math.pow(v, e); if (isNaN(v)) throw new Error('Wiskundefout'); } return v; }
+  function post(){ let v = prim(); while (pk() && (pk().t === '²' || pk().t === '⁻¹')){ const o = neem().t; if (o === '²') v = v * v; else { if (v === 0) throw new Error('Wiskundefout'); v = 1 / v; } } return v; }
+  function sluit(){ if (pk() && pk().t === ')') p++; /* een vergeten sluithaakje aan het eind mag */ else if (pk()) throw new Error('Syntax'); }
+  const RAD = Math.PI / 180;
+  function prim(){ const x = neem(); if (!x) throw new Error('Syntax');
+    if (x.t === 'n') return x.v;
+    if (x.t === 'π') return Math.PI;
+    if (x.t === 'Ans') return RM.ans;
+    if (x.t === '('){ const v = expr(); sluit(); return v; }
+    if (x.t === '√('){ const v = expr(); sluit(); if (v < 0) throw new Error('Wiskundefout'); return Math.sqrt(v); }
+    const f = {'sin(': v => Math.sin(v * RAD), 'cos(': v => Math.cos(v * RAD), 'tan(': v => Math.tan(v * RAD), 'asin(': v => Math.asin(v) / RAD, 'acos(': v => Math.acos(v) / RAD, 'atan(': v => Math.atan(v) / RAD}[x.t];
+    if (f){ const v = f(expr()); sluit(); if (isNaN(v)) throw new Error('Wiskundefout'); return Math.abs(v) < 1e-12 ? 0 : v; }
+    throw new Error('Syntax'); }
+  if (!L.length) throw new Error('leeg');
+  const v = expr(); if (p !== L.length) throw new Error('Syntax'); return v;
+}
+function rmBereken(){
+  if (!RM.tok.length) return;
+  try { const v = rmParse(RM.tok); if (!isFinite(v)) throw new Error('Wiskundefout'); RM.ans = Math.round(v * 1e12) / 1e12; RM.uit = RM.ans; RM.toonBreuk = true; RM.klaar = true; RM.oud = false; }
+  catch (e) { RM.fout = e.message === 'Wiskundefout' ? 'Wiskundefout' : 'Syntaxfout'; RM.uit = null; }
+}
+function rmBreuk(v){ // geeft [teller, noemer] als v een nette breuk is
+  if (Number.isInteger(v)) return null;
+  let h1 = 1, h0 = 0, k1 = 0, k0 = 1, x = Math.abs(v);
+  for (let i = 0; i < 20; i++){ const a = Math.floor(x); [h1, h0] = [a * h1 + h0, h1]; [k1, k0] = [a * k1 + k0, k1];
+    if (Math.abs(Math.abs(v) - h1 / k1) < 1e-10) return k1 <= 9999 ? [Math.sign(v) * h1, k1] : null; x = 1 / (x - a); if (!isFinite(x)) break; }
+  return null;
+}
+function rmGetal(v){ let s = String(+v.toPrecision(10)); if (s.includes('e')) s = v.toExponential(6); return s.replace('.', ',').replace(/^-/, '−').replace('e', '×10^'); }
+function rmTeken(){
+  const lin = RM.modus === 'lin';
+  $('#rmIndInv').textContent = RM.inv ? 'INV' : ''; $('#rmIndModus').textContent = lin ? 'Lin' : 'Math';
+  $('#rmInv').classList.toggle('aan', RM.inv);
+  const delen = rmDelen(RM.tok);
+  const fmtIn = t => lin ? esc(t) : esc(t).replace(/²/g, '<sup>2</sup>').replace(/⁻¹/g, '<sup>−1</sup>');
+  const caret = RM.klaar ? '' : '<span class="caret"></span>';
+  $('#rmIn').innerHTML = delen.map((d, i) => (i === RM.cur ? caret : '') + `<span class="tk" data-i="${i}">${fmtIn(d)}</span>`).join('') + (RM.cur >= delen.length ? caret : '');
+  const c = $('#rmIn .caret'); const rin = $('#rmIn'); if (c) rin.scrollLeft = Math.max(0, c.offsetLeft - rin.clientWidth + 30); else rin.scrollLeft = 0;
+  $('#rmUit').classList.toggle('oud', !!RM.oud);
+  const el = $('#rmUit');
+  if (RM.fout){ el.textContent = RM.fout; return; }
+  if (RM.uit == null){ el.textContent = ''; return; }
+  const b = RM.toonBreuk ? rmBreuk(RM.uit) : null;
+  if (b){ const neg = b[0] < 0 ? '−' : '';
+    el.innerHTML = lin ? `${neg}${Math.abs(b[0])}⌟${b[1]}` : `${neg}<span class="breuk"><span>${Math.abs(b[0])}</span><span>${b[1]}</span></span>`; }
+  else el.textContent = rmGetal(RM.uit);
+}
+function rmToggle(open){
+  const rm = $('#rm'); const aan = open == null ? rm.hidden : open; rm.hidden = !aan;
+  const b = $('#rmOpen'); if (b) b.setAttribute('aria-pressed', aan);
+  if (aan){
+    const it = ITEMS[S.huidig]; if (it && !it.theorie){ const s = st(it.id); s.rekenmachine = (s.rekenmachine || 0) + 1; bewaar(); }
+    rmTeken(); $('#rmLcd').focus({preventScroll: true});
+  }
+}
+let rmDoel = null;   // het laatst gekozen antwoordvak
+document.addEventListener('focusin', e => { const t = e.target; if (t.matches && t.matches('input') && t.closest('#main') && !t.disabled) rmDoel = t; });
+function rmKopieer(){
+  const m = $('#rmMelding');
+  if (!RM.klaar || RM.uit == null){ m.textContent = 'Maak eerst een berekening en druk op =.'; return; }
+  const som = rmTekst(RM.tok).replace(/\s+/g, ' ').trim();
+  const b = RM.toonBreuk ? rmBreuk(RM.uit) : null;
+  const antw = b ? `${b[0] < 0 ? '−' : ''}${Math.abs(b[0])}/${b[1]}` : rmGetal(RM.uit);
+  const regel = `${som} = ${antw}`;
+  // in het antwoordvak zetten
+  const doel = rmDoel && document.body.contains(rmDoel) && !rmDoel.disabled ? rmDoel : document.querySelector('#invoer input:not([disabled])');
+  if (doel){ doel.value = antw; doel.dispatchEvent(new Event('input', {bubbles: true})); doel.classList.remove('goed', 'fout'); doel.focus({preventScroll: true}); }
+  // berekening bewaren bij de vraag, zoals op het examen
+  const it = ITEMS[S.huidig];
+  if (it && !it.theorie){ const st2 = st(it.id); st2.berekeningen = (st2.berekeningen || []).concat(regel).slice(-12); bewaar(); toonBerekeningen(it); }
+  try { navigator.clipboard && navigator.clipboard.writeText(regel).catch(() => {}); } catch (e) {}
+  m.textContent = doel ? `Gekopieerd: ${regel}` : `Gekopieerd: ${regel} (klik eerst in een antwoordvak)`;
+}
+function toonBerekeningen(it){
+  const vak = document.getElementById('berekeningen'); if (!vak) return;
+  const lijst = (S.items[it.id] && S.items[it.id].berekeningen) || [];
+  vak.innerHTML = lijst.length ? '<span style="font-size:13px;color:var(--zacht);width:100%">Jouw berekeningen:</span>' + lijst.map(r => `<span class="berekening">${esc(r)}</span>`).join('') : '';
+}
+$('#rmIn').addEventListener('click', e => {
+  const tk = e.target.closest('.tk'); let pos = RM.tok.length;
+  if (tk){ const r = tk.getBoundingClientRect(); pos = +tk.dataset.i + (e.clientX > r.left + r.width / 2 ? 1 : 0); }
+  if (RM.klaar) rmBewerk(pos); else RM.cur = pos;
+  $('#rmMelding').textContent = ''; rmTeken();
+});
+$('#rmToetsen').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.t === 'kopieer') return rmKopieer(); $('#rmMelding').textContent = ''; rmToets(b.dataset.t); });
+document.querySelectorAll('input[name="rmModus"]').forEach(r => r.onchange = () => { RM.modus = r.value; rmTeken(); });
+$('#rmSluit').onclick = () => rmToggle(false);
+$('#rmKlap').onclick = () => { const rm = $('#rm'); const dicht = rm.classList.toggle('ingeklapt'); $('#rmKlap').textContent = dicht ? '▲' : '▼'; $('#rmKlap').setAttribute('aria-expanded', !dicht); };
+$('#rm').addEventListener('keydown', e => {
+  if (e.target.matches('input')) return;
+  const map = {'*': '×', 'x': '×', '/': '÷', ':': '÷', '-': '−', '.': ',', ',': ',', '+': '+', 'Enter': '=', '=': '=', 'Backspace': 'DEL', 'Delete': 'C', 'Escape': 'C', 'ArrowLeft': 'links', 'ArrowRight': 'rechts', '(': 'haak', ')': 'haak', '^': 'macht'};
+  const t = /^[0-9]$/.test(e.key) ? e.key : map[e.key];
+  if (t){ e.preventDefault(); rmToets(t); }
+});
+// slepen: aan de titelbalk of de grijze behuizing
+(() => { const rm = $('#rm'); let dx, dy, sleep = false, id = null;
+  rm.addEventListener('pointerdown', e => {
+    if (e.target.closest('button, input, label, .rm-lcd')) return;
+    sleep = true; id = e.pointerId; const r = rm.getBoundingClientRect(); dx = e.clientX - r.left; dy = e.clientY - r.top;
+    rm.setPointerCapture(id); e.preventDefault(); });
+  rm.addEventListener('pointermove', e => { if (!sleep || e.pointerId !== id) return;
+    const x = Math.min(Math.max(0, e.clientX - dx), innerWidth - Math.min(rm.offsetWidth, innerWidth)), y = Math.min(Math.max(0, e.clientY - dy), innerHeight - 50);
+    rm.style.left = x + 'px'; rm.style.top = y + 'px'; rm.style.right = 'auto'; rm.style.bottom = 'auto'; });
+  const stop = () => { sleep = false; id = null; };
+  rm.addEventListener('pointerup', stop); rm.addEventListener('pointercancel', stop);
+})();
+rmTeken();
+
+/* =========================================================
+   VOORLEZEN (spraak van de browser)
+   ========================================================= */
+const SPRAAK = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+let leesTempo = 1; try { leesTempo = +localStorage.getItem('leesTempo') || 1; } catch (e) {}
+let stem = null, leesRij = [], leesId = 0;
+function kiesStem(){
+  if (!SPRAAK) return;
+  const v = speechSynthesis.getVoices().filter(x => /^nl/i.test(x.lang));
+  const score = x => (/nl-BE/i.test(x.lang) ? 4 : 0) + (/arnaud|online|natural|neural/i.test(x.name) ? 2 : 0) + (/google|microsoft/i.test(x.name) ? 1 : 0);
+  stem = v.sort((a, b) => score(b) - score(a))[0] || null;
+}
+if (SPRAAK){ kiesStem(); speechSynthesis.onvoiceschanged = kiesStem; }
+function leesKnoppen(){
+  if (!SPRAAK) return '';
+  return `<div class="lees-balk"><button class="lees" id="leesKnop" aria-label="Lees de opdracht voor">🔊 Lees voor</button>
+    <button class="tempo" id="tempoKnop" aria-label="Voorleessnelheid">${leesTempo < 1 ? '🐢 Langzaam' : '🐇 Normaal'}</button></div>`;
+}
+function miniLees(){ return SPRAAK ? '<button class="lees-mini" title="Lees voor" aria-label="Lees voor">🔊</button>' : ''; }
+// maak van wiskunde-tekst iets wat goed klinkt
+const GETAL = ['nul', 'één', 'twee', 'drie', 'vier', 'vijf', 'zes', 'zeven', 'acht', 'negen', 'tien', 'elf', 'twaalf', 'dertien'];
+const DEELW = {2: 'half', 3: 'derde', 4: 'vierde', 5: 'vijfde', 6: 'zesde', 7: 'zevende', 8: 'achtste', 9: 'negende', 10: 'tiende', 11: 'elfde', 12: 'twaalfde', 13: 'dertiende'};
+function breukWoord(t, n){ t = +t; n = +n; const tw = GETAL[t] || String(t); if (n === 2) return t === 1 ? 'een half' : tw + ' halve'; return tw + ' ' + (DEELW[n] || n + 'ste'); }
+// tekst van een stuk pagina, met breuken als woorden
+function tekstVan(el){ const c = el.cloneNode(true); c.querySelectorAll('.breuk').forEach(b => b.replaceWith(' [' + (b.dataset.b || (b.querySelector('.t').textContent + '/' + b.querySelector('.n').textContent)) + '] ')); c.querySelectorAll('.lees-mini').forEach(b => b.remove()); document.body.appendChild(c); c.style.position = 'absolute'; c.style.left = '-9999px'; const t = c.innerText; c.remove(); return t; }
+function uitspraak(t){
+  return String(t)
+    .replace(/\[(\d+)\/(\d+)\]/g, (m, a, b) => ' ' + breukWoord(a, b) + ' ')
+    .replace(/→/g, ', ')
+    .replace(/(\d)\s*:\s*(\d)/g, '$1 gedeeld door $2')
+    .replace(/🔊|🐢|🐇|💡|⧉/g, '')
+    .replace(/❶/g, ' 1 ').replace(/❷/g, ' 2 ').replace(/❸/g, ' 3 ').replace(/•/g, '')
+    .replace(/€\s*([0-9]+(?:,[0-9]+)?)(?:,-)?/g, '$1 euro')
+    .replace(/(\d+),-/g, '$1 euro')
+    .replace(/([0-9])([a-z])\b/g, '$1 $2')            // 6k -> 6 k
+    .replace(/([0-9])\(/g, '$1 keer (')                 // 4(k − 7) -> 4 keer (
+    .replace(/×/g, ' keer ').replace(/÷/g, ' gedeeld door ')
+    .replace(/(^|[\s(=+×:])[−-]\s?(?=\d|[a-z]\b)/g, '$1 min ')   // negatief getal
+    .replace(/\s[−-]\s/g, ' min ')
+    .replace(/\+/g, ' plus ').replace(/=/g, ' is ')
+    .replace(/\(/g, ' haakje ').replace(/\)/g, ' haakje ')
+    .replace(/²/g, ' kwadraat').replace(/…/g, ' puntje puntje ')
+    .replace(/\s+/g, ' ').trim();
+}
+function stopLezen(){ leesId++; if (SPRAAK) speechSynthesis.cancel(); document.querySelectorAll('.leest').forEach(e => e.classList.remove('leest')); const k = document.getElementById('leesKnop'); if (k){ k.classList.remove('bezig'); k.textContent = '🔊 Lees voor'; } }
+function leesDelen(delen){   // delen: [{el, tekst}]
+  if (!SPRAAK) return;
+  stopLezen(); const mijn = ++leesId;
+  const k = document.getElementById('leesKnop'); if (k){ k.classList.add('bezig'); k.textContent = '⏹ Stop'; }
+  let i = 0;
+  const volgende = () => {
+    if (mijn !== leesId) return;
+    document.querySelectorAll('.leest').forEach(e => e.classList.remove('leest'));
+    if (i >= delen.length){ stopLezen(); return; }
+    const d = delen[i++]; const tekst = uitspraak(d.tekst);
+    if (!tekst) return volgende();
+    if (d.el) d.el.classList.add('leest');
+    const u = new SpeechSynthesisUtterance(tekst);
+    u.lang = stem ? stem.lang : 'nl-NL'; if (stem) u.voice = stem; u.rate = leesTempo;
+    u.onend = () => setTimeout(volgende, 250); u.onerror = () => { if (mijn === leesId) stopLezen(); };
+    speechSynthesis.speak(u);
+  };
+  volgende();
+}
+// zinnen uit een stuk pagina verzamelen
+function zinDelen(root){
+  const out = [];
+  root.querySelectorAll('.zin, .formulelijst > div, table.wt, .optie').forEach(el => {
+    if (el.matches('table.wt')){
+      const rijen = [...el.rows].map(r => [...r.cells].map(c => c.querySelector('input') ? (c.querySelector('input').value || 'leeg vakje') : c.innerText.trim()));
+      out.push({el, tekst: 'Tabel. ' + rijen.map(r => r[0] + ': ' + r.slice(1).join(', ')).join('. ')});
+    } else if (el.matches('.optie')){
+      out.push({el, tekst: 'Keuze ' + (+el.dataset.k + 1) + '. ' + tekstVan(el)});
+    } else out.push({el, tekst: tekstVan(el)});
+  });
+  return out;
+}
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t.closest('#leesKnop')){
+    if (t.closest('#leesKnop').classList.contains('bezig')) return stopLezen();
+    const rechts = document.querySelector('.rechts');
+    const delen = [];
+    const theorie = rechts && rechts.querySelector('.theorie-tekst');
+    if (theorie) theorie.querySelectorAll('.zin').forEach(el => delen.push({el, tekst: tekstVan(el)}));
+    else if (rechts){
+      const nr = rechts.querySelector('.opdr-nr'); if (nr) delen.push({el: null, tekst: 'Opdracht ' + nr.innerText.replace(/\s+/g, ' ')});
+      rechts.querySelectorAll('.blok').forEach(b => delen.push(...zinDelen(b)));
+      const opties = rechts.querySelector('.opties'); if (opties) delen.push(...zinDelen(opties));
+      const tab = rechts.querySelector('#invoer table.wt'); if (tab) delen.push(...zinDelen(tab.parentElement));
+      const st0 = rechts.querySelector('.stap.start'); if (st0) delen.push({el: st0, tekst: st0.innerText});
+    }
+    leesDelen(delen); return;
+  }
+  if (t.closest('#tempoKnop')){ leesTempo = leesTempo < 1 ? 1 : 0.75; try { localStorage.setItem('leesTempo', leesTempo); } catch (e) {} t.closest('#tempoKnop').textContent = leesTempo < 1 ? '🐢 Langzaam' : '🐇 Normaal'; return; }
+  const mini = t.closest('.lees-mini');
+  if (mini){ const blok = mini.parentElement; leesDelen([{el: blok, tekst: tekstVan(blok)}]); }
+});
+
+render();
 </script>
 </body>
 </html>
