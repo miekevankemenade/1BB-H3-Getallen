@@ -1,6 +1,6 @@
-# 1BB H3 Getallen – § 3.3 Breuken (VMBO Basis)
+# 1BB H3 Getallen – § 3.3 Breuken en § 3.4 Decimale getallen (VMBO Basis)
 
-Oefenapp voor klas 1BB bij paragraaf 3.3 *Breuken*.
+Oefenapp voor klas 1BB bij paragraaf 3.3 *Breuken* en 3.4 *Decimale getallen en breuken*.
 De app is gebouwd in hetzelfde format als *2BB H2 – oefenen voor de toets*.
 
 ## Wat zit erin?
@@ -10,7 +10,7 @@ De app is gebouwd in hetzelfde format als *2BB H2 – oefenen voor de toets*.
 | `index.html` | De app voor leerlingen. |
 | `docent.html` | De pagina waar jij de resultaten bekijkt. |
 | `config.js` | De Supabase-gegevens en de naam van deze app (`MODULE`). |
-| `videos/` | De twee theoriefilmpjes (mp4, Vlaamse stem). |
+| `videos/` | De vier theoriefilmpjes (mp4, Vlaamse stem). |
 | `supabase.sql` | Script voor de tabellen (bestaan al in het project). |
 
 **Tabbladen**
@@ -18,11 +18,13 @@ De app is gebouwd in hetzelfde format als *2BB H2 – oefenen voor de toets*.
 - **Welk deel is gekleurd?** – filmpje, opdracht 4 t/m 9 (breuk aflezen uit een figuur)
 - **Zelf kleuren** – opdracht 10 en 11 (een deel van een figuur kleuren)
 - **Extra oefenen** – opdracht 12a t/m 12h
+- **Decimale getallen** (§ 3.4) – filmpje, opdracht 13 t/m 16 (maatbekers, getallenlijn, 0,7 = 0,70)
+- **Breuk en decimaal getal** (§ 3.4) – filmpje, opdracht 17 t/m 20 (breuk ↔ decimaal getal, tienden en honderdsten)
 - **Oefentoets** – 20 vragen uit de app, zonder hints en met één poging
 
 **Eerst de uitleg:** een leerling kan pas verder met de opdrachten als hij het filmpje helemaal heeft bekeken.
 
-**Soorten vragen:** getal, meerkeuze, stappen, breuk invullen (teller en noemer) en zelf kleuren (klik op de stukken van een figuur).
+**Soorten vragen:** getal, meerkeuze, stappen, breuk invullen (teller en noemer), zelf kleuren (klik op de stukken van een figuur) en een pijl op de getallenlijn zetten.
 Bij breuken telt een gelijkwaardige breuk ook als goed (bijvoorbeeld 3/5 bij 6/10), behalve bij 10c.
 
 **Punten:** 2 punten als het in één keer goed is; 1 punt bij de 2e poging of na een hint; 0 punten daarna.
@@ -48,5 +50,5 @@ Het adres van `docent.html` moet in Supabase staan bij **Authentication → URL 
 ## Supabase
 
 Deze app gebruikt hetzelfde Supabase-project als je andere oefenapps.
-De kolom `module` (`1BB H3 Getallen – § 3.3 Breuken`) laat zien bij welke app een resultaat hoort.
+De kolom `module` (`1BB H3 Getallen – § 3.3 en 3.4`; oudere resultaten heten nog `1BB H3 Getallen – § 3.3 Breuken`) laat zien bij welke app een resultaat hoort.
 Op de docentenpagina kies je bovenaan bij **App** welke app je wilt zien.

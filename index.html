@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>§ 3.3 Breuken – 1BB</title>
+<title>H3 Getallen – 1BB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600;1,700&display=swap">
 <style>
@@ -268,6 +268,12 @@ pre.export{white-space:pre-wrap;background:var(--paars-licht);border-radius:12px
 .breukvak input{width:58px;text-align:center}
 .breukvak input[readonly]{border-color:transparent;background:transparent;font-weight:700}
 .kleur-uitleg{font-size:14px;color:#6b6478;margin:6px 0}
+.getalgroot{font-size:54px;font-weight:800;color:#1d1530}
+.pwtabel{border-collapse:collapse;margin:10px auto;font-weight:700}
+.pwtabel th{writing-mode:vertical-rl;transform:rotate(180deg);font-size:14px;padding:8px 6px;border:2px solid #1f6fae;color:#5E0696;height:120px}
+.pwtabel td{border:2px solid #1f6fae;padding:8px 16px;font-size:34px;text-align:center}
+.pwtabel .k{border:none;padding:0 2px;writing-mode:horizontal-tb;transform:none}
+.lijnfig{width:100%;max-width:560px;height:auto}
 .theorie-slot{background:#fde6fa;border:2px solid #E924D5;border-radius:12px;padding:10px 14px;margin:10px 0}
 </style>
 </head>
@@ -634,6 +640,47 @@ function pizza(snij){ const c = 70; let s = `<svg viewBox="0 0 140 140" width="1
   if (snij >= 4) s += `<line x1="0" y1="${c}" x2="140" y2="${c}" stroke="#fff" stroke-width="3"/>`;
   return s + '</svg>'; }
 
+
+/* ---------- § 3.4: getallenlijn en maatbeker ---------- */
+const D52 = 'WI/K/5 Rekenen, meten en schatten · decimale getallen';
+const D53 = 'WI/K/5 Rekenen, meten en schatten · schalen aflezen';
+const D5d = 'WI/K/5 Rekenen, meten en schatten · breuk en decimaal getal';
+function getal(v, d){ const r = Math.round(v * 1000) / 1000; let t = d != null ? r.toFixed(d) : String(r); return t.replace('.', ','); }
+// getallenlijn: {min, max, stap, labels, dec, w}; extra: pijlen [[v, tekst, kleur]], letters [[v, 'A']]
+function getallenlijn(L, extra = {}){
+  const w = L.w || 560, X = v => 24 + (v - L.min) / (L.max - L.min) * (w - 48), n = Math.round((L.max - L.min) / L.stap);
+  let s = `<svg class="breukfig lijnfig${extra.klik ? ' klikfig' : ''}" viewBox="0 0 ${w} 150" width="${w}" height="150" role="img" aria-label="getallenlijn van ${getal(L.min)} tot ${getal(L.max)}">`;
+  s += `<line x1="14" y1="90" x2="${w - 14}" y2="90" stroke="${FLIJN}" stroke-width="3"/>`;
+  for (let i = 0; i <= n; i++){ const v = L.min + i * L.stap, groot = (L.labels || []).some(l => Math.abs(l - v) < 1e-9), half = L.half && Math.abs(Math.round(v / L.half) * L.half - v) < 1e-9;
+    s += `<line x1="${r2(X(v))}" y1="${groot ? 76 : half ? 80 : 83}" x2="${r2(X(v))}" y2="${groot ? 104 : half ? 100 : 97}" stroke="${FLIJN}" stroke-width="${groot ? 3 : 1.6}"/>`; }
+  (L.labels || []).forEach(l => { s += `<text x="${r2(X(l))}" y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#1d1530">${getal(l, L.dec)}</text>`; });
+  (extra.letters || []).forEach(([v, t]) => { s += `<text x="${r2(X(v))}" y="30" text-anchor="middle" font-size="18" font-weight="800" fill="#5E0696">${t}</text><line x1="${r2(X(v))}" y1="38" x2="${r2(X(v))}" y2="70" stroke="#5E0696" stroke-width="3"/><path d="M${r2(X(v) - 7)} 66 L${r2(X(v))} 76 L${r2(X(v) + 7)} 66 Z" fill="#5E0696"/>`; });
+  (extra.pijlen || []).forEach(([v, t, k]) => { k = k || '#E924D5'; s += `<text x="${r2(X(v))}" y="30" text-anchor="middle" font-size="17" font-weight="800" fill="${k}">${t}</text><line x1="${r2(X(v))}" y1="38" x2="${r2(X(v))}" y2="70" stroke="${k}" stroke-width="3"/><path d="M${r2(X(v) - 7)} 66 L${r2(X(v))} 76 L${r2(X(v) + 7)} 66 Z" fill="${k}"/>`; });
+  if (extra.klik) s += `<rect class="lijnvak" x="0" y="0" width="${w}" height="150" fill="transparent" style="cursor:crosshair"/>`;
+  return s + '</svg>';
+}
+// maatbeker: {max, stap, niveau, labels: [..], breuk: true (labels als tienden), letters: [[v, 'A', 'l'|'r']], h, kleur}
+function maatbeker(o){
+  const H = o.h || 240, W = 120, x0 = 34, y0 = 14, bodem = y0 + H - 6, topV = y0 + 18, Y = v => bodem - v / o.max * (bodem - topV), n = Math.round(o.max / o.stap), tx = x0 + 30;
+  let s = `<svg class="breukfig" viewBox="0 0 ${W + 120} ${H + 30}" width="${W + 120}" height="${H + 30}" role="img" aria-label="maatbeker">`;
+  if (!o.geenOor) s += `<path d="M${x0 + W} ${y0 + 34} h22 a12 12 0 0 1 12 12 v${r2(H * .42)} a12 12 0 0 1 -12 12 h-22" fill="none" stroke="#9fbfe0" stroke-width="9"/>`;
+  if (o.niveau != null) s += `<rect x="${x0 + 3}" y="${r2(Y(o.niveau))}" width="${W - 6}" height="${r2(bodem - Y(o.niveau))}" fill="${o.kleur || '#8fa6d8'}"/>`;
+  s += `<rect x="${x0}" y="${y0}" width="${W}" height="${H}" rx="9" fill="none" stroke="#7aa6cf" stroke-width="3"/>`;
+  for (let i = 1; i <= n; i++){ const v = i * o.stap, y = r2(Y(v)), lab = o.breuk || (o.labels || []).some(l => Math.abs(l - v) < 1e-9);
+    s += `<line x1="${tx}" y1="${y}" x2="${tx + (lab ? 18 : 11)}" y2="${y}" stroke="#1d1530" stroke-width="${lab ? 2 : 1.3}"/>`;
+    if (o.breuk) s += `<text x="${tx + 24}" y="${y}" font-size="11" font-weight="700" fill="#1f6fae" dominant-baseline="central">${i}/${Math.round(o.max / o.stap)}</text>`;
+    else if (lab) s += `<text x="${tx + 24}" y="${y}" font-size="13" font-weight="700" fill="#1d1530" dominant-baseline="central">${getal(v)}${o.eenheid && Math.abs(v - (o.eenheidBij || o.max)) < 1e-9 ? ' ' + o.eenheid : ''}</text>`; }
+  (o.letters || []).forEach(([v, t, kant]) => { const y = r2(Y(v)); if (kant === 'r') s += `<line x1="${tx}" y1="${y}" x2="${x0 + W + 40}" y2="${y}" stroke="#1f6fae" stroke-width="1.6" stroke-dasharray="5 4"/><text x="${x0 + W + 46}" y="${y}" font-size="15" font-weight="800" fill="#5E0696" dominant-baseline="central">${t}</text>`;
+    else s += `<line x1="8" y1="${y}" x2="${tx + 14}" y2="${y}" stroke="#1f6fae" stroke-width="1.6" stroke-dasharray="5 4"/><text x="2" y="${y - 9}" font-size="15" font-weight="800" fill="#5E0696">${t}</text>`; });
+  return s + '</svg>';
+}
+function getalGroot(t){ return `<span class="getalgroot">${t}</span>`; }
+function plaatswaarde(cijfers){ return `<table class="pwtabel"><tr><th>Eenheden</th><th class="k"></th><th>Tienden</th><th>Honderdsten</th></tr><tr><td>${cijfers[0]}</td><td class="k">,</td><td>${cijfers[1]}</td><td>${cijfers[2]}</td></tr></table>`; }
+const BEKER = (niveau, letter, extra) => `<div class="figcel">${maatbeker(Object.assign({max: 1, stap: .1, niveau, labels: [.5, 1], eenheid: 'liter'}, extra || {}))}<span class="figlabel">${letter}</span></div>`;
+const L05 = {min: 0, max: 5, stap: .1, labels: [0, 1, 2, 3, 4, 5], half: .5};
+const L14 = {min: 2, max: 3.6, stap: .1, labels: [2, 2.5, 3], dec: 1};
+const B19 = {max: 3, stap: .1, labels: [.5, 1, 1.5, 2, 2.5], eenheid: 'liter', eenheidBij: 2.5, h: 330, geenOor: true, letters: [[.7, 'A', 'l'], [2.8, 'B', 'l'], [2.2, 'C', 'r'], [1.15, 'D', 'r']]};
+
 const CTX = {
   c1: {intro: ['Bij Pizzeria Napoli koop je een hele pizza of een stuk pizza.', 'Een hele pizza kost 16 euro.'],
        links: () => `<div class="figrij">${pizza(1)}${pizza(2)}${pizza(4)}</div><div class="kaart" style="text-align:center"><b>Hele pizza: € 16</b></div>`},
@@ -658,6 +705,15 @@ const CTX = {
   cT5: {intro: ['Kijk naar de strook.'], links: () => figRij([fig('t_strook')])},
   cT6: {intro: ['Je ziet een vierkant in 4 stukken.'], links: () => ''},
   cT7: {intro: ['Je ziet een figuur met hokjes.'], links: () => ''},
+  c13: {intro: ['In elke maatbeker past 1 liter.', 'Bij elk streepje hoort een getal.'], links: () => figRij([BEKER(.7, 'A'), BEKER(.3, 'B'), BEKER(.9, 'C')])},
+  c14: {intro: ['Op de getallenlijn is elk klein streepje 0,1.', 'Bij de letters P, Q, R en S hoort een getal.'], links: () => getallenlijn(L14, {letters: [[2.2, 'P'], [2.7, 'Q'], [2.9, 'R'], [3.4, 'S']]})},
+  c15: {intro: ['Je ziet een getallenlijn van 0 tot 5.', 'Elk klein streepje is 0,1.'], links: () => ''},
+  c16a: {intro: ['Kijk naar het getal 0,6.'], links: () => `<div class="breukenrij">${getalGroot('0,6')}</div>`},
+  c16b: {intro: ['Kijk naar de getallenlijn van 2,30 tot 2,40.'], links: () => getallenlijn({min: 2.3, max: 2.4, stap: .01, labels: [2.3, 2.4], dec: 2})},
+  c17: {intro: ['In elke maatbeker past 1 liter.', 'Bij elk streepje staat een breuk.'], links: () => figRij([BEKER(.4, 'A', {breuk: true, kleur: '#f6c75a'}), BEKER(.6, 'B', {breuk: true, kleur: '#f6c75a'}), BEKER(.8, 'C', {breuk: true, kleur: '#f6c75a'}), BEKER(.1, 'D', {breuk: true, kleur: '#f6c75a'})])},
+  c18: {intro: ['Schrijf de breuken als decimaal getal.'], links: () => `<div class="kaart"><div class="kl">Voorbeeld</div><div class="formulelijst"><div>${fmt('[7/10] = 0,7')}</div><div>${fmt('[3/100] = 0,03')}</div><div>${fmt('2 [5/10] = 2,5')}</div></div></div>`},
+  c19: {intro: ['Op de maatbeker staat 2,5 liter.', 'Elk streepje is 0,1 liter.', 'Bij de letters A, B, C en D staat een stippellijn.'], links: () => figRij([maatbeker(B19)])},
+  c20: {intro: ['Kijk naar het getal 6,47.'], links: () => plaatswaarde([6, 4, 7])},
   cT8: {intro: ['Sam eet [1/2] pizza.', 'Jan eet [1/4] pizza.', 'De pizza\'s zijn even groot.'], links: () => figRij([figLab('half', 'Sam'), figLab('kwart', 'Jan')])},
 };
 
@@ -749,10 +805,68 @@ const SECTIES = [
   {id: '12h', nr: '12', deel: 'h', ctx: 'cT8', dom: D54, vraag: ['Wie eet de meeste pizza?'], type: 'mk', opties: ['Sam', 'Jan'], ans: 0,
    hint: ['Kijk naar de gele stukken.', 'Welk stuk is groter: een half of een vierde?'], uitleg: ['Een halve pizza is groter dan een kwart pizza.', 'Sam eet de meeste pizza.']},
  ]},
+ {id: 's5', titel: 'Decimale getallen', items: [
+  {id: 'th3', theorie: true, titel: 'Wat is een decimaal getal?', video: 'videos/uitleg3-decimale-getallen.mp4',
+   tekst: ['Een getal met een komma is een <b>decimaal getal</b>.', 'Achter de komma staan één of meer cijfers.', '3,4 spreek je uit als <i>drie komma vier</i>.', '2,45 spreek je uit als <i>twee komma vijfenveertig</i>.', '0,7 is evenveel als 0,70.']},
+  {id: '13a', nr: '13', deel: 'a', ctx: 'c13', dom: D53, vraag: ['Hoeveel streepjes staan er op een maatbeker?'], type: 'num', ans: 10, eenheid: 'streepjes',
+   hint: ['Tel de streepjes van onder naar boven.', 'Tel het streepje bij 1 liter ook mee.'], uitleg: ['Van 0 tot 1 liter zijn er 10 streepjes.', 'Elk streepje is 0,1 liter.'], fouten: {9: 'Bovenste streepje niet meegeteld', 2: 'Alleen de streepjes met een getal geteld'}},
+  {id: '13b', nr: '13', deel: 'b', ctx: 'c13', dom: D53, vraag: ['Tot welk getal is maatbeker A gevuld?'], type: 'num', ans: .7, eenheid: 'liter',
+   hint: ['Elk streepje is 0,1 liter.', 'Tel de streepjes tot de bovenkant van het water.'], uitleg: ['Het water komt tot het 7e streepje.', '7 × 0,1 = 0,7', 'Maatbeker A is gevuld tot 0,7 liter.'], fouten: {7: 'Streepjes geteld, maar geen komma geschreven'}},
+  {id: '13c', nr: '13', deel: 'c', ctx: 'c13', dom: D53, vraag: ['Welke getallen horen bij het water in beker B en beker C?'], type: 'stappen',
+   velden: [{tpl: 'Beker B: {} liter', ans: [.3]}, {tpl: 'Beker C: {} liter', ans: [.9]}],
+   hint: ['Tel bij elke beker de streepjes tot de bovenkant van het water.', 'Elk streepje is 0,1 liter.'], uitleg: ['Beker B: 3 streepjes, dus 0,3 liter.', 'Beker C: 9 streepjes, dus 0,9 liter.']},
+  {id: '14a', nr: '14', deel: 'a', ctx: 'c14', dom: D53, vraag: ['Welke getallen horen bij P, Q en R?'], type: 'stappen',
+   velden: [{tpl: 'P = {}', ans: [2.2]}, {tpl: 'Q = {}', ans: [2.7]}, {tpl: 'R = {}', ans: [2.9]}],
+   hint: ['Begin bij 2 en tel de kleine streepjes.', 'Elk klein streepje is 0,1.', 'Bij 2,5 staat een getal. Daar kun je ook vanaf tellen.'], uitleg: ['P staat 2 streepjes na 2: 2,2.', 'Q staat 2 streepjes na 2,5: 2,7.', 'R staat 1 streepje voor 3: 2,9.']},
+  {id: '14b', nr: '14', deel: 'b', ctx: 'c14', dom: D53, vraag: ['Welk getal hoort bij S?'], type: 'num', ans: 3.4,
+   hint: ['Begin bij 3.', 'Tel de kleine streepjes tot S.'], uitleg: ['S staat 4 streepjes na 3.', 'Dus S = 3,4.'], fouten: {3.04: 'Een nul te veel achter de komma'}},
+  {id: '15a', nr: '15', deel: 'a', ctx: 'c15', dom: D52, vraag: ['Zet 1,6 op de juiste plaats.', 'Klik op de getallenlijn.'], type: 'lijn', lijn: L05, ans: 1.6,
+   hint: ['Zoek eerst 1 op de getallenlijn.', 'Tel dan 6 kleine streepjes verder.'], uitleg: ['1,6 ligt tussen 1 en 2.', 'Vanaf 1 tel je 6 kleine streepjes.']},
+  {id: '15b', nr: '15', deel: 'b', ctx: 'c15', dom: D52, vraag: ['Zet 3,40 op de juiste plaats.', 'Klik op de getallenlijn.'], type: 'lijn', lijn: L05, ans: 3.4,
+   hint: ['3,40 is evenveel als 3,4.', 'Zoek 3 en tel 4 kleine streepjes verder.'], uitleg: ['3,40 = 3,4.', 'Vanaf 3 tel je 4 kleine streepjes.']},
+  {id: '15c', nr: '15', deel: 'c', ctx: 'c15', dom: D52, vraag: ['Zet het getal vier komma acht op de juiste plaats.'], type: 'lijn', lijn: L05, ans: 4.8,
+   hint: ['Vier komma acht schrijf je als 4,8.', 'Zoek 4 en tel 8 kleine streepjes verder.', 'Of: zoek 5 en ga 2 streepjes terug.'], uitleg: ['Vier komma acht = 4,8.', '4,8 ligt 2 streepjes vóór 5.']},
+  {id: '16a', nr: '16', deel: 'a', ctx: 'c16a', dom: D52, vraag: ['Welk getal is evenveel als 0,6?'], type: 'mk', opties: ['0,06', '0,60', '6,0', '0,16'], ans: 1,
+   hint: ['Een nul achteraan, achter de komma, verandert niets.', 'Een nul direct achter de komma verandert wel iets.'], uitleg: ['0,6 = 0,60.', 'Er komt alleen een nul achteraan.', '0,06 is veel kleiner: dat is 6 honderdsten.']},
+  {id: '16b', nr: '16', deel: 'b', ctx: 'c16b', dom: D52, vraag: ['Welk getal ligt precies tussen 2,30 en 2,40?'], type: 'mk', opties: ['2,31', '2,35', '2,4', '2,53'], ans: 1,
+   hint: ['Tussen 2,30 en 2,40 staan 10 kleine stapjes.', 'Precies in het midden is na 5 stapjes.'], uitleg: ['Van 2,30 naar 2,40 zijn 10 stapjes van 0,01.', 'Na 5 stapjes ben je bij 2,35.', '2,35 ligt precies in het midden.']},
+ ]},
+ {id: 's6', titel: 'Breuk en decimaal getal', items: [
+  {id: 'th4', theorie: true, titel: 'Breuk als decimaal getal', video: 'videos/uitleg4-breuk-als-decimaal-getal.mp4',
+   tekst: ['Een breuk kun je als decimaal getal schrijven.', `${breukGroot(7, 10)} = 0,7 (tienden: 1 cijfer achter de komma)`, `${breukGroot(3, 100)} = 0,03 (honderdsten: 2 cijfers achter de komma)`, 'In 5,26 is de 2 <b>0,2</b> waard en de 6 <b>0,06</b>.']},
+  {id: '17a', nr: '17', deel: 'a', ctx: 'c17', dom: D5d, vraag: ['Maatbeker A is voor [4/10] deel gevuld.', 'Welk decimaal getal is hetzelfde als [4/10]?'], type: 'num', ans: .4,
+   hint: ['[4/10] zijn 4 tienden.', 'Tienden: één cijfer achter de komma.'], uitleg: ['[4/10] = 0,4.', 'Maatbeker A is gevuld tot 0,4 liter.'], fouten: {4: 'Komma vergeten', .04: 'Tienden als honderdsten geschreven'}},
+  {id: '17b', nr: '17', deel: 'b', ctx: 'c17', dom: D5d, vraag: ['In maatbeker B zit 0,6 liter.', 'Schrijf 0,6 als breuk.'], type: 'stappen', velden: [{breuk: true, lab: '0,6 =', ans: [6, 10]}],
+   hint: ['0,6 zijn 6 tienden.', 'Tienden: de noemer is 10.'], uitleg: ['0,6 = 6 tienden.', 'Dus 0,6 = [6/10].'], fouten: {'6/100': 'Honderdsten in plaats van tienden'}},
+  {id: '17c', nr: '17', deel: 'c', ctx: 'c17', dom: D5d, vraag: ['Welk decimaal getal en welke breuk horen bij beker C en beker D?'], type: 'stappen',
+   velden: [{tpl: 'Beker C: {} liter', ans: [.8]}, {breuk: true, lab: 'Beker C als breuk:', ans: [8, 10]}, {tpl: 'Beker D: {} liter', ans: [.1]}, {breuk: true, lab: 'Beker D als breuk:', ans: [1, 10]}],
+   hint: ['Kijk tot welk streepje het water komt.', 'Bij dat streepje staat de breuk.', 'Van tienden naar decimaal getal: één cijfer achter de komma.'], uitleg: ['Beker C: [8/10] = 0,8 liter.', 'Beker D: [1/10] = 0,1 liter.']},
+  {id: '18a', nr: '18', deel: 'a', ctx: 'c18', dom: D5d, vraag: ['Schrijf als decimaal getal.'], type: 'stappen',
+   velden: [{tpl: '[4/10] = {}', ans: [.4]}, {tpl: '[9/10] = {}', ans: [.9]}, {tpl: '[5/100] = {}', ans: [.05]}],
+   hint: ['Tienden: één cijfer achter de komma.', 'Honderdsten: twee cijfers achter de komma.', 'Bij [5/100] moet er dus een 0 vóór de 5.'], uitleg: ['[4/10] = 0,4', '[9/10] = 0,9', '[5/100] = 0,05'], fouten: {.5: 'Honderdsten als tienden geschreven'}},
+  {id: '18b', nr: '18', deel: 'b', ctx: 'c18', dom: D5d, vraag: ['Er staat ook een heel getal voor de breuk.', 'Schrijf als decimaal getal.'], type: 'stappen',
+   velden: [{tpl: '3 [6/10] = {}', ans: [3.6]}, {tpl: '2 [15/100] = {}', ans: [2.15]}, {tpl: '1 [7/100] = {}', ans: [1.07]}],
+   hint: ['Het hele getal komt vóór de komma.', 'De breuk komt achter de komma.', 'Honderdsten: twee cijfers achter de komma.'], uitleg: ['3 [6/10] = 3,6', '2 [15/100] = 2,15', '1 [7/100] = 1,07'], fouten: {1.7: 'Honderdsten als tienden geschreven'}},
+  {id: '19a', nr: '19', deel: 'a', ctx: 'c19', dom: D53, vraag: ['A staat 2 streepjes boven 0,5 liter.', 'Welk getal hoort bij A?'], type: 'num', ans: .7, eenheid: 'liter',
+   hint: ['Elk streepje is 0,1 liter.', '0,5 + 0,1 + 0,1 = …'], uitleg: ['0,5 + 0,2 = 0,7.', 'Bij A hoort 0,7 liter.']},
+  {id: '19b', nr: '19', deel: 'b', ctx: 'c19', dom: D53, vraag: ['Hoeveel streepjes zit B boven 2,5 liter?'], type: 'num', ans: 3, eenheid: 'streepjes',
+   hint: ['Zoek 2,5 liter op de maatbeker.', 'Tel de streepjes tot de stippellijn van B.'], uitleg: ['B zit 3 streepjes boven 2,5 liter.']},
+  {id: '19c', nr: '19', deel: 'c', ctx: 'c19', dom: D53, vraag: ['Welk getal hoort bij B?'], type: 'num', ans: 2.8, eenheid: 'liter',
+   hint: ['B zit 3 streepjes boven 2,5 liter.', 'Elk streepje is 0,1 liter.'], uitleg: ['2,5 + 0,3 = 2,8.', 'Bij B hoort 2,8 liter.'], fouten: {2.53: 'Streepjes als honderdsten geteld', 3: 'Afgerond in plaats van afgelezen'}},
+  {id: '19d', nr: '19', deel: 'd', ctx: 'c19', dom: D53, vraag: ['Welke getallen horen bij C en D?', 'Let op: D staat precies tussen twee streepjes.'], type: 'stappen',
+   velden: [{tpl: 'C = {} liter', ans: [2.2]}, {tpl: 'D = {} liter', ans: [1.15]}],
+   hint: ['C: begin bij 2 en tel de streepjes.', 'D ligt tussen 1,1 en 1,2.', 'Precies tussen 1,10 en 1,20 ligt …'], uitleg: ['C staat 2 streepjes boven 2: 2,2 liter.', 'D ligt precies tussen 1,1 en 1,2: 1,15 liter.']},
+  {id: '20a', nr: '20', deel: 'a', ctx: 'c20', dom: D5d, vraag: ['Welke waarde heeft de 4 in 6,47?'], type: 'mk', opties: ['4', '0,4', '0,04', '40'], ans: 1,
+   hint: ['Kijk in de tabel: in welke kolom staat de 4?', 'Tienden: [4/10] = …'], uitleg: ['De 4 staat bij de tienden.', '4 tienden = [4/10] = 0,4.']},
+  {id: '20b', nr: '20', deel: 'b', ctx: 'c20', dom: D5d, vraag: ['Welke waarde heeft de 7 in 6,47?'], type: 'mk', opties: ['7', '0,7', '0,07', '70'], ans: 2,
+   hint: ['Kijk in de tabel: in welke kolom staat de 7?', 'Honderdsten: [7/100] = …'], uitleg: ['De 7 staat bij de honderdsten.', '7 honderdsten = [7/100] = 0,07.']},
+  {id: '20c', nr: '20', deel: 'c', ctx: 'c20', dom: D5d, vraag: ['Een getal heeft 3 eenheden, 5 tienden en 2 honderdsten.', 'Welk getal is dat?'], type: 'num', ans: 3.52,
+   hint: ['De eenheden komen vóór de komma.', 'Dan de tienden, dan de honderdsten.'], uitleg: ['3 eenheden, komma, 5 tienden, 2 honderdsten.', 'Het getal is 3,52.'], fouten: {3.25: 'Tienden en honderdsten omgedraaid'}},
+ ]},
 ];
 
 /* ---------- oefentoets: dezelfde vragen, maar in toetsmodus ---------- */
-const TOETS_IDS = ['1a', '1b', '2', '3a', '4a', '4c', '5b', '5c', '6', '7c', '7d', '8', '9', '10d', '11', '12b', '12c', '12e', '12g', '12h'];
+const TOETS_IDS = ['1b', '2', '4c', '5b', '6', '7d', '8', '10d', '11', '12h', '13b', '14a', '15b', '16a', '17a', '17b', '18a', '19c', '19d', '20b'];
 (() => { const alle = SECTIES.flatMap(s => s.items);
   SECTIES.push({id: 'toets', titel: 'Oefentoets', toets: true, items: TOETS_IDS.map(id => { const o = alle.find(i => i.id === id);
     return Object.assign({}, o, {id: 'T' + id, toets: true, bron: o.bron && o.bron.map(b => typeof b === 'string' ? (TOETS_IDS.includes(b) ? 'T' + b : b) : b)}); })}); })();
@@ -808,7 +922,7 @@ function render(){
   const sec = SECTIES.find(s => s.id === it.sectie);
   app.innerHTML = `
   <header>
-    <h1>§ 3.3 Breuken</h1>
+    <h1>H3 Getallen</h1>
     <nav class="tabs" aria-label="Paragrafen">${SECTIES.map(s => `<button class="tab ${s.toets ? 'toets' : ''} ${s.id === sec.id ? 'actief' : ''}" data-sec="${s.id}">${esc(s.titel)}</button>`).join('')}</nav>
     <div class="kop-rechts"><button class="knop-klein rm-knop" id="rmOpen" aria-pressed="${!$('#rm').hidden}">🧮 Rekenmachine</button><span class="naam">${esc(S.naam)}</span>${S.code ? `<button class="knop-klein" id="codeKnop" style="background:rgba(255,255,255,.15)" title="Jouw code om later verder te gaan">Code: ${esc(S.code)}</button><span id="wolk" style="font-size:12px;opacity:.85">${esc(wolkStatus)}</span>` : ''}<button class="knop-klein" id="naarEind">Afronden</button></div>
   </header>
@@ -908,6 +1022,14 @@ function toonVraag(it){
     $('#wis').onclick = () => { if (s.opgelost) return; s.invoer.length = 0; svg._teken(); bewaar(); zetGum(false); };
     if (s.opgelost){ $('#gum').disabled = true; $('#wis').disabled = true; }
     if (it.bron) toonBronTabellen(it);
+  } else if (it.type === 'lijn'){
+    const L = it.lijn;
+    const teken = () => { links.innerHTML = getallenlijn(L, {klik: true, pijlen: s.lijnPos != null ? [[s.lijnPos, '', s.opgelost && (!it.toets || S.toetsKlaar) ? (it.toets && !s.toetsGoed ? '#d6293e' : '#16965A') : '#E924D5']] : []}) + '<div class="graf-uitleg">Klik op de getallenlijn om de pijl te zetten.<br>Klik opnieuw om de pijl te verplaatsen.</div>';
+      const svg = links.querySelector('svg');
+      svg.addEventListener('click', e => { if (s.opgelost) return; const r = svg.getBoundingClientRect(), w = L.w || 560, x = (e.clientX - r.left) / r.width * w;
+        let v = L.min + (x - 24) / (w - 48) * (L.max - L.min); v = Math.round(v / L.stap) * L.stap; v = Math.max(L.min, Math.min(L.max, Math.round(v * 1000) / 1000));
+        s.lijnPos = v; bewaar(); teken(); }); };
+    teken();
   } else if (it.type === 'kleur'){
     s.kleur = s.kleur || it.figs.map(() => []);
     links.innerHTML = `<div class="figrij">${it.figs.map((f, fi) => `<div class="figcel" data-fi="${fi}"><div class="${f.ruitjes ? 'ruitjes' : ''}">${FIG.svg(FIGUREN[f.fig](), {klik: true, kleurSet: s.kleur[fi], kleur: f.kleur})}</div>${f.label ? `<span class="figlabel">${esc(f.label)}</span>` : ''}${f.onder ? `<div class="onder">${fmt(f.onder)}</div>` : ''}</div>`).join('')}</div>`;
@@ -944,6 +1066,8 @@ function toonVraag(it){
       return `<div class="stap"><label class="lab" for="a${k}">${fmtF(v.lab)}</label>${v.soort === 'keuze'
        ? `<select id="a${k}">${v.opties.map((o, j) => `<option value="${j}">${esc(o)}</option>`).join('')}</select>`
        : `<input class="inv" id="a${k}" inputmode="decimal" autocomplete="off">`}</div>`; }).join('')}</div>`;
+  } else if (it.type === 'lijn'){
+    inv.innerHTML = `<div class="kleur-uitleg">Klik links op de getallenlijn.<br>Er komt een pijl. Staat hij goed? Klik op Controleer.</div>`;
   } else if (it.type === 'kleur'){
     inv.innerHTML = `<div class="kleur-uitleg">Klik links op een stuk om het te kleuren.<br>Klik nog een keer om het weer wit te maken.</div><button class="knop licht" id="wisKleur" type="button">✕ Wis kleuren</button>`;
     $('#wisKleur').onclick = () => { if (s.opgelost) return; s.kleur = it.figs.map(() => []); bewaar(); render(); };
@@ -1003,6 +1127,7 @@ function antwTekst(it, w, s){
     const sym = v => String(v).trim() === '' ? '…' : String(v).trim();
     if (it.type === 'mk') return (s.keuze || []).map(k => it.opties[k]).join(' + ');
     if (it.type === 'grafiek') return (s.invoer || []).map(p => `(${p[0]}, ${p[1]})`).join(' ');
+    if (it.type === 'lijn') return s.lijnPos == null ? '…' : 'pijl bij ' + getal(s.lijnPos);
     if (it.type === 'kleur') return it.figs.map((f, i) => (f.label ? f.label + ': ' : '') + ((s.kleur || [])[i] || []).length + ' gekleurd').join('  ');
     if (it.type === 'tabel') return it.xs.map((x, k) => (it.gegeven || []).includes(k) ? null : `${x}→${sym(w['c' + k] || '')}`).filter(Boolean).join('  ');
     if (it.type === 'stappen') return it.velden.map((f, k) => {
@@ -1165,6 +1290,10 @@ function controleer(it){
     if (!schrijf && !leeg && leegVak) schrijf = n > 1 ? 'Vul beide manieren in.' : '';
     if (!schrijf) res.forEach(([id, r]) => markeer(id, r));
     goed = ok.every(Boolean);
+  } else if (it.type === 'lijn'){
+    leeg = s.lijnPos == null;
+    goed = !leeg && Math.abs(s.lijnPos - it.ans) < it.lijn.stap / 2;
+    if (!goed && !leeg) cat = Math.abs(s.lijnPos - it.ans) < 1 ? 'Pijl een paar streepjes naast de goede plek' : 'Pijl bij het verkeerde hele getal';
   } else if (it.type === 'kleur'){
     const kl = s.kleur || []; leeg = kl.every(a => !a || !a.length);
     const per = it.figs.map((f, i) => (kl[i] || []).length === f.nodig);
@@ -1227,6 +1356,7 @@ function toonHulp(it){
       ? it.figs.map(f => `<div class="figcel"><div class="${f.ruitjes ? 'ruitjes' : ''}">${FIG.svg(FIGUREN[f.fig](), {kleurSet: f.voorbeeld || Array.from({length: f.nodig}, (_, i) => i), kleur: f.kleur, nummers: 'gk', schaal: .8})}</div>${f.label ? `<span class="figlabel">${esc(f.label)}</span>` : ''}<div class="onder">${f.nodig} ${f.nodig === 1 ? 'stuk' : 'stukken'} gekleurd</div></div>`).join('')
       : it.hulpFig.map(([n, lab]) => `<div class="figcel">${FIG.svg(FIGUREN[n](), {nummers: 'alle', schaal: .8})}${lab ? `<span class="figlabel">${esc(lab)}</span>` : ''}</div>`).join('');
     inh.appendChild(d); }
+  if (it.type === 'lijn'){ const d = document.createElement('div'); d.style.marginTop = '10px'; d.innerHTML = getallenlijn(it.lijn, {pijlen: [[it.ans, getal(it.ans), '#16965A']]}); inh.appendChild(d); }
   if (it.type === 'grafiek'){ const g = maakGrafiek(it.g, {lijnen: (it.vast || []).concat([it.pts ? {pts: it.pts} : {f: it.f}])}); g.style.maxWidth = '440px'; inh.appendChild(g); }
   ov.hidden = false;
   inh.querySelectorAll('.ov-stap').forEach((e, k) => setTimeout(() => e.classList.add('zichtbaar'), 400 + k * 1100));
@@ -1242,8 +1372,8 @@ function startScherm(){
   const terug = S.naam && Object.keys(S.items).length;
   app.innerHTML = `<div class="scherm" style="grid-row:1/-1">
     <span class="label-domein">VMBO Basis · 1BB · Hoofdstuk 3 Getallen</span>
-    <h2>§ 3.3 Breuken</h2>
-    <p>In deze app leer en oefen je:<br>• wat een breuk is: teller en noemer<br>• welk deel van een figuur gekleurd is<br>• zelf een deel van een figuur kleuren<br>• rekenen met een deel van de prijs</p>
+    <h2>H3 Getallen · § 3.3 en § 3.4</h2>
+    <p>In deze app leer en oefen je:<br>• wat een breuk is: teller en noemer<br>• welk deel van een figuur gekleurd is<br>• zelf een deel van een figuur kleuren<br>• rekenen met een deel van de prijs<br>• decimale getallen lezen en op een getallenlijn zetten<br>• een breuk als decimaal getal schrijven</p>
     <p>Bij elk onderdeel kijk je eerst een kort filmpje.<br>Zet je geluid aan.</p>
     <p>Klaar met oefenen?<br>Maak dan de <b>Oefentoets</b>: 20 vragen, zonder hints en met één poging.</p>
     ${terug ? `<div class="analyse"><b>Welkom terug, ${esc(S.naam)}!</b><br>Je hebt al ${VRAGEN.filter(v => S.items[v.id] && S.items[v.id].opgelost).length} opdrachten af.${S.code ? `<br>Jouw code: <b class="code">${esc(S.code)}</b>` : ''}
@@ -1279,7 +1409,7 @@ function startScherm(){
         const {data, error} = await db().rpc('voortgang_laden', {p_code: code});
         if (error) throw error;
         if (!data){ f.className = 'feedback fout'; f.textContent = 'Deze code bestaat niet. Kijk goed of je hem goed hebt overgeschreven, of vraag je docent.'; return; }
-        if (!data.data || data.data.module !== (window.APP_CONFIG || {}).MODULE){ f.className = 'feedback fout'; f.textContent = 'Deze code hoort bij een andere oefenapp. Gebruik de code die je bij deze app hebt gekregen.'; return; }
+        if (!data.data || ![(window.APP_CONFIG || {}).MODULE].concat((window.APP_CONFIG || {}).OUDE_MODULES || []).includes(data.data.module)){ f.className = 'feedback fout'; f.textContent = 'Deze code hoort bij een andere oefenapp. Gebruik de code die je bij deze app hebt gekregen.'; return; }
         S = Object.assign({items: {}, huidig: 0}, data.data, {code, gestart: true, klaar: false}); bewaar(); render();
       } catch (e) { f.className = 'feedback fout'; f.textContent = 'Laden lukt niet. Heb je internet?'; }
     };
@@ -1402,7 +1532,7 @@ function eindScherm(){
   const A = analyse(); const txt = exportTekst(A);
   const cfg = window.APP_CONFIG || {};
   app.innerHTML = `<div class="scherm" style="grid-row:1/-1;overflow:auto">
-    <span class="label-domein">Resultaten · ${esc(cfg.MODULE || '§ 3.3 Breuken')}</span>
+    <span class="label-domein">Resultaten · ${esc(cfg.MODULE || 'H3 Getallen')}</span>
     <h2>Goed gewerkt, ${esc(S.naam)}!</h2>
     <div class="tegels">
       <div class="tegel"><div class="k">Cijfer</div><div class="cijfer">${A.cijfer.toFixed(1).replace('.', ',')}</div></div>
